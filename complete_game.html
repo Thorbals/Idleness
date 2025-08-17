@@ -56,21 +56,20 @@
       padding: 2px 6px;
       margin-right: 6px;
       font-size: 10px;
-
-      .bank-tab {
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.4);
-        border: 1px solid var(--border);
-        color: #f8f9fa;
-        font-size: 14px;
-        cursor: pointer;
-        user-select: none;
-      }
-
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 4px;
+    }
+
+    .bank-tab {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      color: #f8f9fa;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
     }
 
     .shop-animal-card .animal-produces .label {
@@ -1435,7 +1434,7 @@
           <div class="content-header">
             <h1 class="content-title" id="area-detail-title">Area Name</h1>
             <button class="action-button" id="back-to-areas">
-              ? Back to Areas
+              Back to Areas
             </button>
           </div>
 
@@ -1727,25 +1726,331 @@
 
     const AREAS_DATA = {
       areas: [
-        {
-          id: "frostwood_refuge",
-          name: "Frostwood Refuge",
-          level: 1,
-          requiredCombatLevel: 1,
-          factions: [],
-          description: "A small survivor outpost to get you started.",
-          gathering: {
-            woodcutting: [],
-            mining: [],
-            fishing: [],
-            foraging: [],
-            hunting: [],
-            looting: [],
-            scavenging: []
-          },
-          dungeons: []
-        }
-      ],
+      { 
+        id: "thornwall", 
+        name: "Thornwall", 
+        level: 1, 
+        requiredCombatLevel: 1,
+        factions: ["Zombies", "Bandits"],
+        description: "Zombies — Zombies and Bandits roam Thornwall.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "old_guardhouse", name: "Old Guardhouse" },
+        { id: "gallows_square", name: "Gallows Square" }
+        ]
+      },
+      {
+        id: "mournvale",
+        name: "Mournvale",
+        level: 4,
+        requiredCombatLevel: 4,
+        factions: ["Zombies", "Soldiers"],
+        description: "Zombies — Zombies and Directorate soldiers haunt Mournvale.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "mournvale_quarantine", name: "Mournvale Quarantine Ward" },
+        { id: "old_garrison_hall", name: "Old Garrison Hall" }
+        ]
+      },
+      {
+        id: "ashford_quay",
+        name: "Ashford Quay",
+        level: 8,
+        requiredCombatLevel: 8,
+        factions: ["Soldiers", "Bandits"],
+        description: "War — Soldiers clash with Bandits around the Ashford docks.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "quayhouse_17", name: "Quayhouse 17" },
+        { id: "harbor_customs", name: "Harbor Customs Building" }
+        ]
+      },
+      {
+        id: "shattergate",
+        name: "Shattergate",
+        level: 12,
+        requiredCombatLevel: 12,
+        factions: ["Zombies", "Bandits"],
+        description: "Zombies — Shattergate streets are overrun by Zombies and Bandits.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "gatehouse_ruin", name: "Gatehouse Ruin" },
+        { id: "powder_cellar", name: "Powder Cellar" }
+        ]
+      },
+      {
+        id: "ironhook_yard",
+        name: "Ironhook Yard",
+        level: 16,
+        requiredCombatLevel: 16,
+        factions: ["Soldiers", "Scavengers"],
+        description: "War — Directorate forces and Scavengers fight for control.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "ironhook_foundry", name: "Ironhook Foundry" },
+        { id: "rail_crane_tower", name: "Rail Crane Tower" }
+        ]
+      },
+      {
+        id: "briarhold",
+        name: "Briarhold",
+        level: 20,
+        requiredCombatLevel: 20,
+        factions: ["Zombies", "Cannibals"],
+        description: "Zombies — Dangerous Cannibals and undead stalk Briarhold.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "briarhold_millhouse", name: "Briarhold Millhouse" },
+        { id: "skinners_shack", name: "Skinner's Shack" }
+        ]
+      },
+      {
+        id: "blackmoor_fields",
+        name: "Blackmoor Fields",
+        level: 24,
+        requiredCombatLevel: 24,
+        factions: ["Cannibals", "Scavengers"],
+        description: "War — Cannibals and Scavengers clash across the fields.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "blackmoor_grainmill", name: "Blackmoor Grain Co. Mill" },
+        { id: "hollowfield_barn", name: "Hollowfield Barn" }
+        ]
+      },
+      {
+        id: "bloodharbor_docks",
+        name: "Bloodharbor Docks",
+        level: 28,
+        requiredCombatLevel: 28,
+        factions: ["Bandits", "Cannibals"],
+        description: "War — Bandits and Cannibals fight over the docks.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "harrowfish_plant", name: "Harrowfish Processing Plant" },
+        { id: "dockside_warehouse_12", name: "Dockside Warehouse 12" }
+        ]
+      },
+      {
+        id: "hallowford_row",
+        name: "Hallowford Row",
+        level: 32,
+        requiredCombatLevel: 32,
+        factions: ["Bandits", "Cultists"],
+        description: "War — Bandits and Cultists vie for influence in Hallowford.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "ashen_saint_chapel", name: "Ashen Saint Chapel" },
+        { id: "deadmans_alehouse", name: "Deadman's Alehouse" }
+        ]
+      },
+      {
+        id: "gravemarch_hollow",
+        name: "Gravemarch Hollow",
+        level: 36,
+        requiredCombatLevel: 36,
+        factions: ["Zombies", "Cultists"],
+        description: "Zombies — Cultists and the undead plague Gravemarch.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "saint_odrin_ossuary", name: "Saint Odrin Ossuary" },
+        { id: "hollowmarch_abbey", name: "Hollowmarch Abbey" }
+        ]
+      },
+      {
+        id: "dunmere_crossing",
+        name: "Dunmere Crossing",
+        level: 40,
+        requiredCombatLevel: 40,
+        factions: ["Directorate", "Scavengers"],
+        description: "War — Directorate forces push into Scavenger territory.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "dunmere_tollhouse", name: "Dunmere Tollhouse" },
+        { id: "ironspan_freight", name: "Ironspan Freight Depot" }
+        ]
+      },
+      {
+        id: "dreadmere",
+        name: "Dreadmere",
+        level: 44,
+        requiredCombatLevel: 44,
+        factions: ["Zombies", "Scavengers"],
+        description: "Zombies — Scavengers and the undead haunt Dreadmere.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "dreadmere_foundry", name: "Dreadmere Foundry" },
+        { id: "boathouse_lockup", name: "Boathouse Lockup" }
+        ]
+      },
+      {
+        id: "greyford_heights",
+        name: "Greyford Heights",
+        level: 48,
+        requiredCombatLevel: 48,
+        factions: ["Directorate", "Cultists"],
+        description: "War — Directorate and Cultists battle in Greyford.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "pentacle_tower", name: "The Pentacle Tower" },
+        { id: "greyford_hotel", name: "Greyford Grand Hotel" }
+        ]
+      },
+      {
+        id: "stonewater_bluffs",
+        name: "Stonewater Bluffs",
+        level: 52,
+        requiredCombatLevel: 52,
+        factions: ["Soldiers", "Mutants"],
+        description: "War — Soldiers clash with Mutant factions on the bluffs.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "bluffside_command", name: "Bluffside Command Post" },
+        { id: "riverwatch_bunker", name: "Riverwatch Bunker" }
+        ]
+      },
+      {
+        id: "ravenshade_outskirts",
+        name: "Ravenshade Outskirts",
+        level: 56,
+        requiredCombatLevel: 56,
+        factions: ["Cannibals", "Mutants"],
+        description: "War — Cannibals and Mutants vie for the outskirts.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "tanglewood_lodge", name: "Tanglewood Hunting Lodge" },
+        { id: "shade_hollow_caves", name: "Shade Hollow Caves" }
+        ]
+      },
+      {
+        id: "rustspire_depot",
+        name: "Rustspire Depot",
+        level: 60,
+        requiredCombatLevel: 60,
+        factions: ["Scavengers"],
+        description: "Stronghold — Rustspire is a Scavenger stronghold.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "foundry_warehouse_3", name: "Foundry Warehouse 3" }
+        ],
+        raids: [
+        { id: "rustspire_central_yard", name: "Rustspire Central Yard" }
+        ]
+      },
+      {
+        id: "vilecrest",
+        name: "Vilecrest",
+        level: 64,
+        requiredCombatLevel: 64,
+        factions: ["Zombies", "Mutants"],
+        description: "Zombies — Mutants and the undead make Vilecrest dangerous.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "bonepile_court", name: "Bonepile Court" },
+        { id: "feral_pens", name: "The Feral Pens" }
+        ]
+      },
+      {
+        id: "griswell_dens",
+        name: "Griswell Dens",
+        level: 68,
+        requiredCombatLevel: 68,
+        factions: ["Cannibals"],
+        description: "Stronghold — Griswell Dens are ruled by Cannibal factions.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "butchers_cellar", name: "Butcher's Cellar" }
+        ],
+        raids: [
+        { id: "griswell_slaughterhouse", name: "The Griswell Slaughterhouse" }
+        ]
+      },
+      {
+        id: "fort_brimwall",
+        name: "Fort Brimwall",
+        level: 72,
+        requiredCombatLevel: 72,
+        factions: ["Soldiers"],
+        description: "Stronghold — Fort Brimwall is a major Directorate position.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "south_barracks", name: "South Barracks Block" }
+        ],
+        raids: [
+        { id: "brimwall_bastion", name: "Brimwall Command Bastion" }
+        ]
+      },
+      {
+        id: "blackcross_keep",
+        name: "Blackcross Keep",
+        level: 76,
+        requiredCombatLevel: 76,
+        factions: ["Bandits"],
+        description: "Stronghold — Blackcross Keep is a Bandit fortress.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "old_wardens_quarters", name: "Old Warden's Quarters" }
+        ],
+        raids: [
+        { id: "blackcross_citadel", name: "Blackcross Citadel" }
+        ]
+      },
+      {
+        id: "hollowfang_nest",
+        name: "Hollowfang Nest",
+        level: 80,
+        requiredCombatLevel: 80,
+        factions: ["Mutants"],
+        description: "Stronghold — Hollowfang Nest is dominated by Mutant packs.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "marrow_chasm", name: "Marrow Chasm" }
+        ],
+        raids: [
+        { id: "fangspire_complex", name: "Fangspire Cavern Complex" }
+        ]
+      },
+      {
+        id: "crownspire",
+        name: "Crownspire",
+        level: 84,
+        requiredCombatLevel: 84,
+        factions: ["Directorate"],
+        description: "Stronghold — Crownspire is a heavily guarded Directorate tower.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "gold_vault", name: "The Gold Vault" }
+        ],
+        raids: [
+        { id: "crownspire_executive", name: "Crownspire Executive Tower" }
+        ]
+      },
+      {
+        id: "ashglen",
+        name: "Ashglen",
+        level: 84,
+        requiredCombatLevel: 84,
+        factions: ["Zombies", "Directorate"],
+        description: "Zombies — Ashglen is contested by undead and Directorate forces.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "ashglen_resort", name: "Ashglen Resort Hall" },
+        { id: "gilded_morgue", name: "Gilded Morgue" }
+        ]
+      },
+      {
+        id: "redwater_downs",
+        name: "Redwater Downs",
+        level: 85,
+        requiredCombatLevel: 85,
+        factions: ["Zombies", "Cultists"],
+        description: "Zombies — Redwater Downs hides ancient cult sites and undead.",
+        gathering: { woodcutting: [], mining: [], fishing: [], foraging: [], hunting: [], looting: [], scavenging: [] },
+        dungeons: [
+        { id: "redwater_mill", name: "Redwater Mill" },
+        { id: "chapel_of_murmurs", name: "Chapel of Murmurs" }
+        ]
+      }
+      ]
     };
 
 
@@ -3186,15 +3491,303 @@
 
 
     const ENEMIES_DATA = {
-      bandits: { regular: [], bosses: [] },
-      zombies: { regular: [], bosses: [] },
-      soldiers: { regular: [], bosses: [] },
-      cultists: { regular: [], bosses: [] },
-      cannibals: { regular: [], bosses: [] },
-      scavengers: { regular: [], bosses: [] },
-      wealthy_elites: { regular: [], bosses: [] },
-      mutants: { regular: [], bosses: [] },
-    };
+        bandits: {
+          description: "Without laws or consequences, the Bandits rose as predators of the wasteland. They raid settlements, caravans, and lone travelers, taking whatever they can carry and killing anyone who resists. Mobility is their greatest weapon, striking fast and vanishing before anyone can retaliate. They fight for greed, not survival, and see every road as their hunting ground. The only safety from Bandits is to stay hidden or be too well armed to attack.",
+          regular: [
+            { id: "thug", name: "Thug" },
+            { id: "raider", name: "Raider" },
+            { id: "mugger", name: "Mugger" },
+            { id: "highwayman", name: "Highwayman" },
+            { id: "looter", name: "Looter" },
+            { id: "cutthroat", name: "Cutthroat" },
+            { id: "firebug", name: "Firebug" },
+            { id: "slasher", name: "Slasher" },
+            { id: "snakeoil", name: "Snakeoil" },
+            { id: "pickpocket", name: "Pickpocket" },
+            { id: "brawler", name: "Brawler" },
+            { id: "lookout", name: "Lookout" },
+            { id: "wrecker", name: "Wrecker" },
+            { id: "drunkard", name: "Drunkard" },
+            { id: "trapper", name: "Trapper" },
+            { id: "scrapper", name: "Scrapper" },
+            { id: "bushwhacker", name: "Bushwhacker" },
+            { id: "brute", name: "Brute" },
+            { id: "swindler", name: "Swindler" },
+            { id: "outlaw", name: "Outlaw" }
+          ],
+          bosses: [
+            { id: "bandit_king", name: "Bandit King" },
+            { id: "blackjack", name: "Blackjack" },
+            { id: "the_widow", name: "The Widow" },
+            { id: "two_face", name: "Two-Face" },
+            { id: "hangman", name: "Hangman" },
+            { id: "ringleader", name: "Ringleader" },
+            { id: "the_rustler", name: "The Rustler" },
+            { id: "safecracker", name: "Safecracker" },
+            { id: "blacktop_baron", name: "Blacktop Baron" },
+            { id: "kingpin", name: "Kingpin" }
+          ]
+        },
+        cannibals: {
+          description: "Hunger pushed them to cross the line no one returns from. Their first kill may have been out of desperation, but it awakened a darker hunger that never faded. They hunt the living with patience and skill, setting traps and ambushes to claim their prey. Camps filled with butchered remains serve as warnings to outsiders, though some see them only too late. For Cannibals, human flesh is both survival and sport.",
+          regular: [
+            { id: "butcher", name: "Butcher" },
+            { id: "bone_gnawer", name: "Bone Gnawer" },
+            { id: "fleshrender", name: "Fleshrender" },
+            { id: "gutstringer", name: "Gutstringer" },
+            { id: "marrow_sucker", name: "Marrow Sucker" },
+            { id: "skinwearer", name: "Skinwearer" },
+            { id: "long_pig_chef", name: "Long Pig Chef" },
+            { id: "offal_collector", name: "Offal Collector" },
+            { id: "trophy_hunter", name: "Trophy Hunter" },
+            { id: "camp_cook", name: "Camp Cook" },
+            { id: "blood_drinker", name: "Blood Drinker" },
+            { id: "sinew_peeler", name: "Sinew Peeler" },
+            { id: "organ_harvester", name: "Organ Harvester" },
+            { id: "bone_charmer", name: "Bone Charmer" },
+            { id: "meat_hook", name: "Meat Hook" },
+            { id: "fat_renderer", name: "Fat Renderer" },
+            { id: "marrow_miner", name: "Marrow Miner" },
+            { id: "gristle_grinder", name: "Gristle Grinder" },
+            { id: "sweetbread_stealer", name: "Sweetbread Stealer" },
+            { id: "last_meal", name: "Last Meal" }
+          ],
+          bosses: [
+            { id: "the_gourmand", name: "The Gourmand" },
+            { id: "feastmaster", name: "Feastmaster" },
+            { id: "hunt_captain", name: "Hunt Captain" },
+            { id: "the_butcher_king", name: "The Butcher King" },
+            { id: "mother_hunger", name: "Mother Hunger" },
+            { id: "surgeon_of_sorrow", name: "Surgeon of Sorrow" },
+            { id: "chef_of_red_table", name: "Chef of the Red Table" },
+            { id: "lord_of_bones", name: "Lord of the Bones" },
+            { id: "sausage_maker", name: "Sausage Maker" },
+            { id: "maw_of_the_wilds", name: "Maw of the Wilds" }
+          ]
+        },
+        cultists: {
+          description: "In the wake of the outbreak, fear and despair gave birth to new faiths. Among the most dangerous are the Cultists, zealots who see the infection as divine judgment. They believe the spread of the plague is sacred, worshipping the undead as holy messengers. Their camps are filled with symbols of death and fire, places where survivors are captured and sacrificed in elaborate rituals. To them, the apocalypse is not an end but a promised rebirth.",
+          regular: [
+            { id: "acolyte", name: "Acolyte" },
+            { id: "zealot", name: "Zealot" },
+            { id: "blood_priest", name: "Blood Priest" },
+            { id: "hooded_one", name: "Hooded One" },
+            { id: "bone_collector", name: "Bone Collector" },
+            { id: "flagellant", name: "Flagellant" },
+            { id: "oracle", name: "Oracle" },
+            { id: "hymn_singer", name: "Hymn Singer" },
+            { id: "marked_one", name: "Marked One" },
+            { id: "ritualist", name: "Ritualist" },
+            { id: "heretic", name: "Heretic" },
+            { id: "dark_cantor", name: "Dark Cantor" },
+            { id: "scarred_one", name: "Scarred One" },
+            { id: "omen_reader", name: "Omen Reader" },
+            { id: "chain_wielder", name: "Chain Wielder" },
+            { id: "ash_covered", name: "Ash-Covered" },
+            { id: "wailing_one", name: "Wailing One" },
+            { id: "knife_dancer", name: "Knife Dancer" },
+            { id: "branded", name: "Branded" },
+            { id: "final_witness", name: "Final Witness" }
+          ],
+          bosses: [
+            { id: "high_prophet", name: "High Prophet" },
+            { id: "archheretic", name: "The Archheretic" },
+            { id: "grand_inquisitor", name: "Grand Inquisitor" },
+            { id: "herald_of_end", name: "Herald of End" },
+            { id: "dark_messiah", name: "The Dark Messiah" },
+            { id: "saint_of_suffering", name: "Saint of Suffering" },
+            { id: "apostate_king", name: "Apostate King" },
+            { id: "the_redeemer", name: "The Redeemer" },
+            { id: "veilmaster", name: "Veilmaster" },
+            { id: "flayed_oracle", name: "The Flayed Oracle" }
+          ]
+        },
+        soldiers: {
+          description: "Once part of the national military, these fighters adapted quickly to the chaos of the collapse. Many abandoned their oaths, taking up work as mercenaries for whoever could pay them in food, weapons, or territory. They operate in organized squads, using military discipline, modern firearms, and coordinated tactics to hold their ground. For survivors, facing a squad of Soldiers is more dangerous than any band of raiders. The only way past them is to pay their price or fight through their guns.",
+          regular: [
+            { id: "conscript", name: "Conscript" },
+            { id: "rifleman", name: "Rifleman" },
+            { id: "grenadier", name: "Grenadier" },
+            { id: "sniper", name: "Sniper" },
+            { id: "medic", name: "Medic" },
+            { id: "engineer", name: "Engineer" },
+            { id: "heavy_gunner", name: "Heavy Gunner" },
+            { id: "scout", name: "Scout" },
+            { id: "pyro", name: "Pyro" },
+            { id: "commando", name: "Commando" },
+            { id: "marksman", name: "Marksman" },
+            { id: "ranger", name: "Ranger" },
+            { id: "sergeant", name: "Sergeant" },
+            { id: "riot_trooper", name: "Riot Trooper" },
+            { id: "spotter", name: "Spotter" },
+            { id: "veteran", name: "Veteran" },
+            { id: "sapper", name: "Sapper" },
+            { id: "night_ops", name: "Night Ops" },
+            { id: "elite_guards", name: "Elite Guards" },
+            { id: "soldier", name: "Soldiers" }
+          ],
+          bosses: [
+            { id: "the_colonel", name: "The Colonel" },
+            { id: "the_warlord", name: "The Warlord" },
+            { id: "iron_major", name: "Iron Major" },
+            { id: "the_quartermaster", name: "The Quartermaster" },
+            { id: "the_general", name: "The General" },
+            { id: "armored_juggernaut", name: "Armored Juggernaut" },
+            { id: "field_commander", name: "Field Commander" },
+            { id: "blacksite_overseer", name: "Blacksite Overseer" },
+            { id: "siege_captain", name: "Siege Captain" },
+            { id: "forward_marshal", name: "Forward Marshal" }
+          ]
+        },
+        zombies: {
+          description: "When the outbreak began, the infected collapsed under fever and delirium before dying within days. They did not remain dead for long. Reanimated by the virus, their bodies rotted but retained enough strength to pursue the living endlessly. Driven only by hunger, they attack without fear or hesitation, biting and tearing at anything they can catch. Entire regions are left desolate as they wander in swarms, a constant reminder of how the world fell.",
+          regular: [
+            { id: "screecher", name: "Screecher" },
+            { id: "turned", name: "Turned" },
+            { id: "sprinter", name: "Sprinter" },
+            { id: "shambler", name: "Shambler" },
+            { id: "choker", name: "Choker" },
+            { id: "crawler", name: "Crawler" },
+            { id: "husk", name: "Husk" },
+            { id: "spitter", name: "Spitter" },
+            { id: "bloater", name: "Bloater" },
+            { id: "mangler", name: "Mangler" },
+            { id: "mauler", name: "Mauler" },
+            { id: "cinderskin", name: "Cinderskin" },
+            { id: "smolderer", name: "Smolderer" },
+            { id: "lunger", name: "Lunger" },
+            { id: "blisterback", name: "Blisterback" },
+            { id: "plaguebearer", name: "Plaguebearer" },
+            { id: "dustwalker", name: "Dustwalker" },
+            { id: "rotpile", name: "Rotpile" },
+            { id: "ashcrawler", name: "Ashcrawler" },
+            { id: "flamebelly", name: "Flamebelly" }
+          ],
+          bosses: [
+            { id: "pyreclaw", name: "Pyreclaw" },
+            { id: "corpse_titan", name: "Corpse Titan" },
+            { id: "rotfather", name: "Rotfather" },
+            { id: "bonebaron", name: "Bonebaron" },
+            { id: "plagueking", name: "Plagueking" },
+            { id: "huskbane", name: "Huskbane" },
+            { id: "tomblord", name: "Tomblord" },
+            { id: "marrowfang", name: "Marrowfang" },
+            { id: "fleshfang", name: "Fleshfang" },
+            { id: "skullfang", name: "Skullfang" }
+          ]
+        },
+        directorate: {
+          description: "Before the fall, they were billionaires, corporate leaders, and crime lords who thrived on wealth and influence. When the old world collapsed, they consolidated power into fortified sanctuary cities where the rich lived in safety and the poor were left to rot in the streets. Protected by their own private armies and a network of loyal enforcers, they control trade, food, and shelter with an iron grip. Every debt, favor, and deal is another chain tying survivors to their rule. In their eyes, the apocalypse is simply another market to dominate.",
+          regular: [
+            { id: "bruiser", name: "Bruiser" },
+            { id: "enforcer", name: "Enforcer" },
+            { id: "smasher", name: "Smasher" },
+            { id: "collector", name: "Collector" },
+            { id: "trigger", name: "Trigger" },
+            { id: "bagman", name: "Bagman" },
+            { id: "runner", name: "Runner" },
+            { id: "dealer", name: "Dealer" },
+            { id: "guard", name: "Guard" },
+            { id: "clubber", name: "Clubber" },
+            { id: "wheelman", name: "Wheelman" },
+            { id: "bootlegger", name: "Bootlegger" },
+            { id: "courier", name: "Courier" },
+            { id: "watcher", name: "Watcher" },
+            { id: "sharker", name: "Sharker" },
+            { id: "bouncer", name: "Bouncer" },
+            { id: "smuggler", name: "Smuggler" },
+            { id: "muscle", name: "Muscle" },
+            { id: "prowler", name: "Prowler" },
+            { id: "doorman", name: "Doorman" }
+          ],
+          bosses: [
+            { id: "kingpin", name: "Kingpin" },
+            { id: "bossman", name: "Bossman" },
+            { id: "racketeer", name: "Racketeer" },
+            { id: "baron", name: "Baron" },
+            { id: "overboss", name: "Overboss" },
+            { id: "godfather", name: "Godfather" },
+            { id: "capo", name: "Capo" },
+            { id: "don", name: "Don" },
+            { id: "king", name: "King" },
+            { id: "chief", name: "Chief" }
+          ]
+        },
+        scavengers: {
+          description: "In the ruins of the old world, scavenging is a way of life. Scavengers search every abandoned building and wrecked street for supplies, tools, or anything they can sell. Some trade honestly, but most are opportunists who will take from the living as easily as from the dead. They are skilled at navigating dangerous terrain and finding hidden caches, making them unpredictable foes. In the wasteland, crossing paths with a desperate Scavenger can turn violent in an instant.",
+          regular: [
+            { id: "junker", name: "Junker" },
+            { id: "tinkerer", name: "Tinkerer" },
+            { id: "salvager", name: "Salvager" },
+            { id: "scrounger", name: "Scrounger" },
+            { id: "ratcatcher", name: "Ratcatcher" },
+            { id: "bottle_hunter", name: "Bottle Hunter" },
+            { id: "rust_merchant", name: "Rust Merchant" },
+            { id: "parts_trader", name: "Parts Trader" },
+            { id: "wreck_diver", name: "Wreck Diver" },
+            { id: "patchwork", name: "Patchwork" },
+            { id: "gutter_runner", name: "Gutter Runner" },
+            { id: "ration_hoarder", name: "Ration Hoarder" },
+            { id: "wire_weaver", name: "Wire Weaver" },
+            { id: "scrap_collector", name: "Scrap Collector" },
+            { id: "chem_fiend", name: "Chem Fiend" },
+            { id: "garbage_eater", name: "Garbage Eater" },
+            { id: "alley_doc", name: "Alley Doc" },
+            { id: "rustler", name: "Rustler" },
+            { id: "junkyard", name: "Junkyard" },
+            { id: "last_light", name: "Last Light" }
+          ],
+          bosses: [
+            { id: "the_hoarder", name: "The Hoarder" },
+            { id: "king_scrap", name: "King Scrap" },
+            { id: "the_inventor", name: "The Inventor" },
+            { id: "junkyard_queen", name: "Junkyard Queen" },
+            { id: "old_timer", name: "Old Timer" },
+            { id: "pipe_king", name: "Pipe King" },
+            { id: "scrapmaster", name: "Scrapmaster" },
+            { id: "raglord", name: "Raglord" },
+            { id: "patchwork_prince", name: "Patchwork Prince" },
+            { id: "gear_baron", name: "Gear Baron" }
+          ]
+        },
+        mutants: {
+          description: "When the zombie virus began to spread, desperate scientists rushed an experimental suppressant to market, claiming it could halt the infection. The drug worked, the infected did not die or turn, but the so-called cure rewrote the user’s DNA almost immediately. Within weeks, their bodies began to change as bones thickened, muscles distorted, and skin hardened in unnatural ways. As the mutations advanced, reason and identity slipped away until the once-human cured became feral predators, more dangerous in some ways than the zombies they were meant to avoid.",
+          regular: [
+            { id: "packlord", name: "Packlord" },
+            { id: "shadefang", name: "Shadefang" },
+            { id: "mindspike", name: "Mindspike" },
+            { id: "redplate", name: "Redplate" },
+            { id: "hornspire", name: "Hornspire" },
+            { id: "gravetusk", name: "Gravetusk" },
+            { id: "plateback", name: "Plateback" },
+            { id: "swiftclaw", name: "Swiftclaw" },
+            { id: "ironhide", name: "Ironhide" },
+            { id: "gorefang", name: "Gorefang" },
+            { id: "crushmaw", name: "Crushmaw" },
+            { id: "spineflare", name: "Spineflare" },
+            { id: "bloodtusk", name: "Bloodtusk" },
+            { id: "twistling", name: "Twistling" },
+            { id: "spurborn", name: "Spurborn" },
+            { id: "ridgeback", name: "Ridgeback" },
+            { id: "shriekmaw", name: "Shriekmaw" },
+            { id: "bonewright", name: "Bonewright" },
+            { id: "warthorn", name: "Warthorn" },
+            { id: "dreadmaw", name: "Dreadmaw" }
+          ],
+          bosses: [
+            { id: "lord_packthorn", name: "Lord Packthorn" },
+            { id: "shade_sovereign", name: "Shade Sovereign" },
+            { id: "mindrender", name: "Mindrender" },
+            { id: "crownhowl", name: "Crownhowl" },
+            { id: "scarplate_prime", name: "Scarplate Prime" },
+            { id: "hornspire_warlord", name: "Hornspire Warlord" },
+            { id: "marrowfang_tyrant", name: "Marrowfang Tyrant" },
+            { id: "gravetusk_colossus", name: "Gravetusk Colossus" },
+            { id: "warthorn_behemoth", name: "Warthorn Behemoth" },
+            { id: "dreadmaw_overlord", name: "Dreadmaw Overlord" }
+          ]
+        },
+      };
 
 
 
@@ -3322,12 +3915,11 @@
         gameData.skills = SKILLS_DATA;
 
         gameData.items = {
-
           ...EQUIPMENT_DATA,
         };
 
         ensureAllItemIcons();
-    validateGameData();
+        validateGameData();
 
         gameData.enemies = ENEMIES_DATA;
 
@@ -3474,12 +4066,6 @@
       }
 
       return true;
-    }
-    if (item.subtype === 'explosive' || item.type === 'explosive' || item.explosive === true) {
-      if (item.explosiveDamage) content += `<div class="stat-line"><span>Explosive Damage:</span><span class="stat-positive">+${item.explosiveDamage}</span></div>`;
-      if (item.explosiveRadius) content += `<div class="stat-line"><span>Radius:</span><span class="stat-positive">+${item.explosiveRadius}</span></div>`;
-      if (item.selfDamage) content += `<div class="stat-line"><span>Self Damage:</span><span class="stat-negative">${item.selfDamage}</span></div>`;
-      if (item.statusChance) content += `<div class="stat-line"><span>Status Chance:</span><span class="stat-positive">${(item.statusChance * 100).toFixed(1)}%</span></div>`;
     }
 
     function getEquipmentSlot(itemType, subtype) {
@@ -3876,12 +4462,6 @@
 
       tooltip.innerHTML = content;
       return tooltip;
-    }
-    if (item.subtype === 'explosive' || item.type === 'explosive' || item.explosive === true) {
-      if (item.explosiveDamage) content += `<div class="stat-line"><span>Explosive Damage:</span><span class="stat-positive">+${item.explosiveDamage}</span></div>`;
-      if (item.explosiveRadius) content += `<div class="stat-line"><span>Radius:</span><span class="stat-positive">+${item.explosiveRadius}</span></div>`;
-      if (item.selfDamage) content += `<div class="stat-line"><span>Self Damage:</span><span class="stat-negative">${item.selfDamage}</span></div>`;
-      if (item.statusChance) content += `<div class="stat-line"><span>Status Chance:</span><span class="stat-positive">${(item.statusChance * 100).toFixed(1)}%</span></div>`;
     }
 
     let itemTooltip = null;
@@ -7159,6 +7739,11 @@
       container.appendChild(summarySection);
     }
 
+    function updateFarmingProgress() {
+      // TODO: Implement farming progress logic
+      // This function should handle automatic harvesting when timers complete
+    }
+
     function updateFarmingProgressBars() {
       const currentTime = Date.now();
 
@@ -7689,6 +8274,11 @@
       container.appendChild(summarySection);
     }
 
+    function updateAnimalCareProgress() {
+      // TODO: Implement animal care progress logic
+      // This function should handle automatic byproduct collection when timers complete
+    }
+
     function updateAnimalCareProgressBars() {
       const currentTime = Date.now();
 
@@ -7892,10 +8482,6 @@
 
     window.cancelCrafting = cancelCrafting;
 
-
-    document.addEventListener("DOMContentLoaded", function () {
-      initGame();
-    });
 
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", initGame);
