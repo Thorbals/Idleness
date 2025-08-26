@@ -263,6 +263,128 @@
       gap: 15px;
     }
 
+    /* City Builder Settlement System */
+    .homebase-container {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #homebase-svg {
+      width: 100%;
+      height: auto;
+      background: #2a3a2a;
+      cursor: crosshair;
+    }
+
+    /* Building Plots */
+    .building-plot {
+      fill: #4a4a4a;
+      stroke: #666666;
+      stroke-width: 1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .building-plot:hover {
+      fill: #5a5a5a;
+      stroke: #888888;
+    }
+
+    .building-plot.locked {
+      fill: #333333;
+      stroke: #555555;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .building-plot.occupied {
+      cursor: pointer;
+    }
+
+    /* Roads */
+    .city-road {
+      fill: #404040;
+      stroke: #505050;
+      stroke-width: 1;
+    }
+
+    /* Buildings */
+    .city-building {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .city-building:hover {
+      filter: brightness(1.2);
+    }
+
+    .building-house {
+      fill: #8b4513;
+      stroke: #654321;
+      stroke-width: 1;
+    }
+
+    .building-shop {
+      fill: #4169e1;
+      stroke: #1e3a8a;
+      stroke-width: 1;
+    }
+
+    .building-factory {
+      fill: #9932cc;
+      stroke: #6a1b9a;
+      stroke-width: 1;
+    }
+
+    .building-farm {
+      fill: #32cd32;
+      stroke: #228b22;
+      stroke-width: 1;
+    }
+
+    /* Territory Boundaries */
+    .territory-boundary {
+      fill: none;
+      stroke: #ff6b6b;
+      stroke-width: 3;
+      stroke-dasharray: 10, 5;
+      opacity: 0.7;
+    }
+
+    .territory-locked {
+      fill: rgba(255, 0, 0, 0.1);
+      stroke: #ff6b6b;
+      stroke-width: 2;
+      stroke-dasharray: 5, 5;
+    }
+
+    /* Plot Labels */
+    .plot-label {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      fill: #ffffff;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    .territory-label {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      fill: #ff6b6b;
+      text-anchor: middle;
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    .homebase-content {
+      text-align: center;
+    }
+
     .area-card {
       background: rgba(18, 18, 18, 0.9);
       border: 2px solid rgba(255, 255, 255, 0.08);
@@ -336,15 +458,7 @@
       border: 1px solid rgba(96, 165, 250, 0.4);
     }
 
-    /* Faction color classes for text */
-    .faction-zombies { color: rgba(34,197,94,1); }
-    .faction-scavengers { color: rgba(234,179,8,1); }
-    .faction-bandits { color: rgba(239,68,68,1); }
-    .faction-cannibals { color: rgba(220,38,38,1); }
-    .faction-mutants { color: rgba(139,92,246,1); }
-    .faction-cultists { color: rgba(168,85,247,1); }
-    .faction-soldiers { color: rgba(96,165,250,1); }
-    .faction-the_directorate { color: rgba(6,182,212,1); }
+    /* Faction color classes are now generated dynamically */
 
     .area-content {
       display: none;
@@ -378,19 +492,42 @@
       background: rgba(139, 69, 19, 0.25);
     }
 
-  /* Level-based difficulty tints for gathering nodes - now with white base */
-  .resource-card.level-trivial { border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.12); }
-  .resource-card.level-easy    { border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.12); }
-  .resource-card.level-even    { border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.12); }
-  .resource-card.level-hard    { border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.12); }
-  .resource-card.level-deadly  { border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.14); }
+    /* Level-based difficulty tints for gathering nodes - now with white base */
+    .resource-card.level-trivial {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.12);
+    }
 
-  /* Locked overrides the tint */
-  .resource-card.locked { border-color: var(--border) !important; box-shadow: none !important; opacity: 0.85; }
+    .resource-card.level-easy {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.12);
+    }
+
+    .resource-card.level-even {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.12);
+    }
+
+    .resource-card.level-hard {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.12);
+    }
+
+    .resource-card.level-deadly {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.14);
+    }
+
+    /* Locked overrides the tint */
+    .resource-card.locked {
+      border-color: var(--border) !important;
+      box-shadow: none !important;
+      opacity: 0.85;
+    }
 
     .gathering-container {
       display: grid;
-  grid-template-columns: 1fr;
+      grid-template-columns: 1fr;
       gap: 20px;
     }
 
@@ -419,7 +556,7 @@
       flex: 1;
     }
 
-  .gathering-log #activity-log-content {
+    .gathering-log #activity-log-content {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 5px;
       padding: 10px;
@@ -434,7 +571,7 @@
       display: grid;
       grid-template-columns: 1fr 300px;
       gap: 20px;
-  align-items: stretch;
+      align-items: stretch;
     }
 
     /* Left column stacks combat and gathering */
@@ -457,8 +594,9 @@
       gap: 16px;
       margin-bottom: 12px;
     }
+
     .combat-box {
-      background: rgba(0,0,0,0.25);
+      background: rgba(0, 0, 0, 0.25);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 12px;
@@ -467,19 +605,38 @@
     /* Quick actions and activity log */
     .quick-actions {
       background: rgba(18, 18, 18, 0.85);
-  border: 1px solid var(--border);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 12px;
       margin-top: 12px;
     }
+
     .quick-actions-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 8px;
     }
-  .qa-section { margin-bottom: 10px; }
-  .qa-section label { display:block; color:#8b949e; font-size:12px; margin:4px 0; }
-  .qa-section select { width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--border); color:#e6edf3; padding:6px; border-radius:6px; }
+
+    .qa-section {
+      margin-bottom: 10px;
+    }
+
+    .qa-section label {
+      display: block;
+      color: #8b949e;
+      font-size: 12px;
+      margin: 4px 0;
+    }
+
+    .qa-section select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      color: #e6edf3;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
     .activity-log-panel {
       background: rgba(18, 18, 18, 0.85);
       border: 1px solid var(--border);
@@ -493,19 +650,19 @@
       max-height: 400px;
       /* Remove flex: 1 to prevent taking all available space */
     }
-    .activity-log-panel #activity-log-content { flex: 1; overflow: auto; }
 
-  /* Faction color accents for enemy borders */
-  .enemy-item.faction-zombies { border-color: rgba(34,197,94,0.7); box-shadow: 0 0 0 1px rgba(34,197,94,0.15); }
-  .enemy-item.faction-scavengers { border-color: rgba(234,179,8,0.75); box-shadow: 0 0 0 1px rgba(234,179,8,0.15); }
-  .enemy-item.faction-bandits { border-color: rgba(239,68,68,0.8); box-shadow: 0 0 0 1px rgba(239,68,68,0.15); }
-  .enemy-item.faction-cannibals { border-color: rgba(220,38,38,0.85); box-shadow: 0 0 0 1px rgba(220,38,38,0.15); }
-  .enemy-item.faction-mutants { border-color: rgba(139,92,246,0.8); box-shadow: 0 0 0 1px rgba(139,92,246,0.15); }
-  .enemy-item.faction-cultists { border-color: rgba(168,85,247,0.8); box-shadow: 0 0 0 1px rgba(168,85,247,0.15); }
-  .enemy-item.faction-soldiers { border-color: rgba(96,165,250,0.8); box-shadow: 0 0 0 1px rgba(96,165,250,0.15); }
-  .enemy-item.faction-the_directorate { border-color: rgba(6,182,212,0.8); box-shadow: 0 0 0 1px rgba(6,182,212,0.15); }
-  /* Active state should take priority */
-  .enemy-item.active { border-color: var(--brand) !important; box-shadow: 0 0 0 1px rgba(185,28,28,0.25) !important; }
+    .activity-log-panel #activity-log-content {
+      flex: 1;
+      overflow: auto;
+    }
+
+    /* Faction color accents for enemy borders are now generated dynamically */
+
+    /* Active state should take priority */
+    .enemy-item.active {
+      border-color: var(--brand) !important;
+      box-shadow: 0 0 0 1px rgba(185, 28, 28, 0.25) !important;
+    }
 
     .combat-sidebar {
       display: flex;
@@ -657,8 +814,11 @@
       background: rgba(18, 18, 18, 0.85);
       border-radius: 8px;
       padding: 15px;
-      max-height: 400px;
-      overflow-y: auto;
+    }
+
+    /* Add spacing between enemy box and dungeon box */
+    .enemy-list+.enemy-list {
+      margin-top: 20px;
     }
 
     /* Two-column grid for items inside the lists */
@@ -670,21 +830,28 @@
     }
 
     .enemy-item {
-      padding: 8px 12px;
+      background: rgba(18, 18, 18, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 15px;
       margin: 0;
       cursor: pointer;
-      border-radius: 4px;
       transition: all 0.2s;
-  border: 1px solid var(--border);
     }
 
     .enemy-item:hover {
-      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .enemy-item.active {
       border-color: var(--brand);
       background: rgba(185, 28, 28, 0.2);
+    }
+
+    .enemy-item.locked {
+      border-color: var(--border) !important;
+      box-shadow: none !important;
+      opacity: 0.85;
     }
 
     .dungeon-card {
@@ -742,7 +909,7 @@
       background: var(--brand);
       transition: width 0.1s linear;
     }
-    
+
     /* Specific transition for gathering progress */
     #gathering-progress-fill {
       transition: width 0.2s ease-out;
@@ -768,6 +935,7 @@
         opacity: 0;
         transform: translateY(-10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -956,9 +1124,9 @@
       --success: #3a5f3a;
       --warning: #d97706;
       --danger: #b91c1c;
-  /* Unified progress bar sizing */
-  --bar-height: 14px;
-  --bar-radius: 7px;
+      /* Unified progress bar sizing */
+      --bar-height: 14px;
+      --bar-radius: 7px;
     }
 
     body {
@@ -1180,7 +1348,7 @@
     .progress-bar {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border);
-  border-radius: var(--bar-radius);
+      border-radius: var(--bar-radius);
       overflow: hidden;
     }
 
@@ -1198,8 +1366,10 @@
       position: relative;
     }
 
-  /* Keep crafting progress green while using unified dimensions */
-  #craft-progress-fill { background: linear-gradient(90deg, #238636, #1a7f37); }
+    /* Keep crafting progress green while using unified dimensions */
+    #craft-progress-fill {
+      background: linear-gradient(90deg, #238636, #1a7f37);
+    }
 
     .dungeon-progress-fill::after,
     .progress-fill::after,
@@ -1214,18 +1384,26 @@
     }
 
     .enemy-item {
-      border: 1px solid transparent;
+      background: rgba(18, 18, 18, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 15px;
       color: var(--text);
     }
 
     .enemy-item:hover {
-      background: rgba(139, 148, 158, 0.1);
-      border-color: var(--border);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .enemy-item.active {
-      background: rgba(239, 68, 68, 0.18);
-      border-color: rgba(239, 68, 68, 0.45);
+      border-color: var(--brand) !important;
+      background: rgba(139, 69, 19, 0.25);
+    }
+
+    .enemy-item.locked {
+      border-color: var(--border) !important;
+      box-shadow: none !important;
+      opacity: 0.85;
     }
 
     .dungeon-card {
@@ -1245,7 +1423,7 @@
     }
 
 
-  .gathering-log #activity-log-content {
+    .gathering-log #activity-log-content {
       background: rgba(2, 6, 23, 0.45);
       border: 1px solid var(--border);
       color: var(--text);
@@ -1281,20 +1459,20 @@
       border: 1px solid rgba(40, 167, 69, 0.45);
       box-shadow: 0 10px 24px rgba(40, 167, 69, 0.25);
     }
-    
+
     .notification-error {
       background: rgba(220, 53, 69, 0.9);
       border: 1px solid rgba(220, 53, 69, 0.45);
       box-shadow: 0 10px 24px rgba(220, 53, 69, 0.25);
     }
-    
+
     .notification-warning {
       background: rgba(255, 193, 7, 0.9);
       border: 1px solid rgba(255, 193, 7, 0.45);
       box-shadow: 0 10px 24px rgba(255, 193, 7, 0.25);
       color: #212529;
     }
-    
+
     .notification-info {
       background: rgba(13, 110, 253, 0.9);
       border: 1px solid rgba(13, 110, 253, 0.45);
@@ -1365,10 +1543,16 @@
       <div class="logo">🏚️ POST-APOCALYPTIC IDLE</div>
 
       <nav class="nav-section" aria-label="Main">
-        <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Main</h3>
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Main</h3>
         <button class="nav-item active" data-page="areas" type="button" aria-current="page">
           <div class="icon" aria-hidden="true">🗺️</div>
           <span>Areas</span>
+        </button>
+        <button class="nav-item" data-page="homebase" type="button">
+          <div class="icon" aria-hidden="true">🏠</div>
+          <span>Home Base</span>
         </button>
         <button class="nav-item" data-page="bank" type="button">
           <div class="icon" aria-hidden="true">🏦</div>
@@ -1382,7 +1566,9 @@
       </nav>
 
       <nav class="nav-section" aria-label="Combat Skills">
-        <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Combat</h3>
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Combat</h3>
         <button class="nav-item" data-skill="fitness" type="button">
           <div class="icon" aria-hidden="true">💪</div>
           <span>Fitness</span>
@@ -1411,7 +1597,9 @@
       </nav>
 
       <nav class="nav-section" aria-label="Gathering Skills">
-        <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Gathering</h3>
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Gathering</h3>
         <button class="nav-item" data-skill="woodcutting" type="button">
           <div class="icon" aria-hidden="true">🪓</div>
           <span>Woodcutting</span>
@@ -1450,7 +1638,9 @@
       </nav>
 
       <nav class="nav-section" aria-label="Production Skills">
-        <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Production</h3>
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Production</h3>
         <button class="nav-item" data-skill="animalcare" type="button">
           <div class="icon" aria-hidden="true">🐄</div>
           <span>Animal Care</span>
@@ -1464,7 +1654,9 @@
       </nav>
 
       <nav class="nav-section" aria-label="Crafting Skills">
-        <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Crafting</h3>
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Crafting</h3>
         <button class="nav-item" data-skill="cooking" type="button">
           <div class="icon" aria-hidden="true">🍳</div>
           <span>Cooking</span>
@@ -1557,6 +1749,8 @@
           <div class="areas-grid" id="areas-grid"></div>
         </div>
 
+
+
         <section id="area-detail-page" class="page-content" style="display: none" aria-labelledby="area-detail-title">
           <div class="content-header">
             <h1 class="content-title" id="area-detail-title">Area Name</h1>
@@ -1568,55 +1762,72 @@
           <div class="combat-container">
             <div class="left-stack">
               <div class="combat-main">
-              <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Combat</h3>
-              <div id="faction-description" style="font-size:13px;color:#cbd5e1;margin-bottom:10px;font-weight:600;"></div>
-              <div class="combat-stats-2col">
-                <div class="combat-box">
-                  <h4 style="margin:0 0 6px 0;">Player</h4>
-                  <div class="stats-grid">
-                    <div class="stat-item"><span>Combat Level:</span><span id="player-combat-level">1</span></div>
-                    <div class="stat-item"><span>Attack:</span><span id="player-attack">10</span></div>
-                    <div class="stat-item"><span>Defense:</span><span id="player-defense">10</span></div>
-                  </div>
-                  <div class="hp-bar"><div class="hp-fill" id="player-hp-bar" style="width: 100%" role="progressbar" aria-valuemin="0" aria-valuenow="100" aria-valuemax="100"></div></div>
-                  <div id="player-hp" style="font-size:12px;">100/100</div>
+                <h3
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Combat</h3>
+                <div id="faction-description" style="font-size:13px;color:#cbd5e1;margin-bottom:10px;font-weight:600;">
                 </div>
-                <div class="combat-box">
-                  <h4 style="margin:0 0 6px 0;">Enemy</h4>
-                  <div id="enemy-display" style="display:none;">
+                <div class="combat-stats-2col">
+                  <div class="combat-box">
+                    <h4 style="margin:0 0 6px 0;">Player</h4>
                     <div class="stats-grid">
-                      <div class="stat-item"><span>Name:</span><span id="current-enemy-name">Enemy</span></div>
-                      <div class="stat-item"><span>Level:</span><span id="enemy-level-display">-</span></div>
-                      <div class="stat-item"><span>Attack:</span><span id="enemy-attack-display">-</span></div>
-                      <div class="stat-item"><span>Defense:</span><span id="enemy-defense-display">-</span></div>
+                      <div class="stat-item"><span>Combat Level:</span><span id="player-combat-level">1</span></div>
+                      <div class="stat-item"><span>Attack:</span><span id="player-attack">10</span></div>
+                      <div class="stat-item"><span>Defense:</span><span id="player-defense">10</span></div>
                     </div>
-                    <div class="hp-bar"><div class="hp-fill" id="enemy-hp-bar" style="width: 100%" role="progressbar" aria-valuemin="0" aria-valuenow="100" aria-valuemax="100"></div></div>
-                    <div id="enemy-hp-text">100/100</div>
+                    <div class="hp-bar">
+                      <div class="hp-fill" id="player-hp-bar" style="width: 100%" role="progressbar" aria-valuemin="0"
+                        aria-valuenow="100" aria-valuemax="100"></div>
+                    </div>
+                    <div id="player-hp" style="font-size:12px;">100/100</div>
                   </div>
-                  <div id="no-enemy" style="font-size:12px;color:#8b949e;">No enemy selected</div>
+                  <div class="combat-box">
+                    <h4 style="margin:0 0 6px 0;">Enemy</h4>
+                    <div id="enemy-display" style="display:none;">
+                      <div class="stats-grid">
+                        <div class="stat-item"><span>Name:</span><span id="current-enemy-name">Enemy</span></div>
+                        <div class="stat-item"><span>Level:</span><span id="enemy-level-display">-</span></div>
+                        <div class="stat-item"><span>Attack:</span><span id="enemy-attack-display">-</span></div>
+                        <div class="stat-item"><span>Defense:</span><span id="enemy-defense-display">-</span></div>
+                      </div>
+                      <div class="hp-bar">
+                        <div class="hp-fill" id="enemy-hp-bar" style="width: 100%" role="progressbar" aria-valuemin="0"
+                          aria-valuenow="100" aria-valuemax="100"></div>
+                      </div>
+                      <div id="enemy-hp-text">100/100</div>
+                    </div>
+                    <div id="no-enemy" style="font-size:12px;color:#8b949e;">No enemy selected</div>
+                  </div>
                 </div>
-              </div>
-              <!-- combat status/progress removed per design: enemy panel reflects combat state -->
+                <!-- combat status/progress removed per design: enemy panel reflects combat state -->
 
-              <div class="enemy-list">
-                <h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Enemies</h4>
-                <div id="enemy-list"></div>
-              </div>
-              <div class="enemy-list">
-                <h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Dungeons & Raids</h4>
-                <div id="dungeon-list"></div>
-              </div>
+                <div class="enemy-list">
+                  <h4
+                    style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                    Enemies</h4>
+                  <div id="enemy-list"></div>
+                </div>
+                <div class="enemy-list">
+                  <h4
+                    style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                    Dungeons & Raids</h4>
+                  <div id="dungeon-list"></div>
+                </div>
               </div>
 
               <div class="gathering-main" style="margin-top: 18px;">
-                <h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Gathering</h3>
+                <h3
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Gathering</h3>
                 <div class="gathering-grid" id="gathering-resources"></div>
               </div>
             </div>
 
             <div class="combat-sidebar" aria-label="Equipment and actions">
               <div class="equipment-panel">
-                <h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Equipment</h4>
+                <h4
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Equipment</h4>
                 <div class="equipment-grid">
                   <div class="equipment-slot" data-slot="helmet" title="Helmet">
                     <div class="slot-icon" aria-hidden="true">⛑️</div>
@@ -1654,15 +1865,19 @@
               </div>
 
               <div class="quick-actions">
-                <h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Quick Actions</h4>
+                <h4
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Quick Actions</h4>
                 <div class="quick-actions-grid">
                   <div class="qa-section" id="qa-bandage">
-                    <button class="action-button" id="btn-autoheal" title="Toggle bandage auto-heal">Bandage Autoheal: Off</button>
+                    <button class="action-button" id="btn-autoheal" title="Toggle bandage auto-heal">Bandage Autoheal:
+                      Off</button>
                     <label for="select-bandage">Bandage selection</label>
                     <select id="select-bandage"></select>
                   </div>
                   <div class="qa-section" id="qa-food">
-                    <button class="action-button" id="btn-eat-food" title="Use selected/best food to heal">Eat Food</button>
+                    <button class="action-button" id="btn-eat-food" title="Use selected/best food to heal">Eat
+                      Food</button>
                     <label for="select-food">Food selection</label>
                     <select id="select-food"></select>
                   </div>
@@ -1672,13 +1887,17 @@
                 </div>
               </div>
               <div class="activity-log-panel">
-                <h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">Activity Log</h4>
-                <div id="activity-log-content"><div class="log-entry">Activity log will appear here...</div></div>
+                <h4
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Activity Log</h4>
+                <div id="activity-log-content">
+                  <div class="log-entry">Activity log will appear here...</div>
+                </div>
               </div>
             </div>
           </div>
 
-          
+
       </div>
 
       <div id="bank-page" class="page-content" style="display: none">
@@ -2440,7 +2659,7 @@
             }
           ]
         },
-        
+
         {
           id: "old_ashfield",
           name: "Old Ashfield",
@@ -2751,7 +2970,83 @@
         electronics: {}
       },
       food: {},
-      cooked_food: {},
+      cooked_food: {
+        boiled_egg: { id: "boiled_egg", name: "Boiled Egg", type: "material", icon: "🥚" },
+        warm_milk: { id: "warm_milk", name: "Warm Milk", type: "material", icon: "🥛" },
+        honey_spoon: { id: "honey_spoon", name: "Honey Spoon", type: "material", icon: "🍯" },
+        mint_tea: { id: "mint_tea", name: "Mint Tea", type: "material", icon: "🍵" },
+        chamomile_tea: { id: "chamomile_tea", name: "Chamomile Tea", type: "material", icon: "🍵" },
+        apple_slice: { id: "apple_slice", name: "Apple Slice", type: "material", icon: "🍎" },
+        grilled_chanterelle: { id: "grilled_chanterelle", name: "Grilled Chanterelle", type: "material", icon: "🍄" },
+        grilled_morel: { id: "grilled_morel", name: "Grilled Morel", type: "material", icon: "🍄" },
+        grilled_oyster_mushroom: { id: "grilled_oyster_mushroom", name: "Grilled Oyster Mushroom", type: "material", icon: "🍄" },
+        grilled_portobello: { id: "grilled_portobello", name: "Grilled Portobello", type: "material", icon: "🍄" },
+        baked_pear: { id: "baked_pear", name: "Baked Pear", type: "material", icon: "🍐" },
+        roasted_onion: { id: "roasted_onion", name: "Roasted Onion", type: "material", icon: "🧅" },
+        steamed_carrot: { id: "steamed_carrot", name: "Steamed Carrot", type: "material", icon: "🥕" },
+        strawberry_treat: { id: "strawberry_treat", name: "Strawberry Treat", type: "material", icon: "🍓" },
+        fruit_salad: { id: "fruit_salad", name: "Fruit Salad", type: "material", icon: "🥗" },
+        peach_slice_pie: { id: "peach_slice_pie", name: "Peach Slice Pie", type: "material", icon: "🥧" },
+        game_skewer: { id: "game_skewer", name: "Game Skewer", type: "material", icon: "🍢" },
+        mushroom_stew: { id: "mushroom_stew", name: "Mushroom Stew", type: "material", icon: "🍲" },
+        spiced_tea: { id: "spiced_tea", name: "Spiced Tea", type: "material", icon: "🍵" },
+        lemon_drink: { id: "lemon_drink", name: "Lemon Drink", type: "material", icon: "🍋" },
+        avocado_toast: { id: "avocado_toast", name: "Avocado Toast", type: "material", icon: "🥑" },
+        poached_fish: { id: "poached_fish", name: "Poached Fish", type: "material", icon: "🐟" },
+        honey_cherries: { id: "honey_cherries", name: "Honey Cherries", type: "material", icon: "🍒" },
+        fig_mix: { id: "fig_mix", name: "Fig Mix", type: "material", icon: "🥜" },
+        plum_compote: { id: "plum_compote", name: "Plum Compote", type: "material", icon: "🍇" },
+        healing_broth: { id: "healing_broth", name: "Healing Broth", type: "material", icon: "🍲" },
+        lemon_chicken: { id: "lemon_chicken", name: "Lemon Chicken", type: "material", icon: "🍗" },
+        coffee: { id: "coffee", name: "Coffee", type: "material", icon: "☕" },
+        pork_skillet: { id: "pork_skillet", name: "Pork Skillet", type: "material", icon: "🍳" },
+        shepherds_stew: { id: "shepherds_stew", name: "Shepherd's Stew", type: "material", icon: "🍲" },
+        beef_stew: { id: "beef_stew", name: "Beef Stew", type: "material", icon: "🍲" },
+        fish_curry: { id: "fish_curry", name: "Fish Curry", type: "material", icon: "🍛" },
+        mango_yogurt: { id: "mango_yogurt", name: "Mango Yogurt", type: "material", icon: "🥭" },
+        avocado_salad: { id: "avocado_salad", name: "Avocado Salad", type: "material", icon: "🥗" },
+        spiced_veg_soup: { id: "spiced_veg_soup", name: "Spiced Veg Soup", type: "material", icon: "🍲" },
+        fruit_tart: { id: "fruit_tart", name: "Fruit Tart", type: "material", icon: "🥧" },
+        energy_tonic: { id: "energy_tonic", name: "Energy Tonic", type: "material", icon: "🧪" },
+        coffee_cake: { id: "coffee_cake", name: "Coffee Cake", type: "material", icon: "🍰" },
+        pork_feast: { id: "pork_feast", name: "Pork Feast", type: "material", icon: "🍖" },
+        fish_platter: { id: "fish_platter", name: "Fish Platter", type: "material", icon: "🍽️" },
+        exotic_mix: { id: "exotic_mix", name: "Exotic Mix", type: "material", icon: "🍊" },
+        game_stew: { id: "game_stew", name: "Game Stew", type: "material", icon: "🍲" },
+        mushroom_risotto: { id: "mushroom_risotto", name: "Mushroom Risotto", type: "material", icon: "🍚" },
+        spiced_lamb_roast: { id: "spiced_lamb_roast", name: "Spiced Lamb Roast", type: "material", icon: "🥩" },
+        peach_cobbler: { id: "peach_cobbler", name: "Peach Cobbler", type: "material", icon: "🥧" },
+        recovery_tea: { id: "recovery_tea", name: "Recovery Tea", type: "material", icon: "🍵" },
+        cherry_jam: { id: "cherry_jam", name: "Cherry Jam", type: "material", icon: "🍯" },
+        meat_feast: { id: "meat_feast", name: "Meat Feast", type: "material", icon: "🍖" },
+        royal_tonic: { id: "royal_tonic", name: "Royal Tonic", type: "material", icon: "🧪" },
+        full_breakfast: { id: "full_breakfast", name: "Full Breakfast", type: "material", icon: "🍳" },
+        roast_beef_dinner: { id: "roast_beef_dinner", name: "Roast Beef Dinner", type: "material", icon: "🍽️" },
+        gourmet_fish_platter: { id: "gourmet_fish_platter", name: "Gourmet Fish Platter", type: "material", icon: "🍽️" },
+        glazed_chicken: { id: "glazed_chicken", name: "Glazed Chicken", type: "material", icon: "🍗" },
+        lamb_curry: { id: "lamb_curry", name: "Lamb Curry", type: "material", icon: "🍛" },
+        yogurt_bowl: { id: "yogurt_bowl", name: "Yogurt Bowl", type: "material", icon: "🥣" },
+        deluxe_mushroom_stew: { id: "deluxe_mushroom_stew", name: "Deluxe Mushroom Stew", type: "material", icon: "🍲" },
+        festive_pie: { id: "festive_pie", name: "Festive Pie", type: "material", icon: "🥧" },
+        avocado_egg_salad: { id: "avocado_egg_salad", name: "Avocado Egg Salad", type: "material", icon: "🥗" },
+        royal_coffee: { id: "royal_coffee", name: "Royal Coffee", type: "material", icon: "☕" },
+        exotic_smoothie: { id: "exotic_smoothie", name: "Exotic Smoothie", type: "material", icon: "🥤" },
+        pork_plum_roast: { id: "pork_plum_roast", name: "Pork Plum Roast", type: "material", icon: "🍖" },
+        venison_feast: { id: "venison_feast", name: "Venison Feast", type: "material", icon: "🦌" },
+        citrus_fish: { id: "citrus_fish", name: "Citrus Fish", type: "material", icon: "🐟" },
+        golden_tea: { id: "golden_tea", name: "Golden Tea", type: "material", icon: "🍵" },
+        carrot_cake: { id: "carrot_cake", name: "Carrot Cake", type: "material", icon: "🍰" },
+        apricot_jam: { id: "apricot_jam", name: "Apricot Jam", type: "material", icon: "🍯" },
+        lamb_fig_roast: { id: "lamb_fig_roast", name: "Lamb Fig Roast", type: "material", icon: "🍖" },
+        cherry_cheesecake: { id: "cherry_cheesecake", name: "Cherry Cheesecake", type: "material", icon: "🍰" },
+        elixir: { id: "elixir", name: "Elixir", type: "material", icon: "🧪" },
+        steak_plate: { id: "steak_plate", name: "Steak Plate", type: "material", icon: "🥩" },
+        spiced_coffee: { id: "spiced_coffee", name: "Spiced Coffee", type: "material", icon: "☕" },
+        peach_mango_tart: { id: "peach_mango_tart", name: "Peach Mango Tart", type: "material", icon: "🥧" },
+        exotic_roast: { id: "exotic_roast", name: "Exotic Roast", type: "material", icon: "🍖" },
+        fruit_medley: { id: "fruit_medley", name: "Fruit Medley", type: "material", icon: "🍇" },
+        kings_banquet: { id: "kings_banquet", name: "King's Banquet", type: "material", icon: "🍽️" }
+      },
       raw_food: {
         small_game_meat: { id: "small_game_meat", name: "Small Game Meat", type: "material", icon: "🥩" },
         medium_game_meat: { id: "medium_game_meat", name: "Medium Game Meat", type: "material", icon: "🥩" },
@@ -3146,7 +3441,7 @@
         id: "scrap_metal",
         name: "Scrap Metal",
         type: "material",
-  icon: "🧲",
+        icon: "🧲",
         usable: true,
         openable: { drops: [] }
       },
@@ -3154,7 +3449,7 @@
         id: "scrap_cloth",
         name: "Scrap Cloth",
         type: "material",
-  icon: "🧵",
+        icon: "🧵",
         usable: true,
         openable: { drops: [] }
       },
@@ -3162,7 +3457,7 @@
         id: "scrap_plastic",
         name: "Scrap Plastic",
         type: "material",
-  icon: "🧴",
+        icon: "🧴",
         usable: true,
         openable: { drops: [] }
       },
@@ -3170,7 +3465,7 @@
         id: "scrap_wood",
         name: "Scrap Wood",
         type: "material",
-  icon: "🪵",
+        icon: "🪵",
         usable: true,
         openable: { drops: [] }
       }
@@ -3398,7 +3693,7 @@
             { id: "hunt_american_bison", name: "American Bison", level: 70, xp: 40, time: 5000, drops: [{ item: "beef", rarity: "common", min: 1, max: 2 }, { item: "large_hide", rarity: "common" }, { item: "bones", rarity: "common" }, { item: "animal_fat", rarity: "common" }, { item: "bison", rarity: "common" }] },
           ]
         },
-        looting: { 
+        looting: {
           name: "Looting", icon: "🧰", description: "Loot places.", category: "gathering", nodes: [
             { id: "loot_central_high_gymnasium", name: "Central High Gymnasium", level: 1, xp: 8, time: 2000, drops: [{ item: "cracked_football_helmet", rarity: "common", min: 1, max: 1 }, { item: "torn_wrestling_headgear", rarity: "common" }, { item: "shattered_face_guard", rarity: "common" }, { item: "split_lacrosse_stick", rarity: "common" }, { item: "ripped_chest_protector", rarity: "common" }] },
             { id: "loot_tiger_claw_dojo", name: "Tiger Claw Dojo", level: 4, xp: 9, time: 2100, drops: [{ item: "snapped_bo_staff", rarity: "common", min: 1, max: 1 }, { item: "torn_sparring_gloves", rarity: "common" }, { item: "cracked_headgear", rarity: "common" }, { item: "shredded_chest_guard", rarity: "common" }, { item: "split_bamboo_shinai", rarity: "common" }] },
@@ -3422,7 +3717,8 @@
             { id: "loot_national_guard_checkpoint", name: "National Guard Checkpoint", level: 64, xp: 35, time: 4600, drops: [{ item: "cracked_riot_shield", rarity: "common", min: 1, max: 1 }, { item: "torn_iotv_carrier", rarity: "common" }, { item: "broken_knee_pad_set", rarity: "common" }, { item: "split_combat_helmet_shell", rarity: "common" }, { item: "shredded_elbow_pads", rarity: "common" }] },
             { id: "loot_national_guard_armory", name: "National Guard Armory", level: 67, xp: 36, time: 4700, drops: [{ item: "delaminated_sapi_plates", rarity: "common", min: 1, max: 1 }, { item: "cracked_combat_helmet", rarity: "common" }, { item: "torn_plate_carrier", rarity: "common" }, { item: "snapped_bayonet", rarity: "common" }, { item: "shattered_ballistic_goggles", rarity: "common" }] },
             { id: "loot_strategic_response_command_armory", name: "Strategic Response Command Armory", level: 70, xp: 40, time: 5000, drops: [{ item: "fractured_composite_riot_shield", rarity: "common", min: 1, max: 1 }, { item: "cracked_high_cut_helmet", rarity: "common" }, { item: "torn_advanced_carrier", rarity: "common" }, { item: "shattered_visor_assembly", rarity: "common" }, { item: "broken_exo_knee_brace", rarity: "common" }] },
-        ] },
+          ]
+        },
         scavenging: {
           name: "Scavenging", icon: "🔧", description: "Scavenge ruins.", category: "gathering", nodes: [
             { id: "scav_dollar_depot", name: "Dollar Depot", level: 1, xp: 8, time: 2000, drops: [{ item: "cracked_plastic_bin", rarity: "common", min: 1, max: 1 }, { item: "bent_wire_rack", rarity: "common" }, { item: "splintered_broom_handle", rarity: "common" }, { item: "torn_dish_rag", rarity: "common" }] },
@@ -3455,7 +3751,89 @@
         farming: { name: "Farming", icon: "🌾", description: "Grow crops.", category: "production", creates: [], bonuses: {} },
       },
       crafting_skills: {
-        cooking: { name: "Cooking", icon: "🍳", description: "Prepare food.", category: "crafting", recipes: [] },
+        cooking: {
+          name: "Cooking",
+          icon: "🍳",
+          description: "Prepare food.",
+          category: "crafting",
+          recipes: [
+            { id: "cook_boiled_egg", name: "Boiled Egg", level: 1, xp: 5, time: 1000, station: "campfire_cooking", materials: [{ item: "eggs", quantity: 1 }], result: { item: "boiled_egg", quantity: 1 } },
+            { id: "cook_warm_milk", name: "Warm Milk", level: 2, xp: 5, time: 1000, station: "campfire_cooking", materials: [{ item: "milk", quantity: 1 }], result: { item: "warm_milk", quantity: 1 } },
+            { id: "cook_honey_spoon", name: "Honey Spoon", level: 3, xp: 5, time: 1000, station: "campfire_cooking", materials: [{ item: "honey", quantity: 1 }], result: { item: "honey_spoon", quantity: 1 } },
+            { id: "cook_mint_tea", name: "Herbal Tea (Mint)", level: 4, xp: 6, time: 1200, station: "campfire_cooking", materials: [{ item: "mint", quantity: 1 }], result: { item: "mint_tea", quantity: 1 } },
+            { id: "cook_chamomile_tea", name: "Herbal Tea (Chamomile)", level: 5, xp: 6, time: 1200, station: "campfire_cooking", materials: [{ item: "chamomile", quantity: 1 }], result: { item: "chamomile_tea", quantity: 1 } },
+            { id: "cook_apple_slice", name: "Fruit Slice (Apple)", level: 6, xp: 6, time: 1200, station: "campfire_cooking", materials: [{ item: "apple", quantity: 1 }], result: { item: "apple_slice", quantity: 1 } },
+            { id: "cook_grilled_chanterelle", name: "Grilled Mushroom (Chanterelle)", level: 7, xp: 7, time: 1400, station: "campfire_cooking", materials: [{ item: "chanterelle_mushroom", quantity: 1 }], result: { item: "grilled_chanterelle", quantity: 1 } },
+            { id: "cook_grilled_morel", name: "Grilled Mushroom (Morel)", level: 8, xp: 7, time: 1400, station: "campfire_cooking", materials: [{ item: "morel_mushroom", quantity: 1 }], result: { item: "grilled_morel", quantity: 1 } },
+            { id: "cook_grilled_oyster_mushroom", name: "Grilled Mushroom (Oyster)", level: 9, xp: 7, time: 1400, station: "campfire_cooking", materials: [{ item: "oyster_mushroom", quantity: 1 }], result: { item: "grilled_oyster_mushroom", quantity: 1 } },
+            { id: "cook_grilled_portobello", name: "Grilled Mushroom (Portobello)", level: 10, xp: 8, time: 1600, station: "campfire_cooking", materials: [{ item: "portobello_mushroom", quantity: 1 }], result: { item: "grilled_portobello", quantity: 1 } },
+            { id: "cook_baked_pear", name: "Baked Pear", level: 11, xp: 8, time: 1600, station: "campfire_cooking", materials: [{ item: "pear", quantity: 1 }], result: { item: "baked_pear", quantity: 1 } },
+            { id: "cook_roasted_onion", name: "Roasted Onion", level: 12, xp: 8, time: 1600, station: "campfire_cooking", materials: [{ item: "onion", quantity: 1 }], result: { item: "roasted_onion", quantity: 1 } },
+            { id: "cook_steamed_carrot", name: "Steamed Carrot", level: 13, xp: 8, time: 1600, station: "campfire_cooking", materials: [{ item: "carrot", quantity: 1 }], result: { item: "steamed_carrot", quantity: 1 } },
+            { id: "cook_strawberry_treat", name: "Fresh Strawberry", level: 14, xp: 9, time: 1800, station: "campfire_cooking", materials: [{ item: "strawberry", quantity: 1 }], result: { item: "strawberry_treat", quantity: 1 } },
+            { id: "cook_fruit_salad", name: "Fruit Salad", level: 15, xp: 10, time: 2000, station: "wood_stove", materials: [{ item: "apple", quantity: 1 }, { item: "strawberry", quantity: 1 }], result: { item: "fruit_salad", quantity: 1 } },
+            { id: "cook_peach_slice_pie", name: "Peach Pie Slice", level: 16, xp: 10, time: 2000, station: "wood_stove", materials: [{ item: "peach", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "peach_slice_pie", quantity: 1 } },
+            { id: "cook_game_skewer", name: "Roasted Game Skewer", level: 17, xp: 10, time: 2000, station: "wood_stove", materials: [{ item: "small_game_meat", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "game_skewer", quantity: 1 } },
+            { id: "cook_mushroom_stew", name: "Mushroom Stew", level: 18, xp: 11, time: 2200, station: "wood_stove", materials: [{ item: "portobello_mushroom", quantity: 1 }, { item: "carrot", quantity: 1 }], result: { item: "mushroom_stew", quantity: 1 } },
+            { id: "cook_spiced_tea", name: "Spiced Tea", level: 19, xp: 11, time: 2200, station: "wood_stove", materials: [{ item: "ginger", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "spiced_tea", quantity: 1 } },
+            { id: "cook_lemon_drink", name: "Lemon Water", level: 20, xp: 11, time: 2200, station: "wood_stove", materials: [{ item: "lemon", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "lemon_drink", quantity: 1 } },
+            { id: "cook_avocado_toast", name: "Avocado Toast", level: 21, xp: 12, time: 2400, station: "wood_stove", materials: [{ item: "avocado", quantity: 1 }, { item: "eggs", quantity: 1 }], result: { item: "avocado_toast", quantity: 1 } },
+            { id: "cook_poached_fish", name: "Poached Fish", level: 22, xp: 12, time: 2400, station: "wood_stove", materials: [{ item: "small_fillet", quantity: 1 }, { item: "mint", quantity: 1 }], result: { item: "poached_fish", quantity: 1 } },
+            { id: "cook_honey_cherries", name: "Sweet Glazed Cherries", level: 23, xp: 12, time: 2400, station: "wood_stove", materials: [{ item: "cherry", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "honey_cherries", quantity: 1 } },
+            { id: "cook_fig_mix", name: "Roasted Nuts & Figs", level: 24, xp: 13, time: 2600, station: "wood_stove", materials: [{ item: "fig", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "fig_mix", quantity: 1 } },
+            { id: "cook_plum_compote", name: "Plum Compote", level: 25, xp: 13, time: 2600, station: "wood_stove", materials: [{ item: "plum", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "plum_compote", quantity: 1 } },
+            { id: "cook_healing_broth", name: "Herbal Broth", level: 26, xp: 13, time: 2600, station: "wood_stove", materials: [{ item: "yarrow", quantity: 1 }, { item: "aloe", quantity: 1 }], result: { item: "healing_broth", quantity: 1 } },
+            { id: "cook_lemon_chicken", name: "Grilled Chicken Breast", level: 27, xp: 14, time: 2800, station: "wood_stove", materials: [{ item: "poultry", quantity: 1 }, { item: "lemon", quantity: 1 }], result: { item: "lemon_chicken", quantity: 1 } },
+            { id: "cook_coffee", name: "Coffee Brew", level: 28, xp: 14, time: 2800, station: "wood_stove", materials: [{ item: "coffee_beans", quantity: 1 }, { item: "milk", quantity: 1 }], result: { item: "coffee", quantity: 1 } },
+            { id: "cook_pork_skillet", name: "Pork Skillet", level: 29, xp: 14, time: 2800, station: "wood_stove", materials: [{ item: "pork", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "pork_skillet", quantity: 1 } },
+            { id: "cook_shepherds_stew", name: "Shepherd's Stew", level: 30, xp: 15, time: 3000, station: "gas_range", materials: [{ item: "mutton", quantity: 1 }, { item: "carrot", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "shepherds_stew", quantity: 1 } },
+            { id: "cook_beef_stew", name: "Beef & Mushroom Stew", level: 31, xp: 15, time: 3000, station: "gas_range", materials: [{ item: "beef", quantity: 1 }, { item: "portobello_mushroom", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "beef_stew", quantity: 1 } },
+            { id: "cook_fish_curry", name: "Fish Curry", level: 32, xp: 16, time: 3200, station: "gas_range", materials: [{ item: "medium_fillet", quantity: 1 }, { item: "ginger", quantity: 1 }, { item: "turmeric", quantity: 1 }], result: { item: "fish_curry", quantity: 1 } },
+            { id: "cook_mango_yogurt", name: "Mango Yogurt", level: 33, xp: 16, time: 3200, station: "gas_range", materials: [{ item: "mango", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "mango_yogurt", quantity: 1 } },
+            { id: "cook_avocado_salad", name: "Avocado Salad", level: 34, xp: 16, time: 3200, station: "gas_range", materials: [{ item: "avocado", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "lemon", quantity: 1 }], result: { item: "avocado_salad", quantity: 1 } },
+            { id: "cook_spiced_veg_soup", name: "Spiced Vegetable Soup", level: 35, xp: 17, time: 3400, station: "gas_range", materials: [{ item: "carrot", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "ginger", quantity: 1 }], result: { item: "spiced_veg_soup", quantity: 1 } },
+            { id: "cook_fruit_tart", name: "Sweet Fruit Tart", level: 36, xp: 17, time: 3400, station: "gas_range", materials: [{ item: "apricot", quantity: 1 }, { item: "strawberry", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "fruit_tart", quantity: 1 } },
+            { id: "cook_energy_tonic", name: "Herbal Energy Tonic", level: 37, xp: 17, time: 3400, station: "gas_range", materials: [{ item: "echinacea", quantity: 1 }, { item: "mint", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "energy_tonic", quantity: 1 } },
+            { id: "cook_coffee_cake", name: "Coffee Cake", level: 38, xp: 18, time: 3600, station: "gas_range", materials: [{ item: "coffee_beans", quantity: 1 }, { item: "eggs", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "coffee_cake", quantity: 1 } },
+            { id: "cook_pork_feast", name: "Roasted Pork Feast", level: 39, xp: 18, time: 3600, station: "gas_range", materials: [{ item: "pork", quantity: 1 }, { item: "apple", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "pork_feast", quantity: 1 } },
+            { id: "cook_fish_platter", name: "Baked Fish Platter", level: 40, xp: 18, time: 3600, station: "gas_range", materials: [{ item: "large_fillet", quantity: 1 }, { item: "lemon", quantity: 1 }, { item: "olive", quantity: 1 }], result: { item: "fish_platter", quantity: 1 } },
+            { id: "cook_exotic_mix", name: "Exotic Fruit Mix", level: 41, xp: 19, time: 3800, station: "gas_range", materials: [{ item: "loquat", quantity: 1 }, { item: "mango", quantity: 1 }, { item: "peach", quantity: 1 }], result: { item: "exotic_mix", quantity: 1 } },
+            { id: "cook_game_stew", name: "Game Meat Stew", level: 42, xp: 19, time: 3800, station: "gas_range", materials: [{ item: "medium_game_meat", quantity: 1 }, { item: "carrot", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "game_stew", quantity: 1 } },
+            { id: "cook_mushroom_risotto", name: "Mushroom Risotto", level: 43, xp: 19, time: 3800, station: "gas_range", materials: [{ item: "oyster_mushroom", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "mushroom_risotto", quantity: 1 } },
+            { id: "cook_spiced_lamb_roast", name: "Spiced Lamb Roast", level: 44, xp: 20, time: 4000, station: "gas_range", materials: [{ item: "mutton", quantity: 1 }, { item: "turmeric", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "spiced_lamb_roast", quantity: 1 } },
+            { id: "cook_peach_cobbler", name: "Peach Cobbler", level: 45, xp: 20, time: 4000, station: "gas_range", materials: [{ item: "peach", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "peach_cobbler", quantity: 1 } },
+            { id: "cook_recovery_tea", name: "Herbal Recovery Tea", level: 46, xp: 20, time: 4000, station: "gas_range", materials: [{ item: "chamomile", quantity: 1 }, { item: "st_johns_wort", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "recovery_tea", quantity: 1 } },
+            { id: "cook_cherry_jam", name: "Cherry Jam", level: 47, xp: 21, time: 4200, station: "gas_range", materials: [{ item: "cherry", quantity: 1 }, { item: "honey", quantity: 1 }, { item: "lemon", quantity: 1 }], result: { item: "cherry_jam", quantity: 1 } },
+            { id: "cook_meat_feast", name: "Grilled Meat Feast", level: 48, xp: 21, time: 4200, station: "gas_range", materials: [{ item: "large_game_meat", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "carrot", quantity: 1 }], result: { item: "meat_feast", quantity: 1 } },
+            { id: "cook_royal_tonic", name: "Royal Jelly Tonic", level: 49, xp: 21, time: 4200, station: "gas_range", materials: [{ item: "royal_jelly", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "royal_tonic", quantity: 1 } },
+            { id: "cook_full_breakfast", name: "Full Breakfast", level: 50, xp: 22, time: 4400, station: "commercial_kitchen", materials: [{ item: "eggs", quantity: 1 }, { item: "pork", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "milk", quantity: 1 }], result: { item: "full_breakfast", quantity: 1 } },
+            { id: "cook_roast_beef_dinner", name: "Roast Beef Dinner", level: 51, xp: 22, time: 4400, station: "commercial_kitchen", materials: [{ item: "beef", quantity: 1 }, { item: "carrot", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "mint", quantity: 1 }], result: { item: "roast_beef_dinner", quantity: 1 } },
+            { id: "cook_gourmet_fish_platter", name: "Gourmet Fish Platter", level: 52, xp: 22, time: 4400, station: "commercial_kitchen", materials: [{ item: "large_fillet", quantity: 1 }, { item: "lemon", quantity: 1 }, { item: "olive", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "gourmet_fish_platter", quantity: 1 } },
+            { id: "cook_glazed_chicken", name: "Honey-Glazed Chicken", level: 53, xp: 23, time: 4600, station: "commercial_kitchen", materials: [{ item: "poultry", quantity: 1 }, { item: "honey", quantity: 1 }, { item: "ginger", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "glazed_chicken", quantity: 1 } },
+            { id: "cook_lamb_curry", name: "Spicy Lamb Curry", level: 54, xp: 23, time: 4600, station: "commercial_kitchen", materials: [{ item: "mutton", quantity: 1 }, { item: "ginger", quantity: 1 }, { item: "turmeric", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "lamb_curry", quantity: 1 } },
+            { id: "cook_yogurt_bowl", name: "Fruity Yogurt Bowl", level: 55, xp: 23, time: 4600, station: "commercial_kitchen", materials: [{ item: "strawberry", quantity: 1 }, { item: "mango", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "yogurt_bowl", quantity: 1 } },
+            { id: "cook_deluxe_mushroom_stew", name: "Deluxe Mushroom Stew", level: 56, xp: 24, time: 4800, station: "commercial_kitchen", materials: [{ item: "chanterelle_mushroom", quantity: 1 }, { item: "morel_mushroom", quantity: 1 }, { item: "oyster_mushroom", quantity: 1 }, { item: "onion", quantity: 1 }], result: { item: "deluxe_mushroom_stew", quantity: 1 } },
+            { id: "cook_festive_pie", name: "Festive Fruit Pie", level: 57, xp: 24, time: 4800, station: "commercial_kitchen", materials: [{ item: "apple", quantity: 1 }, { item: "peach", quantity: 1 }, { item: "pear", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "festive_pie", quantity: 1 } },
+            { id: "cook_avocado_egg_salad", name: "Avocado & Egg Salad", level: 58, xp: 24, time: 4800, station: "commercial_kitchen", materials: [{ item: "avocado", quantity: 1 }, { item: "eggs", quantity: 1 }, { item: "lemon", quantity: 1 }, { item: "mint", quantity: 1 }], result: { item: "avocado_egg_salad", quantity: 1 } },
+            { id: "cook_royal_coffee", name: "Rich Coffee Blend", level: 59, xp: 25, time: 5000, station: "commercial_kitchen", materials: [{ item: "coffee_beans", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }, { item: "royal_jelly", quantity: 1 }], result: { item: "royal_coffee", quantity: 1 } },
+            { id: "cook_exotic_smoothie", name: "Exotic Fruit Smoothie", level: 60, xp: 25, time: 5000, station: "commercial_kitchen", materials: [{ item: "mango", quantity: 1 }, { item: "loquat", quantity: 1 }, { item: "apricot", quantity: 1 }, { item: "milk", quantity: 1 }], result: { item: "exotic_smoothie", quantity: 1 } },
+            { id: "cook_pork_plum_roast", name: "Pork & Plum Roast", level: 61, xp: 25, time: 5000, station: "commercial_kitchen", materials: [{ item: "pork", quantity: 1 }, { item: "plum", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "pork_plum_roast", quantity: 1 } },
+            { id: "cook_venison_feast", name: "Venison Feast", level: 62, xp: 26, time: 5200, station: "commercial_kitchen", materials: [{ item: "large_game_meat", quantity: 1 }, { item: "carrot", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "mint", quantity: 1 }], result: { item: "venison_feast", quantity: 1 } },
+            { id: "cook_citrus_fish", name: "Citrus Glazed Fish", level: 63, xp: 26, time: 5200, station: "commercial_kitchen", materials: [{ item: "medium_fillet", quantity: 1 }, { item: "lemon", quantity: 1 }, { item: "honey", quantity: 1 }, { item: "olive", quantity: 1 }], result: { item: "citrus_fish", quantity: 1 } },
+            { id: "cook_golden_tea", name: "Golden Recovery Tea", level: 64, xp: 26, time: 5200, station: "commercial_kitchen", materials: [{ item: "ginger", quantity: 1 }, { item: "turmeric", quantity: 1 }, { item: "chamomile", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "golden_tea", quantity: 1 } },
+            { id: "cook_carrot_cake", name: "Carrot Cake", level: 65, xp: 27, time: 5400, station: "commercial_kitchen", materials: [{ item: "carrot", quantity: 1 }, { item: "eggs", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "carrot_cake", quantity: 1 } },
+            { id: "cook_apricot_jam", name: "Spiced Apricot Jam", level: 66, xp: 27, time: 5400, station: "commercial_kitchen", materials: [{ item: "apricot", quantity: 1 }, { item: "ginger", quantity: 1 }, { item: "honey", quantity: 1 }, { item: "lemon", quantity: 1 }], result: { item: "apricot_jam", quantity: 1 } },
+            { id: "cook_lamb_fig_roast", name: "Lamb & Fig Roast", level: 67, xp: 27, time: 5400, station: "commercial_kitchen", materials: [{ item: "mutton", quantity: 1 }, { item: "fig", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "mint", quantity: 1 }], result: { item: "lamb_fig_roast", quantity: 1 } },
+            { id: "cook_cherry_cheesecake", name: "Cherry Cheesecake", level: 68, xp: 28, time: 5600, station: "commercial_kitchen", materials: [{ item: "cherry", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "eggs", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "cherry_cheesecake", quantity: 1 } },
+            { id: "cook_elixir", name: "Royal Jelly Elixir", level: 69, xp: 28, time: 5600, station: "commercial_kitchen", materials: [{ item: "royal_jelly", quantity: 1 }, { item: "aloe", quantity: 1 }, { item: "mint", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "elixir", quantity: 1 } },
+            { id: "cook_steak_plate", name: "Gourmet Steak Plate", level: 70, xp: 28, time: 5600, station: "commercial_kitchen", materials: [{ item: "beef", quantity: 1 }, { item: "portobello_mushroom", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "olive", quantity: 1 }], result: { item: "steak_plate", quantity: 1 } },
+            { id: "cook_spiced_coffee", name: "Spiced Coffee Brew", level: 71, xp: 29, time: 5800, station: "commercial_kitchen", materials: [{ item: "coffee_beans", quantity: 1 }, { item: "ginger", quantity: 1 }, { item: "milk", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "spiced_coffee", quantity: 1 } },
+            { id: "cook_peach_mango_tart", name: "Peach Mango Tart", level: 72, xp: 29, time: 5800, station: "commercial_kitchen", materials: [{ item: "peach", quantity: 1 }, { item: "mango", quantity: 1 }, { item: "eggs", quantity: 1 }, { item: "honey", quantity: 1 }], result: { item: "peach_mango_tart", quantity: 1 } },
+            { id: "cook_exotic_roast", name: "Exotic Meat Roast", level: 73, xp: 29, time: 5800, station: "commercial_kitchen", materials: [{ item: "medium_game_meat", quantity: 1 }, { item: "avocado", quantity: 1 }, { item: "onion", quantity: 1 }, { item: "lemon", quantity: 1 }], result: { item: "exotic_roast", quantity: 1 } },
+            { id: "cook_fruit_medley", name: "Summer Fruit Medley", level: 74, xp: 30, time: 6000, station: "commercial_kitchen", materials: [{ item: "strawberry", quantity: 1 }, { item: "peach", quantity: 1 }, { item: "cherry", quantity: 1 }, { item: "mint", quantity: 1 }], result: { item: "fruit_medley", quantity: 1 } },
+            { id: "cook_kings_banquet", name: "King's Banquet", level: 75, xp: 30, time: 6000, station: "commercial_kitchen", materials: [{ item: "beef", quantity: 1 }, { item: "mutton", quantity: 1 }, { item: "large_game_meat", quantity: 1 }, { item: "royal_jelly", quantity: 1 }], result: { item: "kings_banquet", quantity: 1 } }
+          ]
+        },
         tinkering: {
           name: "Tinkering", icon: "🛠️", description: "Make tools and munitions.", category: "crafting", recipes: [
             { id: "tnk_arrowhead", name: "Arrowhead", level: 1, xp: 5, time: 2000, station: "tinker_workbench", materials: [{ item: "iron_bar", quantity: 1 }], result: { item: "arrowhead", quantity: 1 } },
@@ -3468,19 +3846,19 @@
             { id: "tnk_throwing_axe", name: "Throwing Axe", level: 9, xp: 8, time: 2600, station: "tinker_workbench", materials: [{ item: "iron_bar", quantity: 1 }, { item: "stick", quantity: 1 }], result: { item: "throwing_axe", quantity: 2 } },
             { id: "tnk_throwing_spear", name: "Throwing Spear", level: 11, xp: 9, time: 2800, station: "tinker_workbench", materials: [{ item: "iron_bar", quantity: 1 }, { item: "stick", quantity: 1 }], result: { item: "throwing_spear", quantity: 1 } },
             { id: "tnk_recycle_plastic_junk", name: "Recycle Plastic Junk", level: 12, xp: 4, time: 1500, station: "tinker_workbench", materials: [{ junktype: "plastic", quantity: 1 }], result: { item: "scrap_plastic", quantity: 1 } },
-            { id: "tnk_explosive_arrow", name: "Explosive Arrow", level: 13, xp: 12, time: 3200, station: "circuit_soldering_station", materials: [{ item: "arrows", quantity: 3 }, { item: "gunpowder", quantity: 1 }, { item: "brass_bar", quantity: 1 }], result: { item: "explosive_arrow", quantity: 3 } },
-            { id: "tnk_explosive_bolt", name: "Explosive Bolt", level: 15, xp: 12, time: 3200, station: "circuit_soldering_station", materials: [{ item: "bolts", quantity: 3 }, { item: "gunpowder", quantity: 1 }, { item: "brass_bar", quantity: 1 }], result: { item: "explosive_bolt", quantity: 3 } },
-            { id: "tnk_pipe_bomb", name: "Pipe Bomb", level: 25, xp: 16, time: 3600, station: "microfabrication_lab", materials: [{ item: "steel_bar", quantity: 1 }, { item: "gunpowder", quantity: 2 }, { item: "brass_bar", quantity: 1 }], result: { item: "pipe_bomb", quantity: 1 } },
-            { id: "tnk_shrapnel_bomb", name: "Shrapnel Bomb", level: 27, xp: 16, time: 3600, station: "microfabrication_lab", materials: [{ item: "iron_bar", quantity: 1 }, { item: "gunpowder", quantity: 2 }, { item: "brass_bar", quantity: 1 }], result: { item: "shrapnel_bomb", quantity: 1 } },
-            { id: "tnk_40mm_casing", name: "40mm Casing", level: 51, xp: 18, time: 3800, station: "microfabrication_lab", materials: [{ item: "steel_bar", quantity: 1 }, { item: "brass_bar", quantity: 1 }], result: { item: "mm40_casing", quantity: 2 } },
-            { id: "tnk_40mm_he_round", name: "40mm HE Round", level: 53, xp: 20, time: 4000, station: "microfabrication_lab", materials: [{ item: "mm40_casing", quantity: 1 }, { item: "gunpowder", quantity: 2 }], result: { item: "mm40_he_round", quantity: 1 } },
-            { id: "tnk_40mm_frag_round", name: "40mm Frag Round", level: 55, xp: 22, time: 4200, station: "microfabrication_lab", materials: [{ item: "mm40_casing", quantity: 1 }, { item: "gunpowder", quantity: 1 }, { item: "iron_bar", quantity: 1 }], result: { item: "mm40_frag_round", quantity: 1 } },
+            { id: "tnk_explosive_arrow", name: "Explosive Arrow", level: 15, xp: 12, time: 3200, station: "advanced_tool_kit", materials: [{ item: "arrows", quantity: 3 }, { item: "gunpowder", quantity: 1 }, { item: "brass_bar", quantity: 1 }], result: { item: "explosive_arrow", quantity: 3 } },
+            { id: "tnk_explosive_bolt", name: "Explosive Bolt", level: 17, xp: 12, time: 3200, station: "advanced_tool_kit", materials: [{ item: "bolts", quantity: 3 }, { item: "gunpowder", quantity: 1 }, { item: "brass_bar", quantity: 1 }], result: { item: "explosive_bolt", quantity: 3 } },
+            { id: "tnk_pipe_bomb", name: "Pipe Bomb", level: 30, xp: 16, time: 3600, station: "circuit_soldering_station", materials: [{ item: "steel_bar", quantity: 1 }, { item: "gunpowder", quantity: 2 }, { item: "brass_bar", quantity: 1 }], result: { item: "pipe_bomb", quantity: 1 } },
+            { id: "tnk_shrapnel_bomb", name: "Shrapnel Bomb", level: 35, xp: 16, time: 3600, station: "circuit_soldering_station", materials: [{ item: "iron_bar", quantity: 1 }, { item: "gunpowder", quantity: 2 }, { item: "brass_bar", quantity: 1 }], result: { item: "shrapnel_bomb", quantity: 1 } },
+            { id: "tnk_40mm_casing", name: "40mm Casing", level: 50, xp: 18, time: 3800, station: "microfabrication_lab", materials: [{ item: "steel_bar", quantity: 1 }, { item: "brass_bar", quantity: 1 }], result: { item: "mm40_casing", quantity: 2 } },
+            { id: "tnk_40mm_he_round", name: "40mm HE Round", level: 60, xp: 20, time: 4000, station: "microfabrication_lab", materials: [{ item: "mm40_casing", quantity: 1 }, { item: "gunpowder", quantity: 2 }], result: { item: "mm40_he_round", quantity: 1 } },
+            { id: "tnk_40mm_frag_round", name: "40mm Frag Round", level: 70, xp: 22, time: 4200, station: "microfabrication_lab", materials: [{ item: "mm40_casing", quantity: 1 }, { item: "gunpowder", quantity: 1 }, { item: "iron_bar", quantity: 1 }], result: { item: "mm40_frag_round", quantity: 1 } },
           ]
         },
         tailoring: {
           name: "Tailoring", icon: "🧵", description: "Create fabric items.", category: "crafting", recipes: [
             { id: "spin_cotton_thread", name: "Spin Cotton Thread", level: 1, xp: 7, time: 2200, station: "spinning_wheel", materials: [{ item: "cotton", quantity: 1 }], result: { item: "cotton_thread", quantity: 1 } },
-            { id: "weave_cotton_cloth", name: "Weave Cotton Cloth", level: 1, xp: 10, time: 3000, station: "spinning_wheel", materials: [{ item: "cotton_thread", quantity: 1 }], result: { item: "cotton_cloth", quantity: 1 } },
+            { id: "weave_cotton_cloth", name: "Weave Cotton Cloth", level: 4, xp: 10, time: 3000, station: "spinning_wheel", materials: [{ item: "cotton_thread", quantity: 1 }], result: { item: "cotton_cloth", quantity: 1 } },
             { id: "spin_jute_thread", name: "Spin Jute Thread", level: 9, xp: 5, time: 2000, station: "spinning_wheel", materials: [{ item: "jute", quantity: 1 }], result: { item: "jute_thread", quantity: 1 } },
             { id: "sew_cloth_junk", name: "Sew Cloth Junk", level: 12, xp: 4, time: 1500, station: "spinning_wheel", materials: [{ junktype: "cloth", quantity: 1 }], result: { item: "scrap_cloth", quantity: 1 } },
             { id: "weave_jute_cloth", name: "Weave Jute Cloth", level: 16, xp: 8, time: 2500, station: "spinning_wheel", materials: [{ item: "jute_thread", quantity: 1 }], result: { item: "jute_cloth", quantity: 1 } },
@@ -3596,19 +3974,19 @@
             { id: "forge_copper_bar", name: "Copper Bar", level: 1, xp: 6, time: 2000, station: "stone_forge", materials: [{ item: "copper_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "copper_bar", quantity: 1 } },
             { id: "forge_lead_bar", name: "Lead Bar", level: 6, xp: 7, time: 2200, station: "stone_forge", materials: [{ item: "lead_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "lead_bar", quantity: 1 } },
             { id: "forge_zinc_bar", name: "Zinc Bar", level: 10, xp: 8, time: 2300, station: "stone_forge", materials: [{ item: "zinc_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "zinc_bar", quantity: 1 } },
-            { id: "forge_smelt_metal_junk", name: "Smelt Metal Junk", level: 12, xp: 5, time: 1500, materials: [{ junktype: "metal", quantity: 1 }], result: { item: "scrap_metal", quantity: 1 } },
-            { id: "forge_silver_bar", name: "Silver Bar", level: 15, xp: 9, time: 2400, station: "stone_forge", materials: [{ item: "silver_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "silver_bar", quantity: 1 } },
+            { id: "forge_smelt_metal_junk", name: "Smelt Metal Junk", level: 12, xp: 5, time: 1500, station: "stone_forge", materials: [{ junktype: "metal", quantity: 1 }], result: { item: "scrap_metal", quantity: 1 } },
+            { id: "forge_silver_bar", name: "Silver Bar", level: 15, xp: 9, time: 2400, station: "iron_furnace", materials: [{ item: "silver_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "silver_bar", quantity: 1 } },
             { id: "forge_tin_bar", name: "Tin Bar", level: 20, xp: 10, time: 2600, station: "iron_furnace", materials: [{ item: "tin_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "tin_bar", quantity: 1 } },
             { id: "forge_brass_bar", name: "Brass Bar", level: 25, xp: 12, time: 2800, station: "iron_furnace", materials: [{ item: "copper_bar", quantity: 1 }, { item: "zinc_bar", quantity: 1 }], result: { item: "brass_bar", quantity: 1 } },
-            { id: "forge_iron_bar", name: "Iron Bar", level: 30, xp: 12, time: 3000, station: "iron_furnace", materials: [{ item: "iron_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "iron_bar", quantity: 1 } },
-            { id: "forge_bronze_bar", name: "Bronze Bar", level: 35, xp: 14, time: 3200, station: "iron_furnace", materials: [{ item: "copper_bar", quantity: 1 }, { item: "tin_bar", quantity: 1 }], result: { item: "bronze_bar", quantity: 1 } },
-            { id: "forge_gold_bar", name: "Gold Bar", level: 40, xp: 16, time: 3400, station: "iron_furnace", materials: [{ item: "gold_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "gold_bar", quantity: 1 } },
-            { id: "forge_steel_bar", name: "Steel Bar", level: 46, xp: 18, time: 3600, station: "steel_foundry", materials: [{ item: "iron_bar", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "steel_bar", quantity: 1 } },
-            { id: "forge_tungsten_bar", name: "Tungsten Bar", level: 52, xp: 20, time: 3800, station: "steel_foundry", materials: [{ item: "tungsten_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "tungsten_bar", quantity: 1 } },
-            { id: "forge_palladium_bar", name: "Palladium Bar", level: 58, xp: 22, time: 4000, station: "steel_foundry", materials: [{ item: "palladium_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "palladium_bar", quantity: 1 } },
-            { id: "forge_titanium_bar", name: "Titanium Bar", level: 62, xp: 24, time: 4200, station: "titanium_forging_press", materials: [{ item: "titanium_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "titanium_bar", quantity: 1 } },
-            { id: "forge_iridium_bar", name: "Iridium Bar", level: 66, xp: 26, time: 4400, station: "titanium_forging_press", materials: [{ item: "iridium_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "iridium_bar", quantity: 1 } },
-            { id: "forge_meteorite_bar", name: "Meteorite Bar", level: 70, xp: 28, time: 4600, station: "titanium_forging_press", materials: [{ item: "meteorite_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "meteorite_bar", quantity: 1 } },
+            { id: "forge_iron_bar", name: "Iron Bar", level: 30, xp: 12, time: 3000, station: "steel_foundry", materials: [{ item: "iron_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "iron_bar", quantity: 1 } },
+            { id: "forge_bronze_bar", name: "Bronze Bar", level: 35, xp: 14, time: 3200, station: "steel_foundry", materials: [{ item: "copper_bar", quantity: 1 }, { item: "tin_bar", quantity: 1 }], result: { item: "bronze_bar", quantity: 1 } },
+            { id: "forge_gold_bar", name: "Gold Bar", level: 40, xp: 16, time: 3400, station: "steel_foundry", materials: [{ item: "gold_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "gold_bar", quantity: 1 } },
+            { id: "forge_steel_bar", name: "Steel Bar", level: 50, xp: 18, time: 3600, station: "titanium_forging_press", materials: [{ item: "iron_bar", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "steel_bar", quantity: 1 } },
+            { id: "forge_tungsten_bar", name: "Tungsten Bar", level: 55, xp: 20, time: 3800, station: "titanium_forging_press", materials: [{ item: "tungsten_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "tungsten_bar", quantity: 1 } },
+            { id: "forge_palladium_bar", name: "Palladium Bar", level: 60, xp: 22, time: 4000, station: "titanium_forging_press", materials: [{ item: "palladium_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "palladium_bar", quantity: 1 } },
+            { id: "forge_titanium_bar", name: "Titanium Bar", level: 65, xp: 24, time: 4200, station: "titanium_forging_press", materials: [{ item: "titanium_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "titanium_bar", quantity: 1 } },
+            { id: "forge_iridium_bar", name: "Iridium Bar", level: 70, xp: 26, time: 4400, station: "titanium_forging_press", materials: [{ item: "iridium_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "iridium_bar", quantity: 1 } },
+            { id: "forge_meteorite_bar", name: "Meteorite Bar", level: 75, xp: 28, time: 4600, station: "titanium_forging_press", materials: [{ item: "meteorite_ore", quantity: 1 }, { item: "coal", quantity: 1 }], result: { item: "meteorite_bar", quantity: 1 } },
           ]
         },
       },
@@ -3660,6 +4038,21 @@
           { id: "fishing_rod_rosewood", name: "Rosewood Fishing Rod", requiredLevel: 75 },
         ]
       },
+      cooking: {
+        tools: [
+          { id: "cooking_knife_iron", name: "Iron Chef's Knife", requiredLevel: 1 },
+          { id: "cooking_knife_copper", name: "Copper Chef's Knife", requiredLevel: 15 },
+          { id: "cooking_knife_bronze", name: "Bronze Chef's Knife", requiredLevel: 30 },
+          { id: "cooking_knife_tungsten", name: "Tungsten Chef's Knife", requiredLevel: 50 },
+          { id: "cooking_knife_titanium", name: "Titanium Chef's Knife", requiredLevel: 75 },
+        ],
+        workshops: [
+          { id: "campfire_cooking", name: "Campfire Cooking", requiredLevel: 1, scrapCost: 50 },
+          { id: "wood_stove", name: "Wood Stove", requiredLevel: 15, scrapCost: 30000 },
+          { id: "gas_range", name: "Gas Range", requiredLevel: 30, scrapCost: 500000 },
+          { id: "commercial_kitchen", name: "Commercial Kitchen", requiredLevel: 50, scrapCost: 1000000 },
+        ]
+      },
       tailoring: {
         tools: [
           { id: "tailoring_needles_iron", name: "Iron Needles", requiredLevel: 1 },
@@ -3699,10 +4092,10 @@
           { id: "smithing_hammer_titanium", name: "Titanium Smithing Hammer", requiredLevel: 75 },
         ],
         workshops: [
-          { id: "stone_forge", name: "Stone Forge", requiredLevel: 1 },
-          { id: "iron_furnace", name: "Iron Furnace", requiredLevel: 15 },
-          { id: "steel_foundry", name: "Steel Foundry", requiredLevel: 30 },
-          { id: "titanium_forging_press", name: "Titanium Forging Press", requiredLevel: 50 },
+          { id: "stone_forge", name: "Stone Forge", requiredLevel: 1, scrapCost: 50 },
+          { id: "iron_furnace", name: "Iron Furnace", requiredLevel: 15, scrapCost: 30000 },
+          { id: "steel_foundry", name: "Steel Foundry", requiredLevel: 30, scrapCost: 500000 },
+          { id: "titanium_forging_press", name: "Titanium Forging Press", requiredLevel: 50, scrapCost: 1000000 },
         ]
       },
       gunsmithing: {
@@ -3766,6 +4159,51 @@
           { id: "advanced_tool_kit", name: "Advanced Tool Kit", requiredLevel: 15, scrapCost: 30000 },
           { id: "circuit_soldering_station", name: "Circuit Soldering Station", requiredLevel: 30, scrapCost: 500000 },
           { id: "microfabrication_lab", name: "Microfabrication Lab", requiredLevel: 50, scrapCost: 1000000 },
+        ]
+      },
+      masonry: {
+        tools: [
+          { id: "masonry_trowel_iron", name: "Iron Trowel", requiredLevel: 1 },
+          { id: "masonry_trowel_copper", name: "Copper Trowel", requiredLevel: 15 },
+          { id: "masonry_trowel_bronze", name: "Bronze Trowel", requiredLevel: 30 },
+          { id: "masonry_trowel_tungsten", name: "Tungsten Trowel", requiredLevel: 50 },
+          { id: "masonry_trowel_titanium", name: "Titanium Trowel", requiredLevel: 75 },
+        ],
+        workshops: [
+          { id: "stone_workshop", name: "Stone Workshop", requiredLevel: 1, scrapCost: 50 },
+          { id: "brick_kiln", name: "Brick Kiln", requiredLevel: 15, scrapCost: 30000 },
+          { id: "concrete_mixer", name: "Concrete Mixer", requiredLevel: 30, scrapCost: 500000 },
+          { id: "industrial_construction_yard", name: "Industrial Construction Yard", requiredLevel: 50, scrapCost: 1000000 },
+        ]
+      },
+      chemistry: {
+        tools: [
+          { id: "chemistry_beaker_glass", name: "Glass Beaker", requiredLevel: 1 },
+          { id: "chemistry_beaker_copper", name: "Copper Beaker", requiredLevel: 15 },
+          { id: "chemistry_beaker_bronze", name: "Bronze Beaker", requiredLevel: 30 },
+          { id: "chemistry_beaker_tungsten", name: "Tungsten Beaker", requiredLevel: 50 },
+          { id: "chemistry_beaker_titanium", name: "Titanium Beaker", requiredLevel: 75 },
+        ],
+        workshops: [
+          { id: "chemistry_set", name: "Chemistry Set", requiredLevel: 1, scrapCost: 50 },
+          { id: "laboratory_bench", name: "Laboratory Bench", requiredLevel: 15, scrapCost: 30000 },
+          { id: "industrial_synthesizer", name: "Industrial Synthesizer", requiredLevel: 30, scrapCost: 500000 },
+          { id: "advanced_research_facility", name: "Advanced Research Facility", requiredLevel: 50, scrapCost: 1000000 },
+        ]
+      },
+      electrical: {
+        tools: [
+          { id: "electrical_multimeter_basic", name: "Basic Multimeter", requiredLevel: 1 },
+          { id: "electrical_multimeter_copper", name: "Copper Multimeter", requiredLevel: 15 },
+          { id: "electrical_multimeter_bronze", name: "Bronze Multimeter", requiredLevel: 30 },
+          { id: "electrical_multimeter_tungsten", name: "Tungsten Multimeter", requiredLevel: 50 },
+          { id: "electrical_multimeter_titanium", name: "Titanium Multimeter", requiredLevel: 75 },
+        ],
+        workshops: [
+          { id: "basic_electronics_bench", name: "Basic Electronics Bench", requiredLevel: 1, scrapCost: 50 },
+          { id: "electrical_workshop", name: "Electrical Workshop", requiredLevel: 15, scrapCost: 30000 },
+          { id: "high_voltage_laboratory", name: "High Voltage Laboratory", requiredLevel: 30, scrapCost: 500000 },
+          { id: "electrical_engineering_facility", name: "Electrical Engineering Facility", requiredLevel: 50, scrapCost: 1000000 },
         ]
       }
     };
@@ -3868,7 +4306,7 @@
           { id: "goose", name: "Goose", level: 30, produces: ["poultry", "feathers", "bones", "animal_fat", "goose"] },
           { id: "chicken", name: "Chicken", level: 54, produces: ["poultry", "feathers", "bones", "chicken"] }
         ],
-    hutch: [
+        hutch: [
           { id: "squirrel", name: "Squirrel", level: 1, produces: ["small_game_meat", "small_hide", "bones", "squirrel"] },
           { id: "rabbit", name: "Rabbit", level: 4, produces: ["small_game_meat", "small_hide", "bones", "rabbit"] },
           { id: "hare", name: "Hare", level: 7, produces: ["small_game_meat", "small_hide", "bones", "hare"] },
@@ -3892,7 +4330,7 @@
       return Math.round((p / (1 - p)) * 200);
     }
 
-  function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
+    function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
       const f = (gameData && gameData.enemies && gameData.enemies[factionId]) || null;
       if (!f) return null;
       const L = Math.max(1, level | 0);
@@ -4289,7 +4727,6 @@
     const BANK_CAPACITY_SLOTS = 20;
 
     let craftingContinuous = false;
-    // Stores per-recipe material selections for junktype-based inputs: { [recipeId]: { [materialIndex]: itemId } }
     const materialSelections = {};
 
     let gameState = {
@@ -4303,8 +4740,8 @@
         combatLevel: 1,
       },
       equipment: { helmet: null, armor: null, gloves: null, boots: null, weapon: null, offhand: null, accessory1: null, accessory2: null },
-      upgrades: { mining: { purchased: {} }, forestry: { purchased: {} }, hunting: { purchased: {} }, foraging: { purchased: {} }, fishing: { purchased: {} }, tailoring: { purchased: {} }, firstaid: { purchased: {} }, forging: { purchased: {} }, gunsmithing: { purchased: {} }, scavenging: { purchased: {} }, carpentry: { purchased: {} }, tinkering: { purchased: {} } },
-      workshops: { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {} },
+      upgrades: { mining: { purchased: {} }, forestry: { purchased: {} }, hunting: { purchased: {} }, foraging: { purchased: {} }, fishing: { purchased: {} }, tailoring: { purchased: {} }, firstaid: { purchased: {} }, forging: { purchased: {} }, gunsmithing: { purchased: {} }, scavenging: { purchased: {} }, carpentry: { purchased: {} }, tinkering: { purchased: {} }, cooking: { purchased: {} }, masonry: { purchased: {} }, chemistry: { purchased: {} }, electrical: { purchased: {} } },
+      workshops: { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} },
       skills: {
         fitness: { level: 1, xp: 0 },
         defense: { level: 1, xp: 0 },
@@ -4378,12 +4815,12 @@
         dungeonProgress: 0,
         dungeonEnemies: [],
         dungeonCompleted: [],
-  autohealEnabled: false,
-  autohealThreshold: 0.7,
-  autohealCooldownMs: 1500,
-  _autohealTicker: 0,
-  selectedBandageId: null,
-  selectedFoodId: null,
+        autohealEnabled: false,
+        autohealThreshold: 0.7,
+        autohealCooldownMs: 1500,
+        _autohealTicker: 0,
+        selectedBandageId: null,
+        selectedFoodId: null,
       },
       lastSave: Date.now(),
       dataLoaded: false,
@@ -4412,7 +4849,7 @@
         showLoadingScreen();
         console.log("Loading embedded game data...");
 
-  gameData.areas = AREAS_DATA.areas;
+        gameData.areas = AREAS_DATA.areas;
         gameData.skills = SKILLS_DATA;
         gameData.upgrades = UPGRADES_DATA;
 
@@ -4437,8 +4874,6 @@
         };
 
         ensureAllItemIcons();
-
-        // Apply dungeons/raids revamp and per-area enemy pools
         try {
           applyDungeonRevamp();
         } catch (e) {
@@ -4462,22 +4897,111 @@
         );
       }
     }
-
-    // ---- Dungeons/Raids Revamp (config + applier) ----
-    const NAME_TO_FACTION_ID = {
-      "Zombies": "zombies",
-      "Scavengers": "scavengers",
-      "Bandits": "bandits",
-      "Cannibals": "cannibals",
-      "Mutants": "mutants",
-      "Cultists": "cultists",
-      "Soldiers": "soldiers",
-      "The Directorate": "the_directorate"
+    const FACTION_CONFIG = {
+      zombies: {
+        name: "Zombies",
+        id: "zombies",
+        color: { r: 34, g: 197, b: 94 },    // Green
+        textOpacity: 1.0,
+        borderOpacity: 0.7
+      },
+      scavengers: {
+        name: "Scavengers",
+        id: "scavengers",
+        color: { r: 234, g: 179, b: 8 },    // Yellow
+        textOpacity: 1.0,
+        borderOpacity: 0.75
+      },
+      bandits: {
+        name: "Bandits",
+        id: "bandits",
+        color: { r: 239, g: 68, b: 68 },    // Red
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      cannibals: {
+        name: "Cannibals",
+        id: "cannibals",
+        color: { r: 220, g: 38, b: 38 },    // Dark Red
+        textOpacity: 1.0,
+        borderOpacity: 0.85
+      },
+      mutants: {
+        name: "Mutants",
+        id: "mutants",
+        color: { r: 139, g: 92, b: 246 },   // Purple
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      cultists: {
+        name: "Cultists",
+        id: "cultists",
+        color: { r: 168, g: 85, b: 247 },   // Light Purple
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      soldiers: {
+        name: "Soldiers",
+        id: "soldiers",
+        color: { r: 96, g: 165, b: 250 },   // Blue
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      the_directorate: {
+        name: "The Directorate",
+        id: "the_directorate",
+        color: { r: 6, g: 182, b: 212 },    // Cyan
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      }
     };
+    function getFactionTextColor(factionId) {
+      const faction = FACTION_CONFIG[factionId];
+      if (!faction) return 'rgba(255, 255, 255, 1)';
+      return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.textOpacity})`;
+    }
+
+    function getFactionBorderColor(factionId) {
+      const faction = FACTION_CONFIG[factionId];
+      if (!faction) return 'rgba(255, 255, 255, 0.3)';
+      return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.borderOpacity})`;
+    }
+
+    function getFactionRGBString(factionId) {
+      const faction = FACTION_CONFIG[factionId];
+      if (!faction) return '128,128,128';
+      return `${faction.color.r},${faction.color.g},${faction.color.b}`;
+    }
+    function generateFactionCSS() {
+      let css = '';
+      Object.values(FACTION_CONFIG).forEach(faction => {
+        css += `.faction-${faction.id} { color: ${getFactionTextColor(faction.id)}; }\n`;
+      });
+      Object.values(FACTION_CONFIG).forEach(faction => {
+        css += `.enemy-item.faction-${faction.id} .enemy-name { color: ${getFactionTextColor(faction.id)}; }\n`;
+      });
+
+      return css;
+    }
+    function injectFactionCSS() {
+      const styleId = 'dynamic-faction-styles';
+      let existingStyle = document.getElementById(styleId);
+
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = generateFactionCSS();
+      document.head.appendChild(style);
+    }
+    const NAME_TO_FACTION_ID = {};
+    Object.values(FACTION_CONFIG).forEach(faction => {
+      NAME_TO_FACTION_ID[faction.name] = faction.id;
+    });
 
     function nf(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "").trim(); }
-
-    // Per-area configuration: areaType, dungeons (names, types, primary faction), and a whitelist of enemy names
     const AREA_REVAMP_CONFIG = {
       sunken_meadow: {
         areaType: "warzone",
@@ -4485,7 +5009,7 @@
           { id: "ironclad_mall", name: "Ironclad Mall", type: "dungeon", primary: "zombies" },
           { id: "union_freight_depot", name: "Union Freight Depot", type: "dungeon", primary: "scavengers" }
         ],
-        enemies: ["Shambler","Groaner","Biter","Bloat","Leaper","The Scrounger","Ash-Sifter","The Opportunist","The Ruin-Runner","The Creep"]
+        enemies: ["Shambler", "Groaner", "Biter", "Bloat", "Leaper", "The Scrounger", "Ash-Sifter", "The Opportunist", "The Ruin-Runner", "The Creep"]
       },
       hollow_creek: {
         areaType: "warzone",
@@ -4494,7 +5018,7 @@
           { id: "railmans_yard", name: "Railman’s Yard", type: "dungeon", primary: "bandits" },
           { id: "ashgate_cemetery_grounds", name: "Ashgate Cemetery Grounds", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["The Gorge","Marrow-Eater","The Bloated","Viscera-Cutter","Road-Lurcher","The Marauder","Road-Reaver","The Ambusher","Shank-Digger","The Flayer","Runner","Prowler","Lurcher","Wretch","Rotter"]
+        enemies: ["The Gorge", "Marrow-Eater", "The Bloated", "Viscera-Cutter", "Road-Lurcher", "The Marauder", "Road-Reaver", "The Ambusher", "Shank-Digger", "The Flayer", "Runner", "Prowler", "Lurcher", "Wretch", "Rotter"]
       },
       saltmarsh: {
         areaType: "warzone",
@@ -4502,7 +5026,7 @@
           { id: "blackwater_coliseum", name: "Blackwater Coliseum", type: "dungeon", primary: "bandits" },
           { id: "crosswind_distribution_hub", name: "Crosswind Distribution Hub", type: "dungeon", primary: "scavengers" }
         ],
-        enemies: ["Bone-Breaker","The Wretched","The Thrasher","Bludgeon","The Iron-Jaw","The Whispering","The Sorter","The Hoarder","The Junk-Taker","The Dust-Walker"]
+        enemies: ["Bone-Breaker", "The Wretched", "The Thrasher", "Bludgeon", "The Iron-Jaw", "The Whispering", "The Sorter", "The Hoarder", "The Junk-Taker", "The Dust-Walker"]
       },
       the_boneyard: {
         areaType: "warzone",
@@ -4511,7 +5035,7 @@
           { id: "iron_wharf_yards", name: "Iron Wharf Yards", type: "dungeon", primary: "scavengers" },
           { id: "granite_plaza", name: "Granite Plaza", type: "dungeon", primary: "cannibals" }
         ],
-        enemies: ["The Wretched","Shank-Digger","Iron-Jaw","The Withered","Gutter-Hook","The Digger","The Tinker","The Finder","The Shadow-Stalk","The Grubber","Wailer","Gnawer","Clinger","Ripper","Smasher"]
+        enemies: ["The Wretched", "Shank-Digger", "Iron-Jaw", "The Withered", "Gutter-Hook", "The Digger", "The Tinker", "The Finder", "The Shadow-Stalk", "The Grubber", "Wailer", "Gnawer", "Clinger", "Ripper", "Smasher"]
       },
       grimsby: {
         areaType: "warzone",
@@ -4519,7 +5043,7 @@
           { id: "hollowline_subway", name: "Hollowline Subway", type: "dungeon", primary: "mutants" },
           { id: "eastgate_warehousing", name: "Eastgate Warehousing", type: "dungeon", primary: "scavengers" }
         ],
-        enemies: ["Bonebreaker","The Hulking","Marrow-Mangler","The Brute","The Smasher","The Lookout","The Looter","The Collector","The Forager","The Cache-Finder"]
+        enemies: ["Bonebreaker", "The Hulking", "Marrow-Mangler", "The Brute", "The Smasher", "The Lookout", "The Looter", "The Collector", "The Forager", "The Cache-Finder"]
       },
       ember_creek: {
         areaType: "warzone",
@@ -4528,7 +5052,7 @@
           { id: "lighthouse_power_plant", name: "Lighthouse Power Plant", type: "dungeon", primary: "cultists" },
           { id: "rockvale_arena", name: "Rockvale Arena", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["The Ripper","The Sun-Stalker","Gut-Hook","The Blight-Eye","The Wreck-Hound","The Zealot","The Acolyte","The Penitent","The Pyre-Guard","The Fanatic","Crawler","Stunner","Sprinter","Screamer","Husk"]
+        enemies: ["The Ripper", "The Sun-Stalker", "Gut-Hook", "The Blight-Eye", "The Wreck-Hound", "The Zealot", "The Acolyte", "The Penitent", "The Pyre-Guard", "The Fanatic", "Crawler", "Stunner", "Sprinter", "Screamer", "Husk"]
       },
       ironwood: {
         areaType: "warzone",
@@ -4536,7 +5060,7 @@
           { id: "timberline_slaughterhouse", name: "Timberline Slaughterhouse", type: "dungeon", primary: "cannibals" },
           { id: "ironwood_barracks", name: "Ironwood Barracks", type: "dungeon", primary: "soldiers" }
         ],
-        enemies: ["Ambusher","The Manic","Cleaver-Hand","The Starved","Bone-Picker","Trooper","Sergeant","Grunt","Marksman","Grenadier"]
+        enemies: ["Ambusher", "The Manic", "Cleaver-Hand", "The Starved", "Bone-Picker", "Trooper", "Sergeant", "Grunt", "Marksman", "Grenadier"]
       },
       spine_ridge: {
         areaType: "warzone",
@@ -4545,7 +5069,7 @@
           { id: "deepfall_caverns", name: "Deepfall Caverns", type: "dungeon", primary: "mutants" },
           { id: "hollowstone_catacombs", name: "Hollowstone Catacombs", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["The Dust-Cutter","The Unstable","The Raker","The Bruiser","The Viper-Tongue","The Crushing","Hardhide","Ironclad","Plated","Ossifier","Shambler","Groaner","Biter","Bloat","Leaper"]
+        enemies: ["The Dust-Cutter", "The Unstable", "The Raker", "The Bruiser", "The Viper-Tongue", "The Crushing", "Hardhide", "Ironclad", "Plated", "Ossifier", "Shambler", "Groaner", "Biter", "Bloat", "Leaper"]
       },
       blightmoor: {
         areaType: "warzone",
@@ -4553,7 +5077,7 @@
           { id: "midnight_chapel", name: "Midnight Chapel", type: "dungeon", primary: "cultists" },
           { id: "mireborne_sewers", name: "Mireborne Sewers", type: "dungeon", primary: "mutants" }
         ],
-        enemies: ["The Ash-Worshiper","The Sacrificer","The Mourner","The Unclean","The Seeker","Flesh-Warp","The Wretch","Tendon-Snapper","The Withered","Spiked-Shoulder"]
+        enemies: ["The Ash-Worshiper", "The Sacrificer", "The Mourner", "The Unclean", "The Seeker", "Flesh-Warp", "The Wretch", "Tendon-Snapper", "The Withered", "Spiked-Shoulder"]
       },
       the_sanctum: {
         areaType: "warzone",
@@ -4562,7 +5086,7 @@
           { id: "redgate_warehouse", name: "Redgate Warehouse", type: "dungeon", primary: "scavengers" },
           { id: "westfield_memorial_grounds", name: "Westfield Memorial Grounds", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["The Incinerator","The Listener","The Whispering","The Bone-Binder","The Forlorn","The Digger","The Tinker","The Finder","The Shadow-Stalk","The Grubber","Rotter","Wailer","Gnawer","Clinger","Ripper"]
+        enemies: ["The Incinerator", "The Listener", "The Whispering", "The Bone-Binder", "The Forlorn", "The Digger", "The Tinker", "The Finder", "The Shadow-Stalk", "The Grubber", "Rotter", "Wailer", "Gnawer", "Clinger", "Ripper"]
       },
       saint_judes_rest: {
         areaType: "warzone",
@@ -4570,7 +5094,7 @@
           { id: "saint_judes_outpost", name: "Saint Jude’s Outpost", type: "dungeon", primary: "soldiers" },
           { id: "the_scarlet_temple", name: "The Scarlet Temple", type: "dungeon", primary: "cultists" }
         ],
-        enemies: ["Vanguard","The Enforcer","The Sentinel","Bruiser","The Hardliner","The Vowed","The Cinder-Born","The Incendiary","The Initiate","The Flame-Wist"]
+        enemies: ["Vanguard", "The Enforcer", "The Sentinel", "Bruiser", "The Hardliner", "The Vowed", "The Cinder-Born", "The Incendiary", "The Initiate", "The Flame-Wist"]
       },
       the_great_exchange: {
         areaType: "warzone",
@@ -4579,7 +5103,7 @@
           { id: "merchants_market_hall", name: "Merchant’s Market Hall", type: "dungeon", primary: "scavengers" },
           { id: "old_catacombs", name: "Old Catacombs", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["The Grinder","Breacher","The Regulator","The Butcher","Rifleman","The Forager","The Cache-Finder","The Scrounger","Ash-Sifter","The Opportunist","Smasher","Crawler","Stunner","Sprinter","Screamer"]
+        enemies: ["The Grinder", "Breacher", "The Regulator", "The Butcher", "Rifleman", "The Forager", "The Cache-Finder", "The Scrounger", "Ash-Sifter", "The Opportunist", "Smasher", "Crawler", "Stunner", "Sprinter", "Screamer"]
       },
       shroud_valley: {
         areaType: "warzone",
@@ -4587,7 +5111,7 @@
           { id: "butchers_hall", name: "Butcher’s Hall", type: "dungeon", primary: "cannibals" },
           { id: "whispering_shrine", name: "Whispering Shrine", type: "dungeon", primary: "cultists" }
         ],
-        enemies: ["The Craver","The Scalper","Skin-Walker","Dust-Lurker","The Unfed","The Cinder-Born","The Incendiary","The Initiate","The Flame-Wist","The Zealot"]
+        enemies: ["The Craver", "The Scalper", "Skin-Walker", "Dust-Lurker", "The Unfed", "The Cinder-Born", "The Incendiary", "The Initiate", "The Flame-Wist", "The Zealot"]
       },
       highwall_pass: {
         areaType: "warzone",
@@ -4596,7 +5120,7 @@
           { id: "sentinel_barracks", name: "Sentinel Barracks", type: "dungeon", primary: "soldiers" },
           { id: "stonegate_crypt", name: "Stonegate Crypt", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["The Unstable","The Raker","The Bruiser","The Viper-Tongue","The Marauder","The Cold-Eye","The Drifter","Veteran","The Warden","The Tracker","Husk","Shambler","Groaner","Biter","Bloat"]
+        enemies: ["The Unstable", "The Raker", "The Bruiser", "The Viper-Tongue", "The Marauder", "The Cold-Eye", "The Drifter", "Veteran", "The Warden", "The Tracker", "Husk", "Shambler", "Groaner", "Biter", "Bloat"]
       },
       fort_defiance: {
         areaType: "warzone",
@@ -4604,7 +5128,7 @@
           { id: "fort_command_bunker", name: "Fort Command Bunker", type: "dungeon", primary: "soldiers" },
           { id: "defiance_research_labs", name: "Defiance Research Labs", type: "dungeon", primary: "mutants" }
         ],
-        enemies: ["Marksman","Grenadier","Vanguard","The Enforcer","The Sentinel","The Grotesque","Carapace","The Feral","The Unmade","The Maw"]
+        enemies: ["Marksman", "Grenadier", "Vanguard", "The Enforcer", "The Sentinel", "The Grotesque", "Carapace", "The Feral", "The Unmade", "The Maw"]
       },
       blackwater_point: {
         areaType: "warzone",
@@ -4613,7 +5137,7 @@
           { id: "directorate_dockhouse", name: "Directorate Dockhouse", type: "dungeon", primary: "the_directorate" },
           { id: "blackwater_morgue", name: "Blackwater Morgue", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["Road-Reaver","The Ambusher","Shank-Digger","The Flayer","Bone-Breaker","Enforcer","Regulator","Bruiser","Fixer","Cleaner","Runner","Prowler","Lurcher","Wretch","Rotter"]
+        enemies: ["Road-Reaver", "The Ambusher", "Shank-Digger", "The Flayer", "Bone-Breaker", "Enforcer", "Regulator", "Bruiser", "Fixer", "Cleaner", "Runner", "Prowler", "Lurcher", "Wretch", "Rotter"]
       },
       cinderfall: {
         areaType: "warzone",
@@ -4621,7 +5145,7 @@
           { id: "ashen_mines", name: "Ashen Mines", type: "dungeon", primary: "mutants" },
           { id: "directorate_armory", name: "Directorate Armory", type: "dungeon", primary: "the_directorate" }
         ],
-        enemies: ["Hardhide","Ironclad","Plated","Ossifier","Flesh-Warp","Auditor","Warden","Taxman","Slasher","Headhunter"]
+        enemies: ["Hardhide", "Ironclad", "Plated", "Ossifier", "Flesh-Warp", "Auditor", "Warden", "Taxman", "Slasher", "Headhunter"]
       },
       port_scoria: {
         areaType: "warzone",
@@ -4630,7 +5154,7 @@
           { id: "harbor_customs_office", name: "Harbor Customs Office", type: "dungeon", primary: "the_directorate" },
           { id: "dockside_tombs", name: "Dockside Tombs", type: "dungeon", primary: "zombies" }
         ],
-        enemies: ["Ambusher","The Manic","Cleaver-Hand","The Starved","Bone-Picker","Knuckleduster","Sentinel","Muscle","Thug","Wiseguy","Clinger","Ripper","Smasher","Crawler","Stunner"]
+        enemies: ["Ambusher", "The Manic", "Cleaver-Hand", "The Starved", "Bone-Picker", "Knuckleduster", "Sentinel", "Muscle", "Thug", "Wiseguy", "Clinger", "Ripper", "Smasher", "Crawler", "Stunner"]
       },
       command_post_7: {
         areaType: "warzone",
@@ -4638,7 +5162,7 @@
           { id: "command_bunker", name: "Command Bunker", type: "dungeon", primary: "soldiers" },
           { id: "directorate_safehouse", name: "Directorate Safehouse", type: "dungeon", primary: "the_directorate" }
         ],
-        enemies: ["The Regulator","The Butcher","Rifleman","The Cold-Eye","The Drifter","Scribe","Operative","Handler","Collector","Ledger-Man"]
+        enemies: ["The Regulator", "The Butcher", "Rifleman", "The Cold-Eye", "The Drifter", "Scribe", "Operative", "Handler", "Collector", "Ledger-Man"]
       },
       the_mercantile: {
         areaType: "warzone",
@@ -4646,7 +5170,7 @@
           { id: "grand_market_hall", name: "Grand Market Hall", type: "dungeon", primary: "scavengers" },
           { id: "sterling_office_tower", name: "Sterling Office Tower", type: "dungeon", primary: "the_directorate" }
         ],
-        enemies: ["The Hoarder","The Junk-Taker","The Dust-Walker","The Digger","The Tinker","Enforcer","Regulator","Bruiser","Fixer","Cleaner"]
+        enemies: ["The Hoarder", "The Junk-Taker", "The Dust-Walker", "The Digger", "The Tinker", "Enforcer", "Regulator", "Bruiser", "Fixer", "Cleaner"]
       },
       old_ashfield: {
         areaType: "stronghold",
@@ -4654,7 +5178,7 @@
           { id: "ashfield_shopping_center", name: "Ashfield Shopping Center", type: "dungeon", primary: "zombies" },
           { id: "ashfield_arena", name: "Ashfield Arena", type: "raid", primary: "zombies" }
         ],
-        enemies: ["Gnawer","Wailer","Sprinter","Screamer","Husk"]
+        enemies: ["Gnawer", "Wailer", "Sprinter", "Screamer", "Husk"]
       },
       redfall_point: {
         areaType: "stronghold",
@@ -4662,7 +5186,7 @@
           { id: "redfall_mine_entrance", name: "Redfall Mine Entrance", type: "dungeon", primary: "mutants" },
           { id: "redfall_cavern_complex", name: "Redfall Cavern Complex", type: "raid", primary: "mutants" }
         ],
-        enemies: ["The Withered","Spiked-Shoulder","The Grotesque","Carapace","The Feral"]
+        enemies: ["The Withered", "Spiked-Shoulder", "The Grotesque", "Carapace", "The Feral"]
       },
       rustford: {
         areaType: "stronghold",
@@ -4670,7 +5194,7 @@
           { id: "rustford_salvage_yard", name: "Rustford Salvage Yard", type: "dungeon", primary: "scavengers" },
           { id: "rustford_mega_mall", name: "Rustford Mega Mall", type: "raid", primary: "scavengers" }
         ],
-        enemies: ["The Finder","The Shadow-Stalk","The Grubber","The Lookout","The Looter"]
+        enemies: ["The Finder", "The Shadow-Stalk", "The Grubber", "The Lookout", "The Looter"]
       },
       crimson_mills: {
         areaType: "stronghold",
@@ -4678,7 +5202,7 @@
           { id: "crimson_mills_meatpacking_plant", name: "Crimson Mills Meatpacking Plant", type: "dungeon", primary: "cannibals" },
           { id: "crimson_mills_stockyards", name: "Crimson Mills Stockyards", type: "raid", primary: "cannibals" }
         ],
-        enemies: ["The Craver","The Scalper","Skin-Walker","Dust-Lurker","The Unfed"]
+        enemies: ["The Craver", "The Scalper", "Skin-Walker", "Dust-Lurker", "The Unfed"]
       },
       blackwood_crossing: {
         areaType: "stronghold",
@@ -4686,7 +5210,7 @@
           { id: "blackwood_train_station", name: "Blackwood Train Station", type: "dungeon", primary: "bandits" },
           { id: "blackwood_fortress", name: "Blackwood Fortress", type: "raid", primary: "bandits" }
         ],
-        enemies: ["The Thrasher","Bludgeon","The Iron-Jaw","The Ripper","The Sun-Stalker"]
+        enemies: ["The Thrasher", "Bludgeon", "The Iron-Jaw", "The Ripper", "The Sun-Stalker"]
       },
       fort_haven: {
         areaType: "stronghold",
@@ -4694,7 +5218,7 @@
           { id: "haven_barracks", name: "Haven Barracks", type: "dungeon", primary: "soldiers" },
           { id: "haven_stronghold", name: "Haven Stronghold", type: "raid", primary: "soldiers" }
         ],
-        enemies: ["Veteran","The Warden","The Tracker","The Grinder","Breacher"]
+        enemies: ["Veteran", "The Warden", "The Tracker", "The Grinder", "Breacher"]
       },
       penance_heights: {
         areaType: "stronghold",
@@ -4702,7 +5226,7 @@
           { id: "heights_chapel", name: "Heights Chapel", type: "dungeon", primary: "cultists" },
           { id: "cathedral_of_penance", name: "Cathedral of Penance", type: "raid", primary: "cultists" }
         ],
-        enemies: ["The Seeker","The Incinerator","The Listener","The Whispering","The Bone-Binder"]
+        enemies: ["The Seeker", "The Incinerator", "The Listener", "The Whispering", "The Bone-Binder"]
       },
       sterling_city: {
         areaType: "stronghold",
@@ -4710,7 +5234,7 @@
           { id: "sterling_city_tower", name: "Sterling City Tower", type: "dungeon", primary: "the_directorate" },
           { id: "the_directorate_spire", name: "The Directorate Spire", type: "raid", primary: "the_directorate" }
         ],
-        enemies: ["Thug","Wiseguy","Scribe","Operative","Handler"]
+        enemies: ["Thug", "Wiseguy", "Scribe", "Operative", "Handler"]
       }
     };
 
@@ -4722,7 +5246,6 @@
         const area = byId[areaId];
         if (!area) return;
         area.areaType = cfg.areaType;
-        // Determine secondary factions for each dungeon based on area.factions
         const areaFactions = (area.factions || []).map(name => NAME_TO_FACTION_ID[name] || name);
         area.dungeons = (cfg.dungeons || []).map(d => {
           const primary = d.primary;
@@ -4736,19 +5259,19 @@
     function ensureAllItemIcons() {
       if (!gameData || !gameData.items) return;
       const defaultByType = {
-  currency: "⚙️",
-  material: "📦",
-  weapon: "⚔️",
-  helmet: "🪖",
-  armor: "🛡️",
-  gloves: "🧤",
-  boots: "🥾",
-  offhand: "🛡️",
-  accessory: "🎖️",
-  consumable: "🍞",
-  special: "✨",
-  junk: "📦",
-  trophies: "🏆",
+        currency: "⚙️",
+        material: "📦",
+        weapon: "⚔️",
+        helmet: "🪖",
+        armor: "🛡️",
+        gloves: "🧤",
+        boots: "🥾",
+        offhand: "🛡️",
+        accessory: "🎖️",
+        consumable: "🍞",
+        special: "✨",
+        junk: "📦",
+        trophies: "🏆",
       };
       let fixed = 0;
       Object.entries(gameData.items).forEach(([id, item]) => {
@@ -4846,10 +5369,8 @@
       gameState.equipment[slot] = null;
       addToBank(equippedItem, 1);
       updatePlayerStats();
-      
-      // Force immediate re-render to ensure icons appear correctly
       renderEquipmentSlots();
-      
+
       showNotification(`Unequipped ${gameData.items[equippedItem].name}`, "info");
       return true;
     }
@@ -5029,7 +5550,6 @@
     let lastRenderedEquipment = {};
 
     function renderEquipmentSlots() {
-      // Always render to ensure proper state
       Object.keys(gameState.equipment).forEach((slot) => {
         const slotElement = document.getElementById(`${slot}-slot`);
         const equipmentSlot = document.querySelector(`[data-slot="${slot}"]`);
@@ -5055,8 +5575,6 @@
           equipmentSlot.title = getSlotName(slot);
         }
       });
-
-      // Update cache after rendering
       lastRenderedEquipment = { ...gameState.equipment };
     }
 
@@ -5092,25 +5610,20 @@
       const tooltipRect = tooltip.getBoundingClientRect();
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-
-      // Horizontal positioning
       const wouldOverflowRight = rect.right + 10 + tooltipRect.width > windowWidth;
       if (wouldOverflowRight) {
         tooltip.style.left = rect.left - tooltipRect.width - 10 + "px";
       } else {
         tooltip.style.left = rect.right + 10 + "px";
       }
-
-      // Vertical positioning with overflow detection
       let topPosition = rect.top + window.scrollY;
       const wouldOverflowBottom = rect.top + tooltipRect.height > windowHeight;
-      
+
       if (wouldOverflowBottom) {
         topPosition = rect.bottom + window.scrollY - tooltipRect.height;
-        // Ensure it doesn't go above the viewport
         topPosition = Math.max(window.scrollY, topPosition);
       }
-      
+
       tooltip.style.top = topPosition + "px";
 
       requestAnimationFrame(() => {
@@ -5132,7 +5645,7 @@
         console.warn('createEquipmentTooltip called with null item');
         return null;
       }
-      
+
       const tooltip = document.createElement("div");
       tooltip.className = "equipment-tooltip";
 
@@ -5203,32 +5716,27 @@
 
       const tooltip = createItemTooltip(item);
       if (!tooltip) return;
-      
+
       document.body.appendChild(tooltip);
 
       const rect = event.target.getBoundingClientRect();
       const tooltipRect = tooltip.getBoundingClientRect();
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-
-      // Horizontal positioning
       const showOnLeft = rect.right + 10 + tooltipRect.width > windowWidth;
       if (showOnLeft) {
         tooltip.style.left = `${rect.left - tooltipRect.width - 10}px`;
       } else {
         tooltip.style.left = `${rect.right + 10}px`;
       }
-      
-      // Vertical positioning with overflow detection
       let topPosition = rect.top + window.scrollY;
       const wouldOverflowBottom = rect.top + tooltipRect.height > windowHeight;
-      
+
       if (wouldOverflowBottom) {
         topPosition = rect.bottom + window.scrollY - tooltipRect.height;
-        // Ensure it doesn't go above the viewport
         topPosition = Math.max(window.scrollY, topPosition);
       }
-      
+
       tooltip.style.top = `${topPosition}px`;
 
       setTimeout(() => {
@@ -5250,7 +5758,7 @@
         console.warn('createItemTooltip called with null item');
         return null;
       }
-      
+
       const tooltip = document.createElement("div");
       tooltip.className = "equipment-tooltip";
 
@@ -5320,6 +5828,7 @@
         showNotification("Failed to load game data!", "error");
         return;
       }
+      injectFactionCSS();
 
       renderAreas();
       renderBank();
@@ -5327,12 +5836,10 @@
       updatePlayerStats();
       updateUI();
       setupEventListeners();
-      
-      // Force a second render after a short delay to ensure proper icon display
       setTimeout(() => {
         renderEquipmentSlots();
       }, 100);
-      
+
       startGameLoop();
       loadGame();
 
@@ -5342,33 +5849,28 @@
 
     function setupEventListeners() {
       document.addEventListener("click", handleClick);
-      
-      // Global tooltip cleanup on any click
-      document.addEventListener("click", function(e) {
-        // Only hide tooltips if clicking outside of tooltip-enabled elements
+      document.addEventListener("click", function (e) {
         const isTooltipElement = e.target.closest('.bank-slot, .equipment-slot, [data-item-tooltip]');
         if (!isTooltipElement) {
           hideItemTooltip();
           hideEquipmentTooltip();
         }
       });
-      
-      // Add delegated event listeners for item tooltips
-      document.addEventListener("mouseover", function(e) {
+      document.addEventListener("mouseover", function (e) {
         const tooltipElement = e.target.closest('[data-item-tooltip]');
         if (tooltipElement) {
           const itemId = tooltipElement.getAttribute('data-item-tooltip');
           showItemTooltip(e, itemId);
         }
       });
-      
-      document.addEventListener("mouseout", function(e) {
+
+      document.addEventListener("mouseout", function (e) {
         const tooltipElement = e.target.closest('[data-item-tooltip]');
         if (tooltipElement) {
           hideItemTooltip();
         }
       });
-      
+
       document.addEventListener("mousemove", function (e) {
         const ghost = document.getElementById("bank-held-ghost");
         if (gameState.bankHeldItem && ghost) {
@@ -5378,37 +5880,28 @@
       });
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
-          // Handle bank held item
           if (gameState.bankHeldItem) {
             gameState.bankHeldItem = null;
             hideHeldGhost();
             return;
           }
-          
-          // Handle combat escape (works for both normal combat and dungeons)
           if (gameState.combat.inCombat) {
             if (confirm("Flee from combat? You will take damage.")) {
               const combat = gameState.combat;
-              
+
               addCombatLog("You fled from combat!", "log-damage");
               gameState.player.hp = gameState.player.maxHp;
-
-              // End dungeon if player dies in one
               if (combat.inDungeon) {
                 addCombatLog("Dungeon run ended due to defeat!", "log-damage");
-                
-                // Clear the dungeon enemy cache before resetting state
                 if (combat.dungeonEnemies && combat.currentDungeon) {
                   delete combat.dungeonEnemies[combat.currentDungeon];
                 }
-                
+
                 combat.inDungeon = false;
                 combat.currentDungeon = null;
                 combat.dungeonProgress = 0;
-                
-                // Explicitly clear all dungeon enemies cache since we're not in a dungeon
                 combat.dungeonEnemies = {};
-                
+
                 renderEnemies(gameState.currentArea);
               }
 
@@ -5418,7 +5911,7 @@
               document.getElementById("enemy-display").style.display = "none";
               const noEnemy = document.getElementById("no-enemy");
               if (noEnemy) noEnemy.style.display = "block";
-              
+
               showNotification("Fled from combat", "info");
             }
           }
@@ -5474,23 +5967,19 @@
           }
         }
       });
-
-  // Tabs removed on area page; no tab click handler needed
-
-      // Quick Actions
-    const autoBtn = document.getElementById("btn-autoheal");
+      const autoBtn = document.getElementById("btn-autoheal");
       if (autoBtn) {
         autoBtn.addEventListener("click", () => {
           gameState.combat.autohealEnabled = !gameState.combat.autohealEnabled;
-      autoBtn.textContent = `Bandage Autoheal: ${gameState.combat.autohealEnabled ? 'On' : 'Off'}`;
-      addCombatLog(`Bandage autoheal ${gameState.combat.autohealEnabled ? 'enabled' : 'disabled'}`);
+          autoBtn.textContent = `Bandage Autoheal: ${gameState.combat.autohealEnabled ? 'On' : 'Off'}`;
+          addCombatLog(`Bandage autoheal ${gameState.combat.autohealEnabled ? 'enabled' : 'disabled'}`);
         });
       }
 
       const eatBtn = document.getElementById("btn-eat-food");
       if (eatBtn) {
         eatBtn.addEventListener("click", () => {
-      const healed = useSelectedFoodOrBest();
+          const healed = useSelectedFoodOrBest();
           if (!healed) showNotification("No usable food or already full HP", "warning");
         });
       }
@@ -5501,20 +5990,16 @@
           escapeBattle();
         });
       }
-
-      // Populate dropdowns initially and whenever bank or items change
       populateBandageDropdown();
       populateFoodDropdown();
     }
 
     function getBandageIds() {
-      // Treat items whose id ends with '_bandage' as bandages
       const ids = Object.keys(gameData.items || {}).filter(id => /_bandage$/.test(id));
       return ids;
     }
 
     function getBandageHealAmount(itemId) {
-      // Simple tiered mapping; adjust as needed
       const map = {
         jute_bandage: 10,
         improved_jute_bandage: 18,
@@ -5557,7 +6042,7 @@
       sel.innerHTML = '';
       const any = document.createElement('option'); any.value = ''; any.textContent = bandageIds.length ? 'Auto (best available)' : 'No bandages';
       sel.appendChild(any);
-      bandageIds.sort((a,b)=> getBandageHealAmount(b)-getBandageHealAmount(a));
+      bandageIds.sort((a, b) => getBandageHealAmount(b) - getBandageHealAmount(a));
       for (const id of bandageIds) {
         const opt = document.createElement('option');
         const it = gameData.items[id];
@@ -5583,7 +6068,7 @@
       sel.innerHTML = '';
       const any = document.createElement('option'); any.value = ''; any.textContent = foods.length ? 'Auto (best available)' : 'No food';
       sel.appendChild(any);
-      foods.sort((a,b)=> (b[1].healAmount||0)-(a[1].healAmount||0));
+      foods.sort((a, b) => (b[1].healAmount || 0) - (a[1].healAmount || 0));
       for (const [id, it] of foods) {
         const qty = gameState.bank[id] || 0;
         const opt = document.createElement('option');
@@ -5665,7 +6150,7 @@
 
       updatePassiveSystems();
 
-  if (Date.now() - gameState.lastSave > 300000) { // 5 minutes
+      if (Date.now() - gameState.lastSave > 300000) { // 5 minutes
         saveGame();
       }
     }
@@ -5982,8 +6467,6 @@
         performEnemyAttack();
         combat.enemyTimer -= combat.enemyInterval;
       }
-
-      // Autoheal: prefer selected bandage; fallback to best available food
       if (combat.autohealEnabled) {
         combat._autohealTicker = (combat._autohealTicker || 0) + 100;
         if (combat._autohealTicker >= (combat.autohealCooldownMs || 1500)) {
@@ -5995,7 +6478,6 @@
             if (!usedBandage) {
               const healed = useSelectedFoodOrBest(true);
               if (!healed) {
-                // nothing to use
               }
             }
           }
@@ -6018,8 +6500,7 @@
       updateCombatProgress();
     }
 
-  function useBestAvailableFood(quiet = false) {
-      // Pick highest healAmount among food/cooked_food in bank
+    function useBestAvailableFood(quiet = false) {
       let bestId = null;
       let bestHeal = 0;
       for (const [id, qty] of Object.entries(gameState.bank)) {
@@ -6049,8 +6530,8 @@
     }
 
     function useSelectedFoodOrBest(quiet = false) {
-  const sel = document.getElementById('select-food');
-  const chosen = (gameState.combat.selectedFoodId) || (sel && sel.value ? sel.value : null);
+      const sel = document.getElementById('select-food');
+      const chosen = (gameState.combat.selectedFoodId) || (sel && sel.value ? sel.value : null);
       if (chosen && (gameState.bank[chosen] || 0) > 0) {
         if (gameState.player.hp >= gameState.player.maxHp) { if (!quiet) showNotification('HP is already full'); return false; }
         const before = gameState.player.hp;
@@ -6074,8 +6555,7 @@
         populateBandageDropdown();
         return ok;
       }
-      // fallback to best available bandage by healAmount
-      const bandages = getBandageIds().filter(id => (gameState.bank[id] || 0) > 0).sort((a,b)=> getBandageHealAmount(b)-getBandageHealAmount(a));
+      const bandages = getBandageIds().filter(id => (gameState.bank[id] || 0) > 0).sort((a, b) => getBandageHealAmount(b) - getBandageHealAmount(a));
       if (bandages.length === 0) return false;
       const best = bandages[0];
       if (gameState.player.hp >= gameState.player.maxHp) { if (!quiet) showNotification('HP is already full'); return false; }
@@ -6087,19 +6567,15 @@
     function escapeBattle() {
       const combat = gameState.combat;
       if (!combat.inCombat) return;
-      
+
       addCombatLog("You fled from combat!", "log-damage");
       gameState.player.hp = gameState.player.maxHp;
-
-      // End dungeon if player dies in one
       if (combat.inDungeon) {
         addCombatLog("Dungeon run ended due to defeat!", "log-damage");
-        
-        // Clear the dungeon enemy cache before resetting state
         if (combat.dungeonEnemies && combat.currentDungeon) {
           delete combat.dungeonEnemies[combat.currentDungeon];
         }
-        
+
         combat.inDungeon = false;
         combat.currentDungeon = null;
         combat.dungeonProgress = 0;
@@ -6112,7 +6588,7 @@
       document.getElementById("enemy-display").style.display = "none";
       const noEnemy = document.getElementById("no-enemy");
       if (noEnemy) noEnemy.style.display = "block";
-      
+
       document.querySelectorAll('.enemy-item').forEach((i) => i.classList.remove('active'));
     }
 
@@ -6142,8 +6618,6 @@
         addCombatLog(`${enemy.name} defeated!`, "log-heal");
 
         addXP("fitness", enemy.xp);
-        
-        // Suppress drops for dungeon enemies
         if (enemy.drops && !enemy.dungeonId) {
           const playerLevel = gameState.player.combatLevel;
           const enemyLevel = enemy.level || enemy.baseLevel || 1;
@@ -6182,23 +6656,18 @@
             });
           }
         }
-
-        // If we are in a dungeon run, move to next enemy in sequence
         if (combat.inDungeon && combat.currentDungeon) {
           const seq = (combat.dungeonEnemies && combat.dungeonEnemies[combat.currentDungeon]) || [];
           combat.dungeonProgress = (combat.dungeonProgress || 0) + 1;
           if (combat.dungeonProgress < seq.length) {
             const next = seq[combat.dungeonProgress];
             addCombatLog(`Next encounter: ${next.name}`);
-            
-            // Update dungeon UI to show new current enemy
             renderEnemies(gameState.currentArea);
-            
+
             setTimeout(() => {
               startCombat(next);
             }, 600);
           } else {
-            // Completed
             addCombatLog(`Dungeon cleared!`, "log-heal");
             if (!Array.isArray(combat.dungeonCompleted)) combat.dungeonCompleted = [];
             if (!combat.dungeonCompleted.includes(combat.currentDungeon)) {
@@ -6213,8 +6682,6 @@
             document.getElementById("enemy-display").style.display = "none";
             const noEnemy = document.getElementById("no-enemy");
             if (noEnemy) noEnemy.style.display = "block";
-            
-            // Update UI to reflect completion
             renderEnemies(gameState.currentArea);
           }
         } else {
@@ -6279,16 +6746,12 @@
       if (gameState.player.hp <= 0) {
         addCombatLog("You have been defeated!", "log-damage");
         gameState.player.hp = gameState.player.maxHp;
-
-        // End dungeon if player dies in one
         if (combat.inDungeon) {
           addCombatLog("Dungeon run ended due to defeat!", "log-damage");
-          
-          // Clear the dungeon enemy cache before resetting state
           if (combat.dungeonEnemies && combat.currentDungeon) {
             delete combat.dungeonEnemies[combat.currentDungeon];
           }
-          
+
           combat.inDungeon = false;
           combat.currentDungeon = null;
           combat.dungeonProgress = 0;
@@ -6708,9 +7171,8 @@
 
       updateSkillInfo();
       renderEquipmentSlots();
-  // keep quick action dropdowns fresh
-  populateBandageDropdown();
-  populateFoodDropdown();
+      populateBandageDropdown();
+      populateFoodDropdown();
     }
 
     function setupBankTabs() {
@@ -6789,7 +7251,7 @@
       const current = gameState.bankPlacement[itemId] || { slot: findNextFreeSlot() };
       const prevSlot = typeof current.slot === 'number' ? current.slot : null;
       const conflictEntry = Object.entries(gameState.bankPlacement).find(([id, p]) => id !== itemId && p.slot === slotIndex && (gameState.bank[id] || 0) > 0);
-      
+
       if (conflictEntry) {
         const [otherId, other] = conflictEntry;
         current.slot = slotIndex;
@@ -6829,7 +7291,6 @@
           }
         }
       } else if (action.type === "gathering") {
-        // Specifically target gathering progress bar
         const gatheringProgressFill = document.getElementById("gathering-progress-fill");
         if (gatheringProgressFill) {
           gatheringProgressFill.style.width = `${Math.min(100, progressPercent)}%`;
@@ -6837,12 +7298,11 @@
           console.warn("Gathering progress fill element not found");
         }
       } else {
-        // Fallback for other action types
         const progressElements = document.querySelectorAll(".progress-fill");
         progressElements.forEach((element) => {
-          if (element.id !== "combat-progress-fill" && 
-              element.id !== "craft-progress-fill" && 
-              element.id !== "gathering-progress-fill") {
+          if (element.id !== "combat-progress-fill" &&
+            element.id !== "craft-progress-fill" &&
+            element.id !== "gathering-progress-fill") {
             element.style.width = `${progressPercent}%`;
           }
         });
@@ -6855,8 +7315,8 @@
       const denom = combat.playerInterval || 2000;
       const numer = Math.min(denom, combat.playerTimer || 0);
       const progressPercent = (numer / denom) * 100;
-  const cpf = document.getElementById("combat-progress-fill");
-  if (cpf) cpf.style.width = `${progressPercent}%`;
+      const cpf = document.getElementById("combat-progress-fill");
+      if (cpf) cpf.style.width = `${progressPercent}%`;
     }
 
     function updateSkillInfo() {
@@ -6926,12 +7386,8 @@
     function showNotification(message, type = "info", duration = 3000) {
       const notification = document.getElementById("notification");
       notification.textContent = message;
-      
-      // Remove any existing type classes
       notification.classList.remove("notification-success", "notification-error", "notification-warning", "notification-info");
-      
-      // Add type-specific class
-      switch(type) {
+      switch (type) {
         case "error":
           notification.classList.add("notification-error");
           break;
@@ -6944,7 +7400,7 @@
         default:
           notification.classList.add("notification-info");
       }
-      
+
       notification.classList.add("show");
 
       setTimeout(() => {
@@ -6958,9 +7414,8 @@
     }
 
     function showPage(pageId) {
-      // Hide all tooltips when changing pages
       hideAllTooltips();
-      
+
       document.querySelectorAll(".page-content").forEach((page) => {
         page.style.display = "none";
       });
@@ -6971,6 +7426,8 @@
 
         if (pageId === "shop") {
           initializeShop();
+        } else if (pageId === "homebase") {
+          initializeHomeBase();
         }
       }
 
@@ -6978,7 +7435,7 @@
         item.classList.remove("active");
       });
 
-      if (["areas", "bank", "shop"].includes(pageId)) {
+      if (["areas", "homebase", "bank", "shop"].includes(pageId)) {
         const navItem = document.querySelector(`[data-page="${pageId}"]`);
         if (navItem) {
           navItem.classList.add("active");
@@ -7046,7 +7503,7 @@
         existingButton.style.background = showDropPercentages ? '#2ecc71' : 'rgba(255,255,255,0.06)';
       }
 
-  renderAreaContent(area);
+      renderAreaContent(area);
 
       document.getElementById("areas-page").style.display = "none";
       document.getElementById("area-detail-page").style.display = "block";
@@ -7068,18 +7525,16 @@
         const card = document.createElement("div");
         card.className = `area-card ${isUnlocked ? "" : "locked"}`;
         card.dataset.areaId = area.id;
-
-        // Determine zone type based on faction composition
         const hasZombies = area.factions.some(faction => faction.toLowerCase() === "zombies");
         const isOnlyZombies = area.factions.length === 1 && hasZombies;
         const isStronghold = area.description.startsWith("Stronghold") || area.description.startsWith("Infested Stronghold");
-        
+
         let zoneLabels = [];
-        
+
         if (hasZombies) {
           zoneLabels.push({ type: "infested", label: "INFESTED" });
         }
-        
+
         if (isOnlyZombies || isStronghold) {
           zoneLabels.push({ type: "stronghold", label: "STRONGHOLD" });
         } else if (hasZombies && area.factions.length > 1) {
@@ -7087,13 +7542,9 @@
         } else if (!hasZombies && !isStronghold) {
           zoneLabels.push({ type: "warzone", label: "WARZONE" });
         }
-        
-        // Generate zone label HTML
-        const zoneLabelsHtml = zoneLabels.map((zone, index) => 
+        const zoneLabelsHtml = zoneLabels.map((zone, index) =>
           `<div class="zone-label ${zone.type}" style="top: ${10 + (index * 30)}px;">${zone.label}</div>`
         ).join("");
-
-        // Generate faction spans with colors
         const factionSpans = area.factions.map(faction => {
           const factionClass = `faction-${faction.toLowerCase().replace(/\s+/g, '_')}`;
           return `<span class="${factionClass}">${faction}</span>`;
@@ -7111,16 +7562,13 @@
     }
 
     function renderAreaContent(area) {
-      // Unified: render both sections on single page
       renderGatheringResources(area);
       renderEnemies(area);
     }
-
-    // Map player vs. node level to a CSS class for border tint
     function getNodeDifficultyClass(playerLevel, requiredLevel) {
       const diff = playerLevel - requiredLevel;
       if (diff >= 10) return "level-trivial";   // much lower level than player
-      if (diff >= 5)  return "level-easy";      // comfortably below player
+      if (diff >= 5) return "level-easy";      // comfortably below player
       if (diff >= -4) return "level-even";      // around the same level
       if (diff >= -9) return "level-hard";      // somewhat above player
       return "level-deadly";                    // far above player
@@ -7198,7 +7646,7 @@
             dropsHtml += '</div>';
           }
 
-      card.innerHTML = `
+          card.innerHTML = `
                       <h4>${resource.name}</h4>
                       <div>Level ${requiredLevel} ${skillType}</div>
                       <div>${resource.xp} XP</div>
@@ -7223,7 +7671,6 @@
     }
 
     function selectResource(card, resource, skillType) {
-      // If we're in combat or mid-dungeon, abort combat before switching to gathering
       if (gameState.combat && gameState.combat.inCombat) {
         escapeBattle();
       }
@@ -7231,10 +7678,8 @@
         document
           .querySelectorAll(".resource-card")
           .forEach((c) => c.classList.remove("active"));
-        
-        // Hide and remove gathering progress box
         hideGatheringProgress();
-        
+
         gameState.currentAction = null;
         currentSkill = null;
         addGatheringLog("Gathering stopped");
@@ -7247,8 +7692,6 @@
       card.classList.add("active");
 
       currentSkill = skillType;
-
-      // Create and show gathering progress box with resource name
       createGatheringProgressBox(resource.name);
       showGatheringProgress();
 
@@ -7288,8 +7731,6 @@
         duration: resource.time,
         progress: 0,
       };
-
-      // Reset specifically the gathering progress bar
       resetGatheringProgress();
     }
 
@@ -7301,12 +7742,11 @@
     }
 
     function createGatheringProgressBox(resourceName) {
-      // Remove any existing progress box
       removeGatheringProgressBox();
-      
+
       const gatheringMain = document.querySelector(".gathering-main");
       if (!gatheringMain) return;
-      
+
       const progressBox = document.createElement("div");
       progressBox.id = "dynamic-gathering-progress";
       progressBox.style.cssText = `
@@ -7316,15 +7756,13 @@
         padding: 15px;
         border: 1px solid var(--border);
       `;
-      
+
       progressBox.innerHTML = `
         <div style="margin-bottom: 8px; color: var(--text); font-weight: 600;">Gathering: ${resourceName}</div>
         <div class="progress-bar" id="gathering-progress">
           <div class="progress-fill" id="gathering-progress-fill"></div>
         </div>
       `;
-      
-      // Insert after the header but before the gathering grid
       const gatheringGrid = document.getElementById("gathering-resources");
       gatheringMain.insertBefore(progressBox, gatheringGrid);
     }
@@ -7346,8 +7784,6 @@
     function hideGatheringProgress() {
       removeGatheringProgressBox();
     }
-
-    // Helper to stop any ongoing gathering action and clear UI
     function stopGathering(reason = "") {
       if (gameState.currentAction && gameState.currentAction.type === "gathering") {
         gameState.currentAction = null;
@@ -7370,8 +7806,6 @@
 
       const whitelist = area.enemyWhitelist instanceof Set ? area.enemyWhitelist : null;
       const areaLevel = area.level || 1;
-
-      // Pick an enemy from a faction pool; optionally restrict to whitelist (used only for normal enemies)
       function pickFromFaction(factionId, kind, applyWhitelist = false) {
         const f = gameData.enemies && gameData.enemies[factionId];
         if (!f) return null;
@@ -7386,8 +7820,6 @@
         if (!enemyData) return null;
         return scaleEnemyForLevel(factionId, enemyData, level, kind);
       }
-
-      // Find a regular enemy by display name across all factions
       function findRegularEnemyByName(name) {
         const target = nf(name);
         const all = gameData.enemies || {};
@@ -7399,11 +7831,8 @@
         }
         return null;
       }
-
-      // 1) Normal enemies you can fight at will
       function buildNormalEnemies() {
         const out = [];
-        // Prefer configured, exact enemy list per area
         const cfg = (typeof AREA_REVAMP_CONFIG !== 'undefined' && area && area.id) ? AREA_REVAMP_CONFIG[area.id] : null;
         const whitelistArray = cfg && Array.isArray(cfg.enemies) ? cfg.enemies : null;
 
@@ -7420,8 +7849,6 @@
           });
           return out;
         }
-
-        // Fallback: generate a small set per faction (legacy behavior)
         const areaFactions = (area.factions || []).map(name => NAME_TO_FACTION_ID[name] || name);
         areaFactions.forEach((fid) => {
           const levels = [areaLevel + 1, areaLevel + 2, areaLevel + 3];
@@ -7444,7 +7871,6 @@
         list.forEach(enemy => {
           const canFight = gameState.player.combatLevel >= enemy.level;
           const item = document.createElement('div');
-          // Attach faction class if present on the enemy object
           const factionClass = enemy.factionId ? `faction-${enemy.factionId}` : '';
           item.className = `enemy-item ${factionClass} ${canFight ? '' : 'locked'}`;
           item.dataset.enemyId = enemy.id;
@@ -7479,8 +7905,8 @@
           }
 
           item.innerHTML = `
-            <div><strong>Lv ${enemy.level} ${enemy.name}</strong></div>
-            <div>HP ${enemy.hp} • Atk ${enemy.attack} • Def ${enemy.defense}</div>
+            <div><strong style="color: white;">Lv ${enemy.level}</strong> <strong class="enemy-name">${enemy.name}</strong></div>
+            <div style="color: white;">HP ${enemy.hp} • Atk ${enemy.attack} • Def ${enemy.defense}</div>
             ${dropsHtml}`;
           item.addEventListener('click', () => selectEnemy(item, enemy));
           enemyContainer.appendChild(item);
@@ -7488,11 +7914,7 @@
       }
 
       const normalEnemies = buildNormalEnemies();
-      
-      // Always render normal enemies regardless of dungeon state
       renderNormalEnemyList(normalEnemies);
-
-      // 2) Dungeons & Raids: UI only (encounters are generated at run start; no static list shown)
       if (!gameState.combat.inDungeon) {
         gameState.combat.dungeonEnemies = {}; // clear cached sequences when not in an active run
       }
@@ -7510,25 +7932,9 @@
             const completed = (gameState.combat.dungeonCompleted || []).includes(d.id);
             const isActive = gameState.combat.inDungeon && gameState.combat.currentDungeon === d.id;
             const btnLabel = isActive ? 'Continue' : (completed ? 'Replay' : 'Start');
-            
-            // Add active class if this dungeon is currently running
             if (isActive) {
               card.classList.add('active');
             }
-            
-            // Get primary faction color for card gradient
-            const factionColors = {
-              'zombies': '34,197,94',
-              'scavengers': '234,179,8',
-              'bandits': '239,68,68',
-              'cannibals': '220,38,38',
-              'mutants': '139,92,246',
-              'cultists': '168,85,247',
-              'soldiers': '96,165,250',
-              'the_directorate': '6,182,212'
-            };
-            
-            // Determine primary faction for gradient
             let primaryFaction = null;
             if (d.primaryFaction) {
               primaryFaction = d.primaryFaction;
@@ -7536,13 +7942,11 @@
               const areaFactions = gameState.currentArea.factions.map(name => NAME_TO_FACTION_ID[name] || name.toLowerCase());
               primaryFaction = areaFactions[0];
             }
-            
-            const primaryColor = primaryFaction && factionColors[primaryFaction] ? factionColors[primaryFaction] : '128,128,128';
+
+            const primaryColor = getFactionRGBString(primaryFaction);
             const cardGradient = `background: linear-gradient(135deg, rgba(${primaryColor},0.2), rgba(128,128,128,0.1));`;
-            
-            // Apply the gradient to the card
             card.style.cssText += cardGradient;
-            
+
             let progressText = '';
             let enemyListHtml = '';
             if (isActive && gameState.combat.dungeonEnemies && gameState.combat.dungeonEnemies[d.id]) {
@@ -7550,23 +7954,21 @@
               const total = enemies.length;
               const current = gameState.combat.dungeonProgress || 0;
               progressText = `<div style="font-size:11px; color:#888; margin-top:4px;">Progress: ${current + 1}/${total}</div>`;
-              
-              // Generate enemy list for active dungeon              
               enemyListHtml = `
                 <div style="margin-top:8px; padding:8px; background:rgba(0,0,0,0.3); border-radius:4px;">
                   <div style="font-size:11px; color:#bbb; margin-bottom:4px;">Enemy Order:</div>
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     ${enemies.map((enemy, index) => {
-                      const isCurrent = index === current;
-                      const isPast = index < current;
-                      const color = isCurrent ? '#ff4444' : (isPast ? '#666' : '#aaa');
-                      const prefix = isCurrent ? '► ' : (isPast ? '✓ ' : '  ');
-                      return `<div style="font-size:10px; color:${color};">${prefix}${enemy.name} (Lv${enemy.level})</div>`;
-                    }).join('')}
+                const isCurrent = index === current;
+                const isPast = index < current;
+                const color = isCurrent ? '#ff4444' : (isPast ? '#666' : '#aaa');
+                const prefix = isCurrent ? '► ' : (isPast ? '✓ ' : '  ');
+                return `<div style="font-size:10px; color:${color};">${prefix}${enemy.name} (Lv${enemy.level})</div>`;
+              }).join('')}
                   </div>
                 </div>`;
             }
-            
+
             card.innerHTML = `
               <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h5 style="margin:0;">${d.name}</h5>
@@ -7592,16 +7994,13 @@
     }
 
     function selectEnemy(item, enemy) {
-  // Switching to combat: stop any gathering in progress
-  stopGathering("Switched to combat");
+      stopGathering("Switched to combat");
       if (item.classList.contains("active")) {
         document
           .querySelectorAll(".enemy-item")
           .forEach((i) => i.classList.remove("active"));
         gameState.combat.inCombat = false;
         gameState.combat.currentEnemy = null;
-        
-        // If we're in a dungeon, warn the user about stopping mid-dungeon
         if (gameState.combat.inDungeon) {
           if (confirm('You are in a dungeon run. Stop dungeon progress?')) {
             gameState.combat.inDungeon = false;
@@ -7609,19 +8008,18 @@
             gameState.combat.dungeonProgress = 0;
             renderEnemies(gameState.currentArea); // Update UI to reflect dungeon stopped
           } else {
-            // User cancelled, don't stop combat
             item.classList.add("active");
             gameState.combat.inCombat = true;
             gameState.combat.currentEnemy = enemy;
             return;
           }
         }
-        
+
         const cpbStop = document.getElementById("combat-progress"); if (cpbStop) cpbStop.style.display = "none";
         document.getElementById("enemy-display").style.display = "none";
         const noEnemy = document.getElementById("no-enemy");
         if (noEnemy) noEnemy.style.display = "block";
-        
+
         addCombatLog("Combat stopped");
         return;
       }
@@ -7629,14 +8027,11 @@
       document
         .querySelectorAll(".enemy-item")
         .forEach((i) => i.classList.remove("active"));
-  // Deselect any resource card if present
-  document.querySelectorAll('.resource-card.active').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.resource-card.active').forEach(c => c.classList.remove('active'));
       item.classList.add("active");
-
-  // Selecting a normal enemy cancels dungeon mode
-  gameState.combat.inDungeon = false;
-  gameState.combat.currentDungeon = null;
-  startCombat(enemy);
+      gameState.combat.inDungeon = false;
+      gameState.combat.currentDungeon = null;
+      startCombat(enemy);
     }
 
     function startCombat(enemy) {
@@ -7652,22 +8047,20 @@
         attackSpeed: enemy.attackSpeed ?? 0
       };
       gameState.combat.enemyInterval = getAttackIntervalMs(enemyStats);
-
-      // Show enemy display regardless of dungeon or normal combat
       const enemyNameEl = document.getElementById("current-enemy-name");
       const enemyDisplayEl = document.getElementById("enemy-display");
-      
+
       if (enemyNameEl) {
         enemyNameEl.textContent = enemy.name;
       }
-      
+
       if (enemyDisplayEl) {
         enemyDisplayEl.style.display = "block";
       }
-      
+
       const noEnemy = document.getElementById("no-enemy");
       if (noEnemy) noEnemy.style.display = "none";
-      
+
       const lvlEl = document.getElementById("enemy-level-display");
       const atkEl = document.getElementById("enemy-attack-display");
       const defEl = document.getElementById("enemy-defense-display");
@@ -7677,7 +8070,7 @@
 
       const cpf0 = document.getElementById("combat-progress-fill");
       if (cpf0) cpf0.style.width = "0%";
-      
+
       const enemyHpBar = document.getElementById("enemy-hp-bar");
       const enemyHpText = document.getElementById("enemy-hp-text");
       if (enemyHpBar) enemyHpBar.style.width = "100%";
@@ -7689,22 +8082,17 @@
     }
 
     function startDungeonRun(dungeonId) {
-  // Starting a dungeon also cancels any gathering
-  stopGathering("Switched to dungeon");
-  
-  // Check if already in a dungeon
-  if (gameState.combat.inDungeon && gameState.combat.currentDungeon === dungeonId) {
-    showNotification('Already running this dungeon');
-    return;
-  }
-  
-  // If in a different dungeon, confirm switching
-  if (gameState.combat.inDungeon && gameState.combat.currentDungeon !== dungeonId) {
-    if (!confirm('You are already in a dungeon. Start a new one?')) {
-      return;
-    }
-  }
-  
+      stopGathering("Switched to dungeon");
+      if (gameState.combat.inDungeon && gameState.combat.currentDungeon === dungeonId) {
+        showNotification('Already running this dungeon');
+        return;
+      }
+      if (gameState.combat.inDungeon && gameState.combat.currentDungeon !== dungeonId) {
+        if (!confirm('You are already in a dungeon. Start a new one?')) {
+          return;
+        }
+      }
+
       const area = gameState.currentArea;
       const dungeon = (area && Array.isArray(area.dungeons)) ? area.dungeons.find(d => d.id === dungeonId) : null;
       if (!dungeon) {
@@ -7713,15 +8101,11 @@
       }
       const type = dungeon.type || (area && area.areaType === 'stronghold' && /raid/i.test(dungeon.name) ? 'raid' : 'dungeon');
       const areaLevel = (area && area.level) || 1;
-      
-      // Handle different dungeon data formats
       let primary, secondary;
       if (dungeon.primaryFaction) {
-        // New format from AREA_REVAMP_CONFIG
         primary = dungeon.primaryFaction;
         secondary = Array.isArray(dungeon.secondaryFactions) ? dungeon.secondaryFactions : [];
       } else if (Array.isArray(dungeon.enemies)) {
-        // Old format with enemies array - use area factions
         const areaFactions = (area.factions || []).map(name => NAME_TO_FACTION_ID[name] || name.toLowerCase());
         primary = areaFactions[0] || 'zombies';
         secondary = areaFactions.slice(1);
@@ -7731,8 +8115,6 @@
         console.error('Dungeon has no faction data:', dungeon);
         return;
       }
-
-      // Helper: pick enemy from faction pool (ignores area whitelist)
       function pickFromFactionForRun(factionId, kind) {
         const faction = gameData.enemies && gameData.enemies[factionId];
         if (!faction) {
@@ -7746,61 +8128,59 @@
         }
         return pool[Math.floor(Math.random() * pool.length)];
       }
-
-      // Build the sequence dynamically: 75% primary chance per slot, otherwise one of secondaries
       const encounters = [];
       if (type === 'raid') {
-        const levels = [areaLevel+6, areaLevel+8, areaLevel+10, areaLevel+12, areaLevel+14, areaLevel+16, areaLevel+18, areaLevel+20, areaLevel+22];
-        const slots = ['reg','reg','boss','reg','reg','boss','reg','reg','boss'];
+        const levels = [areaLevel + 6, areaLevel + 8, areaLevel + 10, areaLevel + 12, areaLevel + 14, areaLevel + 16, areaLevel + 18, areaLevel + 20, areaLevel + 22];
+        const slots = ['reg', 'reg', 'boss', 'reg', 'reg', 'boss', 'reg', 'reg', 'boss'];
         slots.forEach((slot, idx) => {
           const kind = slot === 'boss' ? 'boss' : 'regular';
           const usePrimary = Math.random() < 0.75 || secondary.length === 0;
-          const fid = usePrimary ? primary : secondary[Math.floor(Math.random()*secondary.length)];
+          const fid = usePrimary ? primary : secondary[Math.floor(Math.random() * secondary.length)];
           const e = pickFromFactionForRun(fid, kind);
           if (!e) {
             console.warn(`Failed to generate ${kind} enemy for faction ${fid} in raid slot ${idx}`);
             return;
           }
           const scaled = scaleEnemyForLevel(fid, e, levels[idx], kind);
-          if (scaled) { 
-            scaled.dungeonId = dungeon.id; 
-            scaled.kind = kind; 
-            encounters.push(scaled); 
+          if (scaled) {
+            scaled.dungeonId = dungeon.id;
+            scaled.kind = kind;
+            encounters.push(scaled);
           } else {
             console.warn(`Failed to scale ${kind} enemy for level ${levels[idx]}`);
           }
         });
       } else {
-        const regLevels = [areaLevel+2, areaLevel+3, areaLevel+4, areaLevel+5, areaLevel+6];
+        const regLevels = [areaLevel + 2, areaLevel + 3, areaLevel + 4, areaLevel + 5, areaLevel + 6];
         regLevels.forEach(L => {
           const usePrimary = Math.random() < 0.75 || secondary.length === 0;
-          const fid = usePrimary ? primary : secondary[Math.floor(Math.random()*secondary.length)];
+          const fid = usePrimary ? primary : secondary[Math.floor(Math.random() * secondary.length)];
           const e = pickFromFactionForRun(fid, 'regular');
           if (!e) {
             console.warn(`Failed to generate regular enemy for faction ${fid} at level ${L}`);
             return;
           }
           const scaled = scaleEnemyForLevel(fid, e, L, 'regular');
-          if (scaled) { 
-            scaled.dungeonId = dungeon.id; 
-            scaled.kind = 'regular'; 
-            encounters.push(scaled); 
+          if (scaled) {
+            scaled.dungeonId = dungeon.id;
+            scaled.kind = 'regular';
+            encounters.push(scaled);
           } else {
             console.warn(`Failed to scale regular enemy for level ${L}`);
           }
         });
         const bossLevel = areaLevel + 8;
         const bossUsePrimary = Math.random() < 0.75 || secondary.length === 0;
-        const bossFid = bossUsePrimary ? primary : secondary[Math.floor(Math.random()*secondary.length)];
+        const bossFid = bossUsePrimary ? primary : secondary[Math.floor(Math.random() * secondary.length)];
         const bossData = pickFromFactionForRun(bossFid, 'boss');
         if (!bossData) {
           console.warn(`Failed to generate boss enemy for faction ${bossFid}`);
         } else {
           const boss = scaleEnemyForLevel(bossFid, bossData, bossLevel, 'boss');
-          if (boss) { 
-            boss.dungeonId = dungeon.id; 
-            boss.kind = 'boss'; 
-            encounters.push(boss); 
+          if (boss) {
+            boss.dungeonId = dungeon.id;
+            boss.kind = 'boss';
+            encounters.push(boss);
           } else {
             console.warn(`Failed to scale boss enemy for level ${bossLevel}`);
           }
@@ -7814,35 +8194,30 @@
         console.error('No encounters generated for dungeon:', dungeonId, 'primary faction:', primary, 'secondary factions:', secondary);
         return;
       }
-      
+
       console.log('Generated', encounters.length, 'encounters for dungeon:', dungeonId);
-      
-      // Stop any current combat and clear states
       gameState.combat.inCombat = false;
       gameState.combat.currentEnemy = null;
-      
+
       gameState.combat.inDungeon = true;
       gameState.combat.currentDungeon = dungeonId;
       gameState.combat.dungeonProgress = 0;
-      
+
       const statusEl = document.getElementById("combat-status");
       if (statusEl) {
         statusEl.textContent = `Dungeon run started: ${dungeon.name}`;
       }
-      
-      // Update UI to show dungeon is active
       renderEnemies(gameState.currentArea);
-      
+
       startCombat(encounters[0]);
     }
 
     function renderBank() {
-      // Validate held item still exists
       if (gameState.bankHeldItem && (!gameState.bank[gameState.bankHeldItem] || gameState.bank[gameState.bankHeldItem] <= 0)) {
         gameState.bankHeldItem = null;
         hideHeldGhost();
       }
-      
+
       const grid = document.getElementById("bank-grid");
       grid.innerHTML = "";
 
@@ -7850,8 +8225,6 @@
 
       const maxSlots = BANK_CAPACITY_SLOTS;
       const placed = new Array(maxSlots).fill(null);
-      
-      // First pass: place items in their preferred slots if available
       allItemIds.forEach(id => {
         const p = gameState.bankPlacement[id] || { slot: 0 };
         let s = Math.max(0, Math.min(maxSlots - 1, p.slot || 0));
@@ -7859,14 +8232,11 @@
           placed[s] = id;
         }
       });
-      
-      // Second pass: place remaining items in any free slots
       allItemIds.forEach(id => {
         if (!placed.includes(id)) {
           for (let s = 0; s < maxSlots; s++) {
             if (!placed[s]) {
               placed[s] = id;
-              // Update placement to reflect actual position
               gameState.bankPlacement[id] = { slot: s };
               break;
             }
@@ -7928,7 +8298,6 @@
               slot.onclick = (evt) => {
                 evt.stopPropagation();
                 evt.preventDefault();
-                // Hide all tooltips before equipping
                 hideItemTooltip();
                 hideEquipmentTooltip();
                 slot.removeAttribute('title'); // Clear native tooltip
@@ -7955,9 +8324,7 @@
               else if (itemId === "birds_nest") tooltipText += ` - Click to open`;
               slot.title = tooltipText;
             } else if (["weapon", "helmet", "armor", "gloves", "boots", "offhand", "accessory"].includes(item.type)) {
-              // Don't set native tooltip for equipable items since they have rich tooltips
               if (canEquipItem(itemId)) {
-                // tooltipText += ` - Click to equip`; // This will be shown in rich tooltip
               } else {
                 tooltipText += ` - Requires level ${item.level || 1}`;
                 slot.title = tooltipText; // Only show native tooltip for items that can't be equipped
@@ -7966,24 +8333,19 @@
               slot.title = tooltipText; // Default case for other items
             }
             slot.dataset.itemId = itemId;
-
-            // Add rich tooltip support for bank items
             slot.addEventListener('mouseenter', (e) => {
               if (["weapon", "helmet", "armor", "gloves", "boots", "offhand", "accessory"].includes(item.type)) {
-                // Clean up any existing tooltips first
                 hideItemTooltip();
                 hideEquipmentTooltip();
                 showItemTooltip(e, itemId);
               }
             });
-            
+
             slot.addEventListener('mouseleave', () => {
               if (["weapon", "helmet", "armor", "gloves", "boots", "offhand", "accessory"].includes(item.type)) {
                 hideItemTooltip();
               }
             });
-            
-            // Also hide tooltip on mouse down to prevent it from sticking during click
             slot.addEventListener('mousedown', () => {
               if (["weapon", "helmet", "armor", "gloves", "boots", "offhand", "accessory"].includes(item.type)) {
                 hideItemTooltip();
@@ -7995,12 +8357,9 @@
             slot.ondragstart = (e) => {
               e.dataTransfer.setData("text/plain", itemId);
             };
-            
-            // Add a separate handler for drag/drop that doesn't conflict with item-specific actions
             slot.addEventListener('click', (evt) => {
-              // Only handle drag/drop if no specific action was taken
               if (evt.defaultPrevented) return;
-              
+
               const held = gameState.bankHeldItem;
               if (!held) {
                 gameState.bankHeldItem = itemId;
@@ -8014,7 +8373,6 @@
                   gameState.bankHeldItem = null;
                   hideHeldGhost();
                 }
-                // Use setTimeout to batch render calls
                 if (!gameState.bankRenderScheduled) {
                   gameState.bankRenderScheduled = true;
                   setTimeout(() => {
@@ -8105,17 +8463,13 @@
       ];
 
       const passiveSkills = ["farming", "animalcare"];
-      const combatSkills = ["fitness", "defense", "melee", "firearms", "explosives"]; 
-
-      // When switching skills from the sidebar, stop the other activity
+      const combatSkills = ["fitness", "defense", "melee", "firearms", "explosives"];
       if (gatheringSkills.includes(skill)) {
-        // entering a gathering skill: stop combat first
         if (gameState.combat && gameState.combat.inCombat) {
           escapeBattle();
         }
         showSkillGatheringPage(skill);
       } else if (craftingSkills.includes(skill)) {
-        // crafting: stop both
         if (gameState.combat && gameState.combat.inCombat) escapeBattle();
         stopGathering();
         showSkillCraftingPage(skill);
@@ -8124,7 +8478,6 @@
         stopGathering();
         showSkillPassivePage(skill);
       } else if (combatSkills.includes(skill)) {
-        // entering a combat skill page: stop gathering
         stopGathering();
         showCombatSkillPage(skill);
       }
@@ -8231,7 +8584,7 @@
           ...saveData.equipment,
         };
         gameState.upgrades = saveData.upgrades || gameState.upgrades || { mining: { purchased: {} }, forestry: { purchased: {} } };
-        gameState.workshops = saveData.workshops || gameState.workshops || { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {} };
+        gameState.workshops = saveData.workshops || gameState.workshops || { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
         if (!gameState.upgrades.mining) gameState.upgrades.mining = { purchased: {} };
         if (!gameState.upgrades.mining.purchased) gameState.upgrades.mining.purchased = {};
         if (!gameState.upgrades.forestry) gameState.upgrades.forestry = { purchased: {} };
@@ -8258,16 +8611,18 @@
         if (!gameState.upgrades.carpentry.purchased) gameState.upgrades.carpentry.purchased = {};
         if (!gameState.upgrades.tinkering) gameState.upgrades.tinkering = { purchased: {} };
         if (!gameState.upgrades.tinkering.purchased) gameState.upgrades.tinkering.purchased = {};
-        if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {} };
+        if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
         if (!gameState.workshops.tailoring) gameState.workshops.tailoring = {};
         if (!gameState.workshops.firstaid) gameState.workshops.firstaid = {};
         if (!gameState.workshops.forging) gameState.workshops.forging = {};
         if (!gameState.workshops.gunsmithing) gameState.workshops.gunsmithing = {};
         if (!gameState.workshops.carpentry) gameState.workshops.carpentry = {};
         if (!gameState.workshops.tinkering) gameState.workshops.tinkering = {};
+        if (!gameState.workshops.cooking) gameState.workshops.cooking = {};
+        if (!gameState.workshops.masonry) gameState.workshops.masonry = {};
+        if (!gameState.workshops.chemistry) gameState.workshops.chemistry = {};
+        if (!gameState.workshops.electrical) gameState.workshops.electrical = {};
         gameState.combat.dungeonCompleted = saveData.dungeonCompleted || [];
-        
-        // Restore dungeon state if available
         if (saveData.dungeonState) {
           gameState.combat.inDungeon = saveData.dungeonState.inDungeon || false;
           gameState.combat.currentDungeon = saveData.dungeonState.currentDungeon || null;
@@ -8321,8 +8676,6 @@
       try {
         localStorage.removeItem("postApocalypticIdleSave");
       } catch (_) { /* ignore */ }
-
-      // Reset in-memory state to defaults
       const fresh = {
         scrap: 0,
         hp: 100,
@@ -8351,8 +8704,6 @@
         poisonImmune: false,
         combatLevel: 1
       };
-
-      // Preserve non-player structures then reinitialize fields
       gameState.player = { ...fresh };
       gameState.skills = JSON.parse(JSON.stringify({
         fitness: { level: 1, xp: 0 },
@@ -8398,8 +8749,6 @@
       gameState.combat = { inCombat: false, currentEnemy: null, enemyHp: 0, enemyMaxHp: 0, inDungeon: false, currentDungeon: null, dungeonProgress: 0, dungeonEnemies: [], dungeonCompleted: [] };
 
       gameState.lastSave = Date.now();
-
-      // Starter equipment
       if (Array.isArray(STARTER_EQUIPMENT)) {
         STARTER_EQUIPMENT.forEach((itemId) => {
           if (gameData.items && gameData.items[itemId]) {
@@ -8615,8 +8964,8 @@
       const Lr = getLevel("firearms");
       const Le = getLevel("explosives");
 
-  const wrap = document.createElement("div");
-  wrap.style.cssText = "display:flex; flex-direction:column; gap:12px; max-width:720px; margin:0 auto;";
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "display:flex; flex-direction:column; gap:12px; max-width:720px; margin:0 auto;";
 
       const mkCard = (titleText, rows) => {
         const card = document.createElement("div");
@@ -8635,8 +8984,6 @@
         });
         return card;
       };
-
-      // Current bonuses (base scaling only) and formulas
       const L = getLevel(skill);
       const currentRows = [];
       if (skill === "fitness") {
@@ -8684,8 +9031,6 @@
 
       const friendly = skill === "firearms" ? "Ranged" : (skill.charAt(0).toUpperCase() + skill.slice(1));
       wrap.appendChild(mkCard(`${friendly}: Current bonuses (Level ${L})`, currentRows));
-
-      // Milestone bonuses list (25/50/75/99)
       const milestoneWrap = document.createElement("div");
       milestoneWrap.className = "resource-card";
       milestoneWrap.style.padding = "12px";
@@ -8859,7 +9204,6 @@
 
       if (recipe.materials) {
         recipe.materials.forEach((material, idx) => {
-          // Case 1: Exact item requirement
           if (material.item) {
             const playerAmount = gameState.bank[material.item] || 0;
             const hasEnough = playerAmount >= material.quantity;
@@ -8880,8 +9224,6 @@
             `;
             return;
           }
-
-          // Case 2: Junktype requirement
           const jtype = material.junktype;
           const ownedEligible = Object.keys(gameData.items || {})
             .filter(id => (gameData.items[id] && gameData.items[id].junktype === jtype) && (gameState.bank[id] || 0) > 0)
@@ -8980,8 +9322,6 @@
             ">Start Crafting</button>
           </div>
         `;
-
-      // Wire dropdown changes to update selection state and counts
       const selects = selectedRecipeDiv.querySelectorAll('select[data-role="material-select"]');
       selects.forEach(sel => {
         sel.addEventListener('change', (e) => {
@@ -9002,7 +9342,6 @@
       });
 
       document.getElementById("craft-button").addEventListener("click", () => {
-        // Resolve junktype materials into concrete items using current selections
         const resolved = JSON.parse(JSON.stringify(recipe));
         if (resolved.materials) {
           for (let i = 0; i < resolved.materials.length; i++) {
@@ -9019,7 +9358,6 @@
                 addToMessageLog(`Not enough of selected item. Need ${qty}.`, "error");
                 return;
               }
-              // Replace with concrete item
               resolved.materials[i] = { item: sel, quantity: qty };
             }
           }
@@ -9206,7 +9544,7 @@
     function showFarmingInterface(container) {
       const playerLevel = gameState.skills.farming.level;
       const unlockedPlots = getUnlockedPlots(playerLevel);
-  const plotTypeNames = { herb: "Herb Plot", garden: "Garden Plot", tree: "Tree Plot", mushroom: "Mushroom Log" };
+      const plotTypeNames = { herb: "Herb Plot", garden: "Garden Plot", tree: "Tree Plot", mushroom: "Mushroom Log" };
 
       const plotsSection = document.createElement("div");
       plotsSection.style.cssText = "margin-bottom: 30px;";
@@ -9488,7 +9826,6 @@
     window.selectSeedForPlot = selectSeedForPlot;
     window.removePlantedSeed = removePlantedSeed;
 
-
     function initializeShop() {
       setupShopTabs();
       showShopTab('general');
@@ -9528,8 +9865,8 @@
     }
 
     function showGeneralShopItems(container) {
-  const animalsSection = document.createElement('div');
-  animalsSection.style.cssText = 'margin-bottom: 40px; grid-column: 1 / -1; width: 100%;';
+      const animalsSection = document.createElement('div');
+      animalsSection.style.cssText = 'margin-bottom: 40px; grid-column: 1 / -1; width: 100%;';
 
       const animalsTitle = document.createElement('h3');
       animalsTitle.textContent = 'Animals';
@@ -9826,8 +10163,6 @@
           container.appendChild(card);
         });
       }
-
-      // Looting
       const lootHeader = document.createElement('div');
       lootHeader.style.cssText = 'grid-column: 1 / -1; width: 100%; margin: 20px 0 10px; text-align: center;';
       lootHeader.innerHTML = '<h3 style="color: var(--brand);">Looting</h3><div class="muted" style="margin-top: -6px;">Tools</div>';
@@ -9982,7 +10317,7 @@
         btn.addEventListener('click', () => {
           if (!canBuy) return;
           gameState.player.scrap -= (ws.scrapCost || 0);
-          if (!gameState.workshops) gameState.workshops = { tailoring: {} };
+          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
           if (!gameState.workshops.tailoring) gameState.workshops.tailoring = {};
           gameState.workshops.tailoring[ws.id] = true;
           showNotification(`${ws.name} purchased`);
@@ -10062,7 +10397,7 @@
         btn.addEventListener('click', () => {
           if (!canBuy) return;
           gameState.player.scrap -= (ws.scrapCost || 0);
-          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {} };
+          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
           if (!gameState.workshops.firstaid) gameState.workshops.firstaid = {};
           gameState.workshops.firstaid[ws.id] = true;
           showNotification(`${ws.name} purchased`);
@@ -10140,7 +10475,7 @@
         const btn = card.querySelector('button');
         btn.addEventListener('click', () => {
           if (!canBuy) return;
-          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {} };
+          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
           if (!gameState.workshops.forging) gameState.workshops.forging = {};
           gameState.workshops.forging[ws.id] = true;
           showNotification(`${ws.name} unlocked`);
@@ -10220,7 +10555,7 @@
         btn.addEventListener('click', () => {
           if (!canBuy) return;
           gameState.player.scrap -= (ws.scrapCost || 0);
-          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {} };
+          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
           if (!gameState.workshops.gunsmithing) gameState.workshops.gunsmithing = {};
           gameState.workshops.gunsmithing[ws.id] = true;
           showNotification(`${ws.name} purchased`);
@@ -10301,7 +10636,7 @@
         btn.addEventListener('click', () => {
           if (!canBuy) return;
           gameState.player.scrap -= (ws.scrapCost || 0);
-          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {} };
+          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
           if (!gameState.workshops.carpentry) gameState.workshops.carpentry = {};
           gameState.workshops.carpentry[ws.id] = true;
           showNotification(`${ws.name} purchased`);
@@ -10312,8 +10647,6 @@
 
         container.appendChild(card);
       });
-
-      // Tinkering
       const tinkHeader = document.createElement('div');
       tinkHeader.style.cssText = 'grid-column: 1 / -1; width: 100%; margin: 20px 0 10px; text-align: center;';
       tinkHeader.innerHTML = '<h3 style="color: var(--brand);">Tinkering</h3><div class="muted" style="margin-top: -6px;">Tools</div>';
@@ -10382,7 +10715,7 @@
         btn.addEventListener('click', () => {
           if (!canBuy) return;
           gameState.player.scrap -= (ws.scrapCost || 0);
-          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {} };
+          if (!gameState.workshops) gameState.workshops = { tailoring: {}, firstaid: {}, forging: {}, gunsmithing: {}, carpentry: {}, tinkering: {}, cooking: {}, masonry: {}, chemistry: {}, electrical: {} };
           if (!gameState.workshops.tinkering) gameState.workshops.tinkering = {};
           gameState.workshops.tinkering[ws.id] = true;
           showNotification(`${ws.name} purchased`);
@@ -10431,7 +10764,7 @@
     function showAnimalCareInterface(container) {
       const playerLevel = gameState.skills.animalcare.level;
       const unlockedPens = getUnlockedPens(playerLevel);
-  const structureTypeNames = { pen: "Pen", coop: "Coop", hutch: "Hutch", insect: "Insect House" };
+      const structureTypeNames = { pen: "Pen", coop: "Coop", hutch: "Hutch", insect: "Insect House" };
 
       const structuresSection = document.createElement("div");
       structuresSection.style.cssText = "margin-bottom: 30px;";
