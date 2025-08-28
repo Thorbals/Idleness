@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Post-Apocalyptic Idle</title>
-<style>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Post-Apocalyptic Idle</title>
+  <style>
     * {
       margin: 0;
       padding: 0;
@@ -1535,877 +1536,1420 @@
       outline-offset: 2px;
     }
   </style>
-<style id="homebase-styles">
-/* Home Base styles aligned to global design tokens */
-#homebase-page{
-      --bg: transparent; /* ambient handled by page */
+  <style id="homebase-styles">
+    /* Home Base styles aligned to global design tokens */
+    #homebase-page {
+      --bg: transparent;
+      /* ambient handled by page */
       --panel: var(--surface-2);
       --panel2: var(--surface-1);
-      --panel3: rgba(2,6,23,0.6);
+      --panel3: rgba(2, 6, 23, 0.6);
       --accent: var(--brand);
       --accent2: var(--success);
       --danger: var(--danger);
       --warn: var(--warning);
       --muted: var(--muted);
       --text: var(--text);
-      --cell:44px;  /* grid cell size */
-      --road:#252b38;
+  --cell: 36px;
+      /* grid cell size reduced by 20% (1/5) to keep 29×29 but smaller cells */
+      --road: #252b38;
       --plot: var(--panel2);
-      --ghost: rgba(224,88,88,0.22); /* subtle brand tint for ghost */
-      --valid: rgba(34,197,94,0.22);
-      --invalid: rgba(255,93,93,0.18);
-      --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02);
+      --ghost: rgba(224, 88, 88, 0.22);
+      /* subtle brand tint for ghost */
+      --valid: rgba(34, 197, 94, 0.22);
+      --invalid: rgba(255, 93, 93, 0.18);
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .02);
     }
 
-#homebase-page *{box-sizing:border-box}
-#homebase-page{margin:0;background:radial-gradient(1200px 800px at 20% -10%, rgba(10,10,10,0.15) 0%, transparent 60%), linear-gradient(180deg, var(--panel3) 0%, transparent 60%);color:var(--text);font:14px/1.35 Inter, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif}
-
-#homebase-page .hud{position:sticky;top:0;z-index:5;background:linear-gradient(180deg, rgba(12,16,24,.75), rgba(12,16,24,.5));backdrop-filter:blur(8px);padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:14px;align-items:center;box-shadow:var(--shadow)}
-#homebase-page .badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border);border-radius:12px;padding:8px 12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
-#homebase-page .badge .v{font-weight:800}
-#homebase-page .k{color:var(--muted);font-weight:600;letter-spacing:.3px}
-#homebase-page .delta{opacity:.9;margin-left:6px}
-#homebase-page .delta.minus{color:var(--danger)}
-#homebase-page .delta.plus{color:var(--accent2)}
-#homebase-page .mode{margin-left:auto;display:flex;gap:8px}
-#homebase-page .btn{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);transition:transform .08s ease, box-shadow .2s ease, border-color .2s}
-#homebase-page .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03)}
-#homebase-page .btn[disabled]{opacity:.6;cursor:not-allowed}
-#homebase-page .btn.primary{background:linear-gradient(180deg, rgba(224,88,88,0.18), rgba(181,45,60,0.18));border-color:rgba(224,88,88,0.25)}
-#homebase-page .btn.mini{padding:6px 8px;font-size:12px;opacity:.95}
-#homebase-page .layout{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 58px)}
-#homebase-page .palette{border-right:1px solid var(--border);background:linear-gradient(180deg,var(--panel2),var(--panel));box-shadow:var(--shadow)}
-#homebase-page .tabs{display:flex}
-#homebase-page .tab{flex:1;text-align:center;padding:12px 10px;cursor:pointer;border-bottom:2px solid transparent;transition:background .2s}
-#homebase-page .tab:hover{background:rgba(255,255,255,.02)}
-#homebase-page .tab.active{border-color:var(--accent);background:linear-gradient(180deg, rgba(224,88,88,0.06), rgba(224,88,88,0.03))}
-#homebase-page .pal-body{padding:12px;display:grid;gap:12px;grid-auto-rows:min-content}
-#homebase-page .fav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-#homebase-page .pill{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:linear-gradient(180deg,var(--panel2),var(--panel));font-size:12px;cursor:pointer}
-#homebase-page .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border);border-radius:14px;padding:12px;display:grid;gap:10px;box-shadow:var(--shadow);transition:transform .08s ease, box-shadow .2s ease, border-color .2s}
-#homebase-page .card:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(0,0,0,.4)}
-#homebase-page .card.selected{border-color:var(--accent);box-shadow:0 0 0 4px rgba(224,88,88,.06), 0 12px 26px rgba(0,0,0,.45)}
-#homebase-page .card h4{margin:0;font-size:15px;letter-spacing:.2px}
-#homebase-page .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-#homebase-page .chip{display:inline-flex;gap:6px;align-items:center;background:var(--panel3);border:1px solid var(--border);border-radius:9px;padding:4px 8px;font-weight:600}
-#homebase-page .chip.red{border-color:rgba(75,43,43,.6);background:rgba(43,31,31,.6);color:#ff9b9b}
-#homebase-page .slots{display:flex;gap:6px}
-#homebase-page .slot{font-size:12px;background:var(--panel3);border:1px solid var(--border);padding:4px 8px;border-radius:8px;opacity:.95}
-#homebase-page .desc{color:var(--muted);font-size:12px}
-#homebase-page .choose{margin-top:4px}
-#homebase-page .choose .btn{width:100%}
-
-/* map */
-#homebase-page .map-wrap{position:relative;background:radial-gradient(800px 600px at 70% -10%, rgba(10,12,18,0.15) 0%, transparent 60%), var(--panel3);padding:18px}
-#homebase-page .map{position:relative;display:grid;grid-template-columns:repeat(var(--cols), var(--cell));grid-template-rows:repeat(var(--rows), var(--cell));gap:3px;user-select:none;filter:drop-shadow(0 20px 28px rgba(0,0,0,.45))}
-#homebase-page .tile{width:var(--cell);height:var(--cell);background:var(--plot);border-radius:8px;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.02), inset 0 -1px 0 rgba(0,0,0,.35)}
-#homebase-page .road{background:linear-gradient(180deg, #222a38, #1d2431)}
-#homebase-page .road::after{content:"";position:absolute;inset:0;border-radius:8px;opacity:.35;pointer-events:none;background:
-      linear-gradient(transparent 48%, rgba(255,255,255,.04) 50%, transparent 52%),
-      repeating-linear-gradient(90deg, transparent 0 18px, rgba(255,255,255,.03) 18px 20px, transparent 20px 38px);
+    #homebase-page * {
+      box-sizing: border-box
     }
-#homebase-page .placed{background:linear-gradient(180deg,rgba(34,40,54,0.6),rgba(20,26,36,0.6));border:1px solid rgba(52,68,95,0.4);box-shadow:0 10px 18px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.02)}
-#homebase-page .placed .name{position:absolute;bottom:4px;left:6px;font-size:10px;color:var(--muted);opacity:.9;text-shadow:0 1px 0 rgba(0,0,0,.5)}
 
-/* eligible (road-adjacent) highlight when selecting */
-body.show-adj .tile.adj::after{content:"";position:absolute;inset:0;border:2px dashed rgba(224,88,88,.25);border-radius:10px;box-shadow:0 0 0 2px rgba(224,88,88,.04) inset, 0 0 12px rgba(224,88,88,.06);} 
-
-/* ghost */
-.ghost-cell{position:absolute;pointer-events:none;outline:2px dashed var(--ghost);background:rgba(224,88,88,.06);border-radius:10px;transform:translate(-2px,-2px);box-shadow:0 10px 24px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02)}
-#homebase-page .ghost-cell.valid{outline-color:var(--valid);background:var(--valid);box-shadow:0 12px 26px rgba(0,0,0,.5), 0 0 22px rgba(34,197,94,.06)}
-#homebase-page .ghost-cell.invalid{outline-color:var(--invalid);background:var(--invalid);box-shadow:0 12px 26px rgba(0,0,0,.45),0 0 22px rgba(255,93,93,.06)}
-#homebase-page .ghost-meta{position:absolute;left:8px;top:8px;display:flex;gap:6px;pointer-events:none}
-#homebase-page .gchip{font-size:11px;background:rgba(12,16,24,.6);border:1px solid var(--border);border-radius:999px;padding:4px 8px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
-
-/* floating UI over map */
-.overlay{position:absolute;inset:18px;pointer-events:none}
-#homebase-page .overlay .corner{position:absolute;right:0;top:0;display:flex;gap:8px}
-#homebase-page .overlay .corner .btn{pointer-events:auto}
-#homebase-page .hint{position:absolute;left:0;bottom:0;background:rgba(0,0,0,.45);padding:10px 12px;border-radius:12px;border:1px solid var(--border)}
-
-/* toast */
-.toasts{position:fixed;bottom:14px;left:14px;display:grid;gap:8px;z-index:20}
-#homebase-page .toast{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);padding:10px 12px;border-radius:10px;display:flex;gap:10px;align-items:center;box-shadow:0 12px 24px rgba(0,0,0,.45)}
-#homebase-page .toast .link{margin-left:auto;color:var(--accent2);text-decoration:underline;cursor:pointer}
-
-/* tiny tooltip */
-.tip{position:absolute;left:8px;bottom:calc(100% + 8px);background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:6px 8px;font-size:11px;white-space:nowrap;pointer-events:none;color:var(--text);box-shadow:0 10px 20px rgba(0,0,0,.5)}
-#homebase-page .legend{display:flex;gap:8px;color:var(--muted);font-size:12px;margin-top:6px;flex-wrap:wrap}
-#homebase-page .legend .sw{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px;border:1px solid var(--border)}
-#homebase-page .sw.valid{background:var(--valid);border-color:rgba(43,63,53,.6)}
-#homebase-page .sw.invalid{background:var(--invalid);border-color:rgba(63,43,43,.5)}
-#homebase-page .muted{color:var(--muted)}
-</style>
-</head>
-<body>
-<div class="game-container">
-<aside aria-label="Sidebar navigation" class="sidebar">
-<div class="logo">🏚️ POST-APOCALYPTIC IDLE</div>
-<nav aria-label="Main" class="nav-section">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-          Main</h3>
-<button aria-current="page" class="nav-item active" data-page="areas" type="button">
-<div aria-hidden="true" class="icon">🗺️</div>
-<span>Areas</span>
-</button>
-<button class="nav-item" data-page="homebase" type="button">
-<div aria-hidden="true" class="icon">🏠</div>
-<span>Home Base</span>
-</button>
-<button class="nav-item" data-page="bank" type="button">
-<div aria-hidden="true" class="icon">🏦</div>
-<span>Bank</span>
-<span aria-live="polite" class="level-badge" id="bank-count">0/30</span>
-</button>
-<button class="nav-item" data-page="shop" type="button">
-<div aria-hidden="true" class="icon">🏪</div>
-<span>Shop</span>
-</button>
-</nav>
-<nav aria-label="Combat Skills" class="nav-section">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-          Combat</h3>
-<button class="nav-item" data-skill="fitness" type="button">
-<div aria-hidden="true" class="icon">💪</div>
-<span>Fitness</span>
-<span class="level-badge" id="fitness-level">1</span>
-</button>
-<button class="nav-item" data-skill="defense" type="button">
-<div aria-hidden="true" class="icon">🛡️</div>
-<span>Defense</span>
-<span class="level-badge" id="defense-level">1</span>
-</button>
-<button class="nav-item" data-skill="melee" type="button">
-<div aria-hidden="true" class="icon">⚔️</div>
-<span>Melee</span>
-<span class="level-badge" id="melee-level">1</span>
-</button>
-<button class="nav-item" data-skill="firearms" type="button">
-<div aria-hidden="true" class="icon">🔫</div>
-<span>Firearms</span>
-<span class="level-badge" id="firearms-level">1</span>
-</button>
-<button class="nav-item" data-skill="explosives" type="button">
-<div aria-hidden="true" class="icon">💥</div>
-<span>Explosives</span>
-<span class="level-badge" id="explosives-level">1</span>
-</button>
-</nav>
-<nav aria-label="Gathering Skills" class="nav-section">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-          Gathering</h3>
-<button class="nav-item" data-skill="woodcutting" type="button">
-<div aria-hidden="true" class="icon">🪓</div>
-<span>Woodcutting</span>
-<span class="level-badge" id="woodcutting-level">1</span>
-</button>
-<button class="nav-item" data-skill="mining" type="button">
-<div aria-hidden="true" class="icon">⛏️</div>
-<span>Mining</span>
-<span class="level-badge" id="mining-level">1</span>
-</button>
-<button class="nav-item" data-skill="fishing" type="button">
-<div aria-hidden="true" class="icon">🎣</div>
-<span>Fishing</span>
-<span class="level-badge" id="fishing-level">1</span>
-</button>
-<button class="nav-item" data-skill="foraging" type="button">
-<div aria-hidden="true" class="icon">🍄</div>
-<span>Foraging</span>
-<span class="level-badge" id="foraging-level">1</span>
-</button>
-<button class="nav-item" data-skill="hunting" type="button">
-<div aria-hidden="true" class="icon">🏹</div>
-<span>Hunting</span>
-<span class="level-badge" id="hunting-level">1</span>
-</button>
-<button class="nav-item" data-skill="looting" type="button">
-<div aria-hidden="true" class="icon">🔍</div>
-<span>Looting</span>
-<span class="level-badge" id="looting-level">1</span>
-</button>
-<button class="nav-item" data-skill="scavenging" type="button">
-<div aria-hidden="true" class="icon">♻️</div>
-<span>Scavenging</span>
-<span class="level-badge" id="scavenging-level">1</span>
-</button>
-</nav>
-<nav aria-label="Production Skills" class="nav-section">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-          Production</h3>
-<button class="nav-item" data-skill="animalcare" type="button">
-<div aria-hidden="true" class="icon">🐄</div>
-<span>Animal Care</span>
-<span class="level-badge" id="animalcare-level">1</span>
-</button>
-<button class="nav-item" data-skill="farming" type="button">
-<div aria-hidden="true" class="icon">🌾</div>
-<span>Farming</span>
-<span class="level-badge" id="farming-level">1</span>
-</button>
-</nav>
-<nav aria-label="Crafting Skills" class="nav-section">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-          Crafting</h3>
-<button class="nav-item" data-skill="cooking" type="button">
-<div aria-hidden="true" class="icon">🍳</div>
-<span>Cooking</span>
-<span class="level-badge" id="cooking-level">1</span>
-</button>
-<button class="nav-item" data-skill="forging" type="button">
-<div aria-hidden="true" class="icon">⚒️</div>
-<span>Forging</span>
-<span class="level-badge" id="forging-level">1</span>
-</button>
-<button class="nav-item" data-skill="tailoring" type="button">
-<div aria-hidden="true" class="icon">🧵</div>
-<span>Tailoring</span>
-<span class="level-badge" id="tailoring-level">1</span>
-</button>
-<button class="nav-item" data-skill="gunsmithing" type="button">
-<div aria-hidden="true" class="icon">🔫</div>
-<span>Gunsmithing</span>
-<span class="level-badge" id="gunsmithing-level">1</span>
-</button>
-<button class="nav-item" data-skill="tinkering" type="button">
-<div aria-hidden="true" class="icon">🛠️</div>
-<span>Tinkering</span>
-<span class="level-badge" id="tinkering-level">1</span>
-</button>
-<button class="nav-item" data-skill="carpentry" type="button">
-<div aria-hidden="true" class="icon">🪚</div>
-<span>Carpentry</span>
-<span class="level-badge" id="carpentry-level">1</span>
-</button>
-<button class="nav-item" data-skill="firstaid" type="button">
-<div aria-hidden="true" class="icon">⚕️</div>
-<span>First Aid</span>
-<span class="level-badge" id="firstaid-level">1</span>
-</button>
-<button class="nav-item" data-skill="masonry" type="button">
-<div aria-hidden="true" class="icon">🧱</div>
-<span>Masonry</span>
-<span class="level-badge" id="masonry-level">1</span>
-</button>
-<button class="nav-item" data-skill="chemistry" type="button">
-<div aria-hidden="true" class="icon">🧪</div>
-<span>Chemistry</span>
-<span class="level-badge" id="chemistry-level">1</span>
-</button>
-<button class="nav-item" data-skill="electrical" type="button">
-<div aria-hidden="true" class="icon">⚡</div>
-<span>Electrical</span>
-<span class="level-badge" id="electrical-level">1</span>
-</button>
-</nav>
-</aside>
-<main class="main-content">
-<header class="top-bar" role="banner">
-<div aria-label="Currencies" class="currency-display">
-<div class="currency-item">
-<span aria-hidden="true">🔩</span>
-<span id="scrap-amount">0</span>
-<span>Scrap</span>
-</div>
-<div class="currency-item">
-<span aria-hidden="true">⚔️</span>
-<span id="combat-level">1</span>
-<span>Combat</span>
-</div>
-</div>
-<div>
-<button class="action-button" id="btn-save">
-            Save Game
-          </button>
-<button class="action-button" id="btn-load">
-            Load Game
-          </button>
-<button class="action-button" id="btn-reset">
-            Reset
-          </button>
-</div>
-</header>
-<div class="content-area">
-<div class="loading" id="loading-screen">Loading game data...</div>
-<div class="page-content" id="areas-page" style="display: none">
-<div class="content-header">
-<h1 class="content-title">Areas</h1>
-</div>
-<div class="areas-grid" id="areas-grid"></div>
-</div>
-<section aria-labelledby="area-detail-title" class="page-content" id="area-detail-page" style="display: none">
-<div class="content-header">
-<h1 class="content-title" id="area-detail-title">Area Name</h1>
-<button class="action-button" id="back-to-areas">
-              Back to Areas
-            </button>
-</div>
-<div class="combat-container">
-<div class="left-stack">
-<div class="combat-main">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                  Combat</h3>
-<div id="faction-description" style="font-size:13px;color:#cbd5e1;margin-bottom:10px;font-weight:600;">
-</div>
-<div class="combat-stats-2col">
-<div class="combat-box">
-<h4 style="margin:0 0 6px 0;">Player</h4>
-<div class="stats-grid">
-<div class="stat-item"><span>Combat Level:</span><span id="player-combat-level">1</span></div>
-<div class="stat-item"><span>Attack:</span><span id="player-attack">10</span></div>
-<div class="stat-item"><span>Defense:</span><span id="player-defense">10</span></div>
-</div>
-<div class="hp-bar">
-<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="player-hp-bar" role="progressbar" style="width: 100%"></div>
-</div>
-<div id="player-hp" style="font-size:12px;">100/100</div>
-</div>
-<div class="combat-box">
-<h4 style="margin:0 0 6px 0;">Enemy</h4>
-<div id="enemy-display" style="display:none;">
-<div class="stats-grid">
-<div class="stat-item"><span>Name:</span><span id="current-enemy-name">Enemy</span></div>
-<div class="stat-item"><span>Level:</span><span id="enemy-level-display">-</span></div>
-<div class="stat-item"><span>Attack:</span><span id="enemy-attack-display">-</span></div>
-<div class="stat-item"><span>Defense:</span><span id="enemy-defense-display">-</span></div>
-</div>
-<div class="hp-bar">
-<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="enemy-hp-bar" role="progressbar" style="width: 100%"></div>
-</div>
-<div id="enemy-hp-text">100/100</div>
-</div>
-<div id="no-enemy" style="font-size:12px;color:#8b949e;">No enemy selected</div>
-</div>
-</div>
-<!-- combat status/progress removed per design: enemy panel reflects combat state -->
-<div class="enemy-list">
-<h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                    Enemies</h4>
-<div id="enemy-list"></div>
-</div>
-<div class="enemy-list">
-<h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                    Dungeons &amp; Raids</h4>
-<div id="dungeon-list"></div>
-</div>
-</div>
-<div class="gathering-main" style="margin-top: 18px;">
-<h3 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                  Gathering</h3>
-<div class="gathering-grid" id="gathering-resources"></div>
-</div>
-</div>
-<div aria-label="Equipment and actions" class="combat-sidebar">
-<div class="equipment-panel">
-<h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                  Equipment</h4>
-<div class="equipment-grid">
-<div class="equipment-slot" data-slot="helmet" title="Helmet">
-<div aria-hidden="true" class="slot-icon">⛑️</div>
-<div class="slot-content" id="helmet-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="armor" title="Body Armor">
-<div aria-hidden="true" class="slot-icon">🦺</div>
-<div class="slot-content" id="armor-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="gloves" title="Gloves">
-<div aria-hidden="true" class="slot-icon">🧤</div>
-<div class="slot-content" id="gloves-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="boots" title="Boots">
-<div aria-hidden="true" class="slot-icon">🥾</div>
-<div class="slot-content" id="boots-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="weapon" title="Weapon">
-<div aria-hidden="true" class="slot-icon">⚔️</div>
-<div class="slot-content" id="weapon-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="offhand" title="Off-hand">
-<div aria-hidden="true" class="slot-icon">🛡️</div>
-<div class="slot-content" id="offhand-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="accessory1" title="Accessory 1">
-<div aria-hidden="true" class="slot-icon">💍</div>
-<div class="slot-content" id="accessory1-slot"></div>
-</div>
-<div class="equipment-slot" data-slot="accessory2" title="Accessory 2">
-<div aria-hidden="true" class="slot-icon">💍</div>
-<div class="slot-content" id="accessory2-slot"></div>
-</div>
-</div>
-</div>
-<div class="quick-actions">
-<h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                  Quick Actions</h4>
-<div class="quick-actions-grid">
-<div class="qa-section" id="qa-bandage">
-<button class="action-button" id="btn-autoheal" title="Toggle bandage auto-heal">Bandage Autoheal:
-                      Off</button>
-<label for="select-bandage">Bandage selection</label>
-<select id="select-bandage"></select>
-</div>
-<div class="qa-section" id="qa-food">
-<button class="action-button" id="btn-eat-food" title="Use selected/best food to heal">Eat
-                      Food</button>
-<label for="select-food">Food selection</label>
-<select id="select-food"></select>
-</div>
-<div class="qa-section" id="qa-escape">
-<button class="action-button" id="btn-escape" title="Escape current battle">Escape Battle</button>
-</div>
-</div>
-</div>
-<div class="activity-log-panel">
-<h4 style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
-                  Activity Log</h4>
-<div id="activity-log-content">
-<div class="log-entry">Activity log will appear here...</div>
-</div>
-</div>
-</div>
-</div>
-</section></div>
-<div class="page-content" id="homebase-page" style="display: none"><div class="hud">
-<div class="badge"><span class="k">🪵 Wood</span> <span class="v" id="wood">150</span> <span class="delta" id="woodDelta"></span></div>
-<div class="badge"><span class="k">🪨 Stone</span> <span class="v" id="stone">120</span> <span class="delta" id="stoneDelta"></span></div>
-<div class="badge"><span class="k">Mode</span> <span class="v">Build</span></div>
-<div class="mode">
-<button class="btn" disabled="" id="undoBtn">Undo (Z)</button>
-</div>
-</div><div class="layout">
-<aside class="palette">
-<div class="tabs" id="tabs"></div>
-<div class="pal-body">
-<div class="fav" id="favRow"></div>
-<div id="cards"></div>
-<div class="legend">
-<span><i class="sw valid"></i>Valid</span>
-<span><i class="sw invalid"></i>Invalid</span>
-<span class="muted">Rotate: Q/E · Chain place: Shift</span>
-</div>
-</div>
-</aside>
-<main class="map-wrap">
-<div class="map" id="map"></div>
-<div class="overlay">
-<div class="corner">
-<button class="btn" id="rotateLeft">⟲ Q</button>
-<button class="btn" id="rotateRight">E ⟳</button>
-</div>
-<div class="hint" id="hint">Pick a building, then click a valid plot (adjacent to a road). Hold Shift to stamp multiples.</div>
-</div>
-</main>
-</div><div class="toasts" id="toasts"></div><script>
-(function(){
-  // ======= DATA =======
-  const CATS = [
-    { id:'res', name:'Residential' },
-    { id:'ind', name:'Industrial' },
-    { id:'def', name:'Defensive' },
-    { id:'spe', name:'Special' },
-  ];
-
-  const BUILDINGS = [
-    // Residential
-    { id:'shack', cat:'res', name:'Shack', cost:{wood:15, stone:5}, slots:{F:1,W:1,S:0,D:0}, durability:50, footprint:[1,1], tags:['Road-adjacent'] },
-    { id:'shelter', cat:'res', name:'Shelter', cost:{wood:30, stone:10}, slots:{F:2,W:1,S:0,D:0}, durability:100, footprint:[2,1], tags:['Road-adjacent'] },
-    { id:'apt', cat:'res', name:'Apartment Block', cost:{wood:60, stone:25}, slots:{F:3,W:1,S:0,D:1}, durability:150, footprint:[2,2], tags:['Road-adjacent'] },
-    // Industrial
-    { id:'workshop', cat:'ind', name:'Workshop', cost:{wood:20, stone:20}, slots:{F:0,W:2,S:1,D:0}, durability:120, footprint:[2,1], tags:['Road-adjacent'] },
-    { id:'factory', cat:'ind', name:'Factory Floor', cost:{wood:35, stone:40}, slots:{F:0,W:3,S:2,D:0}, durability:160, footprint:[3,2], tags:['Road-adjacent'] },
-    // Defensive
-    { id:'guard', cat:'def', name:'Guard Post', cost:{wood:15, stone:10}, slots:{F:0,W:0,S:0,D:2}, durability:100, footprint:[1,1], tags:['Road-adjacent','Defense +2'] },
-    { id:'watch', cat:'def', name:'Watchtower', cost:{wood:25, stone:25}, slots:{F:0,W:0,S:0,D:3}, durability:200, footprint:[1,1], tags:['Road-adjacent','Vision +'] },
-    // Special
-    { id:'expo', cat:'spe', name:'Expedition Center', cost:{wood:50, stone:30}, slots:{F:0,W:0,S:0,D:0}, durability:120, footprint:[2,2], tags:['Road-adjacent','Unlocks exploration'] },
-  ];
-
-  // ======= STATE =======
-  const state = {
-    cols: 18,
-    rows: 12,
-    wood: 150,
-    stone: 120,
-    rotation: 0, // 0 or 90
-    selection: null, // building object
-    chain: false,
-    lastPlaced: null,
-    roads: new Set(),
-    occupied: new Map(), // key "x,y" -> { id, name }
-  };
-
-  // ======= DOM REFS =======
-  const mapEl = document.getElementById('map');
-  const tabsEl = document.getElementById('tabs');
-  const cardsEl = document.getElementById('cards');
-  const favRow = document.getElementById('favRow');
-  const woodEl = document.getElementById('wood');
-  const stoneEl = document.getElementById('stone');
-  const woodDeltaEl = document.getElementById('woodDelta');
-  const stoneDeltaEl = document.getElementById('stoneDelta');
-  const rotateL = document.getElementById('rotateLeft');
-  const rotateR = document.getElementById('rotateRight');
-  const undoBtn = document.getElementById('undoBtn');
-  const toasts = document.getElementById('toasts');
-  const hint = document.getElementById('hint');
-  const corner = document.querySelector('.overlay .corner');
-
-  // Affordable counter chip
-  const affordChip = document.createElement('button');
-  affordChip.className = 'btn mini';
-  affordChip.id = 'affordChip';
-  affordChip.textContent = '';
-  affordChip.disabled = true;
-  corner.appendChild(affordChip);
-
-  // ======= INIT GRID & ROADS =======
-  mapEl.style.setProperty('--cols', state.cols);
-  mapEl.style.setProperty('--rows', state.rows);
-
-  // Build tiles
-  const tiles = [];
-  for(let y=0;y<state.rows;y++){
-    for(let x=0;x<state.cols;x++){
-      const t=document.createElement('div');
-      t.className='tile';
-      t.dataset.x=x; t.dataset.y=y;
-      mapEl.appendChild(t);
-      tiles.push(t);
+    #homebase-page {
+      margin: 0;
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(10, 10, 10, 0.15) 0%, transparent 60%), linear-gradient(180deg, var(--panel3) 0%, transparent 60%);
+      color: var(--text);
+      font: 14px/1.35 Inter, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif
     }
+
+    #homebase-page .hud {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: linear-gradient(180deg, rgba(12, 16, 24, .75), rgba(12, 16, 24, .5));
+      backdrop-filter: blur(8px);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      box-shadow: var(--shadow)
+    }
+
+    /* coordinate hover HUD */
+    .coord-hud {
+      position: fixed;
+      pointer-events: none;
+      padding: 6px 8px;
+      background: rgba(10, 12, 16, 0.9);
+      color: var(--text);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+      z-index: 9999;
+      display: none
+    }
+
+    #homebase-page .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .02)
+    }
+
+    #homebase-page .badge .v {
+      font-weight: 800
+    }
+
+    #homebase-page .k {
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .3px
+    }
+
+    #homebase-page .delta {
+      opacity: .9;
+      margin-left: 6px
+    }
+
+    #homebase-page .delta.minus {
+      color: var(--danger)
+    }
+
+    #homebase-page .delta.plus {
+      color: var(--accent2)
+    }
+
+    #homebase-page .mode {
+      margin-left: auto;
+      display: flex;
+      gap: 8px
+    }
+
+    #homebase-page .btn {
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .02);
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s
+    }
+
+    #homebase-page .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(255, 255, 255, .03)
+    }
+
+    #homebase-page .btn[disabled] {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    #homebase-page .btn.primary {
+      background: linear-gradient(180deg, rgba(224, 88, 88, 0.18), rgba(181, 45, 60, 0.18));
+      border-color: rgba(224, 88, 88, 0.25)
+    }
+
+    #homebase-page .btn.mini {
+      padding: 6px 8px;
+      font-size: 12px;
+      opacity: .95
+    }
+
+    #homebase-page .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      min-height: calc(100vh - 58px)
+    }
+
+    #homebase-page .palette {
+      border-right: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      box-shadow: var(--shadow)
+    }
+
+    #homebase-page .tabs {
+      display: flex
+    }
+
+    #homebase-page .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 10px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: background .2s
+    }
+
+    #homebase-page .tab:hover {
+      background: rgba(255, 255, 255, .02)
+    }
+
+    #homebase-page .tab.active {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(224, 88, 88, 0.06), rgba(224, 88, 88, 0.03))
+    }
+
+    #homebase-page .pal-body {
+      padding: 12px;
+      display: grid;
+      gap: 12px;
+      grid-auto-rows: min-content
+    }
+
+    #homebase-page .fav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px
+    }
+
+    #homebase-page .pill {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      font-size: 12px;
+      cursor: pointer
+    }
+
+    #homebase-page .card {
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s
+    }
+
+    #homebase-page .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, .4)
+    }
+
+    #homebase-page .card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(224, 88, 88, .06), 0 12px 26px rgba(0, 0, 0, .45)
+    }
+
+    #homebase-page .card h4 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: .2px
+    }
+
+    #homebase-page .row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    #homebase-page .chip {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      background: var(--panel3);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 4px 8px;
+      font-weight: 600
+    }
+
+    #homebase-page .chip.red {
+      border-color: rgba(75, 43, 43, .6);
+      background: rgba(43, 31, 31, .6);
+      color: #ff9b9b
+    }
+
+    #homebase-page .slots {
+      display: flex;
+      gap: 6px
+    }
+
+    #homebase-page .slot {
+      font-size: 12px;
+      background: var(--panel3);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 8px;
+      opacity: .95
+    }
+
+    #homebase-page .desc {
+      color: var(--muted);
+      font-size: 12px
+    }
+
+    #homebase-page .choose {
+      margin-top: 4px
+    }
+
+    #homebase-page .choose .btn {
+      width: 100%
+    }
+
+    /* map */
+    #homebase-page .map-wrap {
+      position: relative;
+      background: radial-gradient(800px 600px at 70% -10%, rgba(10, 12, 18, 0.15) 0%, transparent 60%), var(--panel3);
+      padding: 18px
+    }
+
+    #homebase-page .map {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), var(--cell));
+      grid-template-rows: repeat(var(--rows), var(--cell));
+  gap: 0px;
+      user-select: none;
+      filter: drop-shadow(0 20px 28px rgba(0, 0, 0, .45))
+    }
+
+    #homebase-page .tile {
+      width: var(--cell);
+      height: var(--cell);
+      background: var(--plot);
+      border-radius: 0px;
+      position: relative;
+      /* remove inset highlights/shadows so textures fill edge-to-edge */
+      box-shadow: none;
+    }
+
+    #homebase-page .road {
+      background: linear-gradient(180deg, #222a38, #1d2431);
+      /* make road tiles visually square and flush so textures connect */
+  border-radius: 0px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .02), inset 0 -1px 0 rgba(0, 0, 0, .35);
+      position: relative;
+      overflow: visible;
+    }
+
+    /* road caps: draw two halves per axis so we can hide the unconnected side */
+    #homebase-page .tile .cap-n,
+    #homebase-page .tile .cap-s {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.85));
+      border-radius: 2px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .6);
+      opacity: 0.9;
+      pointer-events: none;
+      display: none;
+      z-index: 4;
+    }
+
+    #homebase-page .tile .cap-n {
+      top: 6%;
+      height: 24%;
+    }
+
+    #homebase-page .tile .cap-s {
+      bottom: 6%;
+      height: 24%;
+    }
+
+    #homebase-page .tile .cap-w,
+    #homebase-page .tile .cap-e {
+      position: absolute;
+      top: 50%;
+      height: 2px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.85));
+      border-radius: 2px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .6);
+      opacity: 0.9;
+      pointer-events: none;
+      display: none;
+      z-index: 4;
+    }
+
+    #homebase-page .tile .cap-w {
+      left: 6%;
+      width: 24%;
+    }
+
+    #homebase-page .tile .cap-e {
+      right: 6%;
+      width: 24%;
+    }
+
+    /* show caps when specific connection exists */
+    #homebase-page .road.cap-n .cap-n {
+      display: block;
+    }
+
+    #homebase-page .road.cap-s .cap-s {
+      display: block;
+    }
+
+    #homebase-page .road.cap-w .cap-w {
+      display: block;
+    }
+
+    #homebase-page .road.cap-e .cap-e {
+      display: block;
+    }
+
+    /* per-side sidewalk bands (flush to tile edges, full-length, square ends) */
+    #homebase-page .tile .side-n,
+    #homebase-page .tile .side-s {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: rgba(210, 210, 210, 0.95);
+      border-radius: 0;
+      pointer-events: none;
+      display: none;
+      z-index: 2;
+    }
+
+    #homebase-page .tile .side-n { top: 0; }
+    #homebase-page .tile .side-s { bottom: 0; }
+
+    #homebase-page .tile .side-w,
+    #homebase-page .tile .side-e {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: rgba(210, 210, 210, 0.95);
+      border-radius: 0;
+      pointer-events: none;
+      display: none;
+      z-index: 2;
+    }
+
+    #homebase-page .tile .side-w { left: 0; }
+    #homebase-page .tile .side-e { right: 0; }
+
+  /* show per-side sidewalks when the tile has the matching side class */
+  #homebase-page .tile.road.side-n .side-n { display: block; }
+  #homebase-page .tile.road.side-s .side-s { display: block; }
+  #homebase-page .tile.road.side-w .side-w { display: block; }
+  #homebase-page .tile.road.side-e .side-e { display: block; }
+
+  /* corner fills for sidewalk corners (hidden by default) */
+  #homebase-page .tile .corner-nw,
+  #homebase-page .tile .corner-ne,
+  #homebase-page .tile .corner-sw,
+  #homebase-page .tile .corner-se {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(210, 210, 210, 0.95);
+    display: none;
+    z-index: 3;
+    pointer-events: none;
   }
 
-  function roadKey(x,y){ return x+","+y; }
-  function setRoad(x,y){ state.roads.add(roadKey(x,y)); tileAt(x,y)?.classList.add('road'); }
-  function tileAt(x,y){ if(x<0||y<0||x>=state.cols||y>=state.rows)return null; return tiles[y*state.cols+x]; }
+  #homebase-page .tile .corner-nw { left: 0; top: 0; }
+  #homebase-page .tile .corner-ne { right: 0; top: 0; }
+  #homebase-page .tile .corner-sw { left: 0; bottom: 0; }
+  #homebase-page .tile .corner-se { right: 0; bottom: 0; }
 
-  // Main avenues
-  for(let x=0;x<state.cols;x++){ setRoad(x,5); } // horizontal
-  for(let y=0;y<state.rows;y++){ setRoad(9,y); } // vertical
-  // Side streets
-  for(let x=2;x<state.cols-2;x++){ if(x%4===0) setRoad(x,2); if(x%5===0) setRoad(x,9); }
-  for(let y=2;y<state.rows-2;y++){ if(y%3===0) setRoad(14,y); }
+  /* show corner when both adjacent side bands are present */
+  /* road-tile corner rules removed: corners are shown on adjacent tiles where sidewalks meet */
 
-  // Precompute adjacency (non-road tiles touching a road)
-  function markAdjacency(){
-    for(let y=0;y<state.rows;y++){
-      for(let x=0;x<state.cols;x++){
-        const t=tileAt(x,y); if(!t || t.classList.contains('road')) continue;
-        const n=[[x+1,y],[x-1,y],[x,y+1],[x,y-1]];
-        for(const [nx,ny] of n){ if(state.roads.has(roadKey(nx,ny))){ t.classList.add('adj'); break; } }
+  /* also show corners when a non-road tile is adjacent to two roads (outer corner fills) */
+  /* show corner fills on road tiles that have corner elements (controlled by JS) */
+  #homebase-page .tile.road .corner-nw { display: block; }
+  #homebase-page .tile.road .corner-ne { display: block; }
+  #homebase-page .tile.road .corner-sw { display: block; }
+  #homebase-page .tile.road .corner-se { display: block; }
+
+    /* river tile styling */
+    @keyframes riverFlow {
+      from {
+        background-position: 0 0
+      }
+
+      to {
+        background-position: 100% 0
       }
     }
-  }
-  markAdjacency();
 
-  // ======= PALETTE TABS & CARDS =======
-  let activeCat = 'res';
-  // Defensive: don't initialize tabs more than once if this script runs twice
-  if (!tabsEl.dataset._homebaseInited) {
-    CATS.forEach((c,i)=>{
-      const el=document.createElement('div');
-      el.className='tab'+(i===0?' active':'');
-      el.textContent=c.name;
-      el.onclick=()=>{ activeCat=c.id; renderCards(); [...tabsEl.children].forEach(n=>n.classList.remove('active')); el.classList.add('active'); };
-      tabsEl.appendChild(el);
-    });
-    tabsEl.dataset._homebaseInited = '1';
-  }
+    /* River tiles should bleed into the grid gap so textures connect between adjacent river tiles. */
+    #homebase-page .tile.river {
+      background: linear-gradient(90deg, rgba(40, 120, 200, 0.95), rgba(24, 90, 170, 0.95));
+      /* remove inset shadow so river color reaches the edges */
+      box-shadow: none;
+      /* keep river surface flush so neighboring river tiles join visually */
+      border-radius: 0px;
+      overflow: visible;
+    }
 
-  function renderCards(){
-    cardsEl.innerHTML='';
-    const list = BUILDINGS.filter(b=>b.cat===activeCat);
-    for(const b of list){
-      const card=document.createElement('div'); card.className='card';
-      const afford = canAfford(b);
-      if(state.selection && state.selection.id===b.id) card.classList.add('selected');
-      card.innerHTML=`
+    #homebase-page .tile.river::after {
+      content: '';
+      position: absolute;
+      /* gap is 0 now, so fill the tile fully */
+      inset: 0;
+      border-radius: 0px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.06) 100%);
+      mix-blend-mode: overlay;
+      opacity: .9;
+      background-size: 200% 100%;
+      animation: riverFlow 6s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* road surface overlay (no global sidewalk) */
+    #homebase-page .road::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 0px;
+      pointer-events: none;
+      z-index: 1;
+      background: linear-gradient(transparent 48%, rgba(255, 255, 255, 0.02) 50%, transparent 52%);
+      opacity: 0.9;
+    }
+
+    #homebase-page .placed {
+      background: linear-gradient(180deg, rgba(34, 40, 54, 0.6), rgba(20, 26, 36, 0.6));
+      border: 1px solid rgba(52, 68, 95, 0.4);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .02)
+    }
+
+    #homebase-page .placed .name {
+      position: absolute;
+      bottom: 4px;
+      left: 6px;
+      font-size: 10px;
+      color: var(--muted);
+      opacity: .9;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, .5)
+    }
+
+    /* eligible (road-adjacent) highlight when selecting */
+    body.show-adj .tile.adj::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px dashed rgba(224, 88, 88, .25);
+      border-radius: 10px;
+      box-shadow: 0 0 0 2px rgba(224, 88, 88, .04) inset, 0 0 12px rgba(224, 88, 88, .06);
+    }
+
+    /* ghost */
+    .ghost-cell {
+      position: absolute;
+      pointer-events: none;
+      outline: 2px dashed var(--ghost);
+      background: rgba(224, 88, 88, .06);
+      border-radius: 10px;
+      transform: translate(-2px, -2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .02)
+    }
+
+    #homebase-page .ghost-cell.valid {
+      outline-color: var(--valid);
+      background: var(--valid);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, .5), 0 0 22px rgba(34, 197, 94, .06)
+    }
+
+    #homebase-page .ghost-cell.invalid {
+      outline-color: var(--invalid);
+      background: var(--invalid);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, .45), 0 0 22px rgba(255, 93, 93, .06)
+    }
+
+    #homebase-page .ghost-meta {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      display: flex;
+      gap: 6px;
+      pointer-events: none
+    }
+
+    #homebase-page .gchip {
+      font-size: 11px;
+      background: rgba(12, 16, 24, .6);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 8px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .02)
+    }
+
+    /* floating UI over map */
+    .overlay {
+      position: absolute;
+      inset: 18px;
+      pointer-events: none
+    }
+
+    #homebase-page .overlay .corner {
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: flex;
+      gap: 8px
+    }
+
+    #homebase-page .overlay .corner .btn {
+      pointer-events: auto
+    }
+
+    #homebase-page .hint {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .45);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border)
+    }
+
+    /* toast */
+    .toasts {
+      position: fixed;
+      bottom: 14px;
+      left: 14px;
+      display: grid;
+      gap: 8px;
+      z-index: 20
+    }
+
+    #homebase-page .toast {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, .45)
+    }
+
+    #homebase-page .toast .link {
+      margin-left: auto;
+      color: var(--accent2);
+      text-decoration: underline;
+      cursor: pointer
+    }
+
+    /* tiny tooltip */
+    .tip {
+      position: absolute;
+      left: 8px;
+      bottom: calc(100% + 8px);
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 11px;
+      white-space: nowrap;
+      pointer-events: none;
+      color: var(--text);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, .5)
+    }
+
+    #homebase-page .legend {
+      display: flex;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      flex-wrap: wrap
+    }
+
+    #homebase-page .legend .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-right: 6px;
+      border: 1px solid var(--border)
+    }
+
+    #homebase-page .sw.valid {
+      background: var(--valid);
+      border-color: rgba(43, 63, 53, .6)
+    }
+
+    #homebase-page .sw.invalid {
+      background: var(--invalid);
+      border-color: rgba(63, 43, 43, .5)
+    }
+
+    #homebase-page .muted {
+      color: var(--muted)
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-container">
+    <aside aria-label="Sidebar navigation" class="sidebar">
+      <div class="logo">🏚️ POST-APOCALYPTIC IDLE</div>
+      <nav aria-label="Main" class="nav-section">
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Main</h3>
+        <button aria-current="page" class="nav-item active" data-page="areas" type="button">
+          <div aria-hidden="true" class="icon">🗺️</div>
+          <span>Areas</span>
+        </button>
+        <button class="nav-item" data-page="homebase" type="button">
+          <div aria-hidden="true" class="icon">🏠</div>
+          <span>Home Base</span>
+        </button>
+        <button class="nav-item" data-page="bank" type="button">
+          <div aria-hidden="true" class="icon">🏦</div>
+          <span>Bank</span>
+          <span aria-live="polite" class="level-badge" id="bank-count">0/30</span>
+        </button>
+        <button class="nav-item" data-page="shop" type="button">
+          <div aria-hidden="true" class="icon">🏪</div>
+          <span>Shop</span>
+        </button>
+      </nav>
+      <nav aria-label="Combat Skills" class="nav-section">
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Combat</h3>
+        <button class="nav-item" data-skill="fitness" type="button">
+          <div aria-hidden="true" class="icon">💪</div>
+          <span>Fitness</span>
+          <span class="level-badge" id="fitness-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="defense" type="button">
+          <div aria-hidden="true" class="icon">🛡️</div>
+          <span>Defense</span>
+          <span class="level-badge" id="defense-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="melee" type="button">
+          <div aria-hidden="true" class="icon">⚔️</div>
+          <span>Melee</span>
+          <span class="level-badge" id="melee-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="firearms" type="button">
+          <div aria-hidden="true" class="icon">🔫</div>
+          <span>Firearms</span>
+          <span class="level-badge" id="firearms-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="explosives" type="button">
+          <div aria-hidden="true" class="icon">💥</div>
+          <span>Explosives</span>
+          <span class="level-badge" id="explosives-level">1</span>
+        </button>
+      </nav>
+      <nav aria-label="Gathering Skills" class="nav-section">
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Gathering</h3>
+        <button class="nav-item" data-skill="woodcutting" type="button">
+          <div aria-hidden="true" class="icon">🪓</div>
+          <span>Woodcutting</span>
+          <span class="level-badge" id="woodcutting-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="mining" type="button">
+          <div aria-hidden="true" class="icon">⛏️</div>
+          <span>Mining</span>
+          <span class="level-badge" id="mining-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="fishing" type="button">
+          <div aria-hidden="true" class="icon">🎣</div>
+          <span>Fishing</span>
+          <span class="level-badge" id="fishing-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="foraging" type="button">
+          <div aria-hidden="true" class="icon">🍄</div>
+          <span>Foraging</span>
+          <span class="level-badge" id="foraging-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="hunting" type="button">
+          <div aria-hidden="true" class="icon">🏹</div>
+          <span>Hunting</span>
+          <span class="level-badge" id="hunting-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="looting" type="button">
+          <div aria-hidden="true" class="icon">🔍</div>
+          <span>Looting</span>
+          <span class="level-badge" id="looting-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="scavenging" type="button">
+          <div aria-hidden="true" class="icon">♻️</div>
+          <span>Scavenging</span>
+          <span class="level-badge" id="scavenging-level">1</span>
+        </button>
+      </nav>
+      <nav aria-label="Production Skills" class="nav-section">
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Production</h3>
+        <button class="nav-item" data-skill="animalcare" type="button">
+          <div aria-hidden="true" class="icon">🐄</div>
+          <span>Animal Care</span>
+          <span class="level-badge" id="animalcare-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="farming" type="button">
+          <div aria-hidden="true" class="icon">🌾</div>
+          <span>Farming</span>
+          <span class="level-badge" id="farming-level">1</span>
+        </button>
+      </nav>
+      <nav aria-label="Crafting Skills" class="nav-section">
+        <h3
+          style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+          Crafting</h3>
+        <button class="nav-item" data-skill="cooking" type="button">
+          <div aria-hidden="true" class="icon">🍳</div>
+          <span>Cooking</span>
+          <span class="level-badge" id="cooking-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="forging" type="button">
+          <div aria-hidden="true" class="icon">⚒️</div>
+          <span>Forging</span>
+          <span class="level-badge" id="forging-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="tailoring" type="button">
+          <div aria-hidden="true" class="icon">🧵</div>
+          <span>Tailoring</span>
+          <span class="level-badge" id="tailoring-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="gunsmithing" type="button">
+          <div aria-hidden="true" class="icon">🔫</div>
+          <span>Gunsmithing</span>
+          <span class="level-badge" id="gunsmithing-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="tinkering" type="button">
+          <div aria-hidden="true" class="icon">🛠️</div>
+          <span>Tinkering</span>
+          <span class="level-badge" id="tinkering-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="carpentry" type="button">
+          <div aria-hidden="true" class="icon">🪚</div>
+          <span>Carpentry</span>
+          <span class="level-badge" id="carpentry-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="firstaid" type="button">
+          <div aria-hidden="true" class="icon">⚕️</div>
+          <span>First Aid</span>
+          <span class="level-badge" id="firstaid-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="masonry" type="button">
+          <div aria-hidden="true" class="icon">🧱</div>
+          <span>Masonry</span>
+          <span class="level-badge" id="masonry-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="chemistry" type="button">
+          <div aria-hidden="true" class="icon">🧪</div>
+          <span>Chemistry</span>
+          <span class="level-badge" id="chemistry-level">1</span>
+        </button>
+        <button class="nav-item" data-skill="electrical" type="button">
+          <div aria-hidden="true" class="icon">⚡</div>
+          <span>Electrical</span>
+          <span class="level-badge" id="electrical-level">1</span>
+        </button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="top-bar" role="banner">
+        <div aria-label="Currencies" class="currency-display">
+          <div class="currency-item">
+            <span aria-hidden="true">🔩</span>
+            <span id="scrap-amount">0</span>
+            <span>Scrap</span>
+          </div>
+          <div class="currency-item">
+            <span aria-hidden="true">⚔️</span>
+            <span id="combat-level">1</span>
+            <span>Combat</span>
+          </div>
+        </div>
+        <div>
+          <button class="action-button" id="btn-save">
+            Save Game
+          </button>
+          <button class="action-button" id="btn-load">
+            Load Game
+          </button>
+          <button class="action-button" id="btn-reset">
+            Reset
+          </button>
+        </div>
+      </header>
+      <div class="content-area">
+        <div class="loading" id="loading-screen">Loading game data...</div>
+        <div class="page-content" id="areas-page" style="display: none">
+          <div class="content-header">
+            <h1 class="content-title">Areas</h1>
+          </div>
+          <div class="areas-grid" id="areas-grid"></div>
+        </div>
+        <section aria-labelledby="area-detail-title" class="page-content" id="area-detail-page" style="display: none">
+          <div class="content-header">
+            <h1 class="content-title" id="area-detail-title">Area Name</h1>
+            <button class="action-button" id="back-to-areas">
+              Back to Areas
+            </button>
+          </div>
+          <div class="combat-container">
+            <div class="left-stack">
+              <div class="combat-main">
+                <h3
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Combat</h3>
+                <div id="faction-description" style="font-size:13px;color:#cbd5e1;margin-bottom:10px;font-weight:600;">
+                </div>
+                <div class="combat-stats-2col">
+                  <div class="combat-box">
+                    <h4 style="margin:0 0 6px 0;">Player</h4>
+                    <div class="stats-grid">
+                      <div class="stat-item"><span>Combat Level:</span><span id="player-combat-level">1</span></div>
+                      <div class="stat-item"><span>Attack:</span><span id="player-attack">10</span></div>
+                      <div class="stat-item"><span>Defense:</span><span id="player-defense">10</span></div>
+                    </div>
+                    <div class="hp-bar">
+                      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="player-hp-bar"
+                        role="progressbar" style="width: 100%"></div>
+                    </div>
+                    <div id="player-hp" style="font-size:12px;">100/100</div>
+                  </div>
+                  <div class="combat-box">
+                    <h4 style="margin:0 0 6px 0;">Enemy</h4>
+                    <div id="enemy-display" style="display:none;">
+                      <div class="stats-grid">
+                        <div class="stat-item"><span>Name:</span><span id="current-enemy-name">Enemy</span></div>
+                        <div class="stat-item"><span>Level:</span><span id="enemy-level-display">-</span></div>
+                        <div class="stat-item"><span>Attack:</span><span id="enemy-attack-display">-</span></div>
+                        <div class="stat-item"><span>Defense:</span><span id="enemy-defense-display">-</span></div>
+                      </div>
+                      <div class="hp-bar">
+                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="enemy-hp-bar"
+                          role="progressbar" style="width: 100%"></div>
+                      </div>
+                      <div id="enemy-hp-text">100/100</div>
+                    </div>
+                    <div id="no-enemy" style="font-size:12px;color:#8b949e;">No enemy selected</div>
+                  </div>
+                </div>
+                <!-- combat status/progress removed per design: enemy panel reflects combat state -->
+                <div class="enemy-list">
+                  <h4
+                    style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                    Enemies</h4>
+                  <div id="enemy-list"></div>
+                </div>
+                <div class="enemy-list">
+                  <h4
+                    style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                    Dungeons &amp; Raids</h4>
+                  <div id="dungeon-list"></div>
+                </div>
+              </div>
+              <div class="gathering-main" style="margin-top: 18px;">
+                <h3
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Gathering</h3>
+                <div class="gathering-grid" id="gathering-resources"></div>
+              </div>
+            </div>
+            <div aria-label="Equipment and actions" class="combat-sidebar">
+              <div class="equipment-panel">
+                <h4
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Equipment</h4>
+                <div class="equipment-grid">
+                  <div class="equipment-slot" data-slot="helmet" title="Helmet">
+                    <div aria-hidden="true" class="slot-icon">⛑️</div>
+                    <div class="slot-content" id="helmet-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="armor" title="Body Armor">
+                    <div aria-hidden="true" class="slot-icon">🦺</div>
+                    <div class="slot-content" id="armor-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="gloves" title="Gloves">
+                    <div aria-hidden="true" class="slot-icon">🧤</div>
+                    <div class="slot-content" id="gloves-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="boots" title="Boots">
+                    <div aria-hidden="true" class="slot-icon">🥾</div>
+                    <div class="slot-content" id="boots-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="weapon" title="Weapon">
+                    <div aria-hidden="true" class="slot-icon">⚔️</div>
+                    <div class="slot-content" id="weapon-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="offhand" title="Off-hand">
+                    <div aria-hidden="true" class="slot-icon">🛡️</div>
+                    <div class="slot-content" id="offhand-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="accessory1" title="Accessory 1">
+                    <div aria-hidden="true" class="slot-icon">💍</div>
+                    <div class="slot-content" id="accessory1-slot"></div>
+                  </div>
+                  <div class="equipment-slot" data-slot="accessory2" title="Accessory 2">
+                    <div aria-hidden="true" class="slot-icon">💍</div>
+                    <div class="slot-content" id="accessory2-slot"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="quick-actions">
+                <h4
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Quick Actions</h4>
+                <div class="quick-actions-grid">
+                  <div class="qa-section" id="qa-bandage">
+                    <button class="action-button" id="btn-autoheal" title="Toggle bandage auto-heal">Bandage Autoheal:
+                      Off</button>
+                    <label for="select-bandage">Bandage selection</label>
+                    <select id="select-bandage"></select>
+                  </div>
+                  <div class="qa-section" id="qa-food">
+                    <button class="action-button" id="btn-eat-food" title="Use selected/best food to heal">Eat
+                      Food</button>
+                    <label for="select-food">Food selection</label>
+                    <select id="select-food"></select>
+                  </div>
+                  <div class="qa-section" id="qa-escape">
+                    <button class="action-button" id="btn-escape" title="Escape current battle">Escape Battle</button>
+                  </div>
+                </div>
+              </div>
+              <div class="activity-log-panel">
+                <h4
+                  style="margin-bottom: 15px; color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 8px;">
+                  Activity Log</h4>
+                <div id="activity-log-content">
+                  <div class="log-entry">Activity log will appear here...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="page-content" id="homebase-page" style="display: none">
+        <div class="hud">
+          <div class="badge"><span class="k">🪵 Wood</span> <span class="v" id="wood">150</span> <span class="delta"
+              id="woodDelta"></span></div>
+          <div class="badge"><span class="k">🪨 Stone</span> <span class="v" id="stone">120</span> <span class="delta"
+              id="stoneDelta"></span></div>
+          <div class="badge"><span class="k">Mode</span> <span class="v">Build</span></div>
+          <div class="mode">
+            <button class="btn" disabled="" id="undoBtn">Undo (Z)</button>
+          </div>
+        </div>
+        <div class="layout">
+          <aside class="palette">
+            <div class="tabs" id="tabs"></div>
+            <div class="pal-body">
+              <div class="fav" id="favRow"></div>
+              <div id="cards"></div>
+              <div class="legend">
+              </div>
+            </div>
+          </aside>
+          <main class="map-wrap">
+            <div class="map" id="map"></div>
+            <div class="overlay">
+              <div class="corner">
+              </div>
+          </main>
+        </div>
+        <div class="toasts" id="toasts"></div>
+        <script>
+          (function () {
+            // ======= DATA =======
+            const CATS = [
+              { id: 'res', name: 'Residential' },
+              { id: 'ind', name: 'Industrial' },
+              { id: 'def', name: 'Defensive' },
+              { id: 'spe', name: 'Special' },
+            ];
+
+            const BUILDINGS = [
+              // Residential
+              { id: 'shack', cat: 'res', name: 'Shack', cost: { wood: 15, stone: 5 }, slots: { F: 1, W: 1, S: 0, D: 0 }, durability: 50, footprint: [1, 1], tags: ['Road-adjacent'] },
+              { id: 'shelter', cat: 'res', name: 'Shelter', cost: { wood: 30, stone: 10 }, slots: { F: 2, W: 1, S: 0, D: 0 }, durability: 100, footprint: [2, 1], tags: ['Road-adjacent'] },
+              { id: 'apt', cat: 'res', name: 'Apartment Block', cost: { wood: 60, stone: 25 }, slots: { F: 3, W: 1, S: 0, D: 1 }, durability: 150, footprint: [2, 2], tags: ['Road-adjacent'] },
+              // Industrial
+              { id: 'workshop', cat: 'ind', name: 'Workshop', cost: { wood: 20, stone: 20 }, slots: { F: 0, W: 2, S: 1, D: 0 }, durability: 120, footprint: [2, 1], tags: ['Road-adjacent'] },
+              { id: 'factory', cat: 'ind', name: 'Factory Floor', cost: { wood: 35, stone: 40 }, slots: { F: 0, W: 3, S: 2, D: 0 }, durability: 160, footprint: [3, 2], tags: ['Road-adjacent'] },
+              // Defensive
+              { id: 'guard', cat: 'def', name: 'Guard Post', cost: { wood: 15, stone: 10 }, slots: { F: 0, W: 0, S: 0, D: 2 }, durability: 100, footprint: [1, 1], tags: ['Road-adjacent', 'Defense +2'] },
+              { id: 'watch', cat: 'def', name: 'Watchtower', cost: { wood: 25, stone: 25 }, slots: { F: 0, W: 0, S: 0, D: 3 }, durability: 200, footprint: [1, 1], tags: ['Road-adjacent', 'Vision +'] },
+              // Special
+              { id: 'expo', cat: 'spe', name: 'Expedition Center', cost: { wood: 50, stone: 30 }, slots: { F: 0, W: 0, S: 0, D: 0 }, durability: 120, footprint: [2, 2], tags: ['Road-adjacent', 'Unlocks exploration'] },
+            ];
+
+            // ======= STATE =======
+            const state = {
+              cols: 33,
+              rows: 33,
+              wood: 150,
+              stone: 120,
+              rotation: 0, // 0 or 90
+              selection: null, // building object
+              chain: false,
+              lastPlaced: null,
+              roads: new Set(),
+              rivers: new Set(),
+              occupied: new Map(), // key "x,y" -> { id, name }
+            };
+
+            // ======= DOM REFS =======
+            const mapEl = document.getElementById('map');
+            const tabsEl = document.getElementById('tabs');
+            const cardsEl = document.getElementById('cards');
+            const favRow = document.getElementById('favRow');
+            const woodEl = document.getElementById('wood');
+            const stoneEl = document.getElementById('stone');
+            const woodDeltaEl = document.getElementById('woodDelta');
+            const stoneDeltaEl = document.getElementById('stoneDelta');
+            const rotateL = document.getElementById('rotateLeft');
+            const rotateR = document.getElementById('rotateRight');
+            const undoBtn = document.getElementById('undoBtn');
+            const toasts = document.getElementById('toasts');
+            const hint = document.getElementById('hint');
+            const corner = document.querySelector('.overlay .corner');
+
+
+
+            // ======= INIT GRID & ROADS =======
+            // NOTE: Grid and road initialization moved to the later, canonical homebase script block
+            // to avoid duplicate tile grids. The remaining initialization (tiles array, tileAt,
+            // road helpers, generateRoadNetwork and markAdjacency) lives in the later section
+            // of this file and will run once when the homebase page is initialized.
+
+            // ======= PALETTE TABS & CARDS =======
+            let activeCat = 'res';
+            // Defensive: don't initialize tabs more than once if this script runs twice
+            if (!tabsEl.dataset._homebaseInited) {
+              CATS.forEach((c, i) => {
+                const el = document.createElement('div');
+                el.className = 'tab' + (i === 0 ? ' active' : '');
+                el.textContent = c.name;
+                el.onclick = () => { activeCat = c.id; renderCards();[...tabsEl.children].forEach(n => n.classList.remove('active')); el.classList.add('active'); };
+                tabsEl.appendChild(el);
+              });
+              tabsEl.dataset._homebaseInited = '1';
+            }
+
+            function renderCards() {
+              cardsEl.innerHTML = '';
+              const list = BUILDINGS.filter(b => b.cat === activeCat);
+              for (const b of list) {
+                const card = document.createElement('div'); card.className = 'card';
+                const afford = canAfford(b);
+                if (state.selection && state.selection.id === b.id) card.classList.add('selected');
+                card.innerHTML = `
         <h4>${b.name}</h4>
         <div class="row">
-          <span class="chip ${afford?'':'red'}">🪵 ${b.cost.wood}</span>
-          <span class="chip ${afford?'':'red'}">🪨 ${b.cost.stone}</span>
+          <span class="chip ${afford ? '' : 'red'}">🪵 ${b.cost.wood}</span>
+          <span class="chip ${afford ? '' : 'red'}">🪨 ${b.cost.stone}</span>
           <span class="chip">🛡 ${b.durability} dur</span>
           <span class="chip">📐 ${b.footprint[0]}×${b.footprint[1]}</span>
         </div>
         <div class="slots">
-          ${b.slots.F?`<span class='slot'>🪑 ×${b.slots.F}</span>`:''}
-          ${b.slots.W?`<span class='slot'>🛠️ ×${b.slots.W}</span>`:''}
-          ${b.slots.S?`<span class='slot'>📦 ×${b.slots.S}</span>`:''}
-          ${b.slots.D?`<span class='slot'>🛡️ ×${b.slots.D}</span>`:''}
+          ${b.slots.F ? `<span class='slot'>🪑 ×${b.slots.F}</span>` : ''}
+          ${b.slots.W ? `<span class='slot'>🛠️ ×${b.slots.W}</span>` : ''}
+          ${b.slots.S ? `<span class='slot'>📦 ×${b.slots.S}</span>` : ''}
+          ${b.slots.D ? `<span class='slot'>🛡️ ×${b.slots.D}</span>` : ''}
         </div>
         <div class="desc">${b.tags.join(' • ')}</div>
-        <div class="choose"><button class="btn primary" ${state.selection&&state.selection.id===b.id?'disabled':''}>${state.selection&&state.selection.id===b.id?'Selected':'Select'}</button></div>
+        <div class="choose"><button class="btn primary" ${state.selection && state.selection.id === b.id ? 'disabled' : ''}>${state.selection && state.selection.id === b.id ? 'Selected' : 'Select'}</button></div>
       `;
-      card.querySelector('button').onclick=()=>selectBuilding(b);
-      cardsEl.appendChild(card);
-    }
-  }
-  renderCards();
+                card.querySelector('button').onclick = () => selectBuilding(b);
+                cardsEl.appendChild(card);
+              }
+            }
+            renderCards();
 
-  // Favorites row (recent 3)
-  const fav = [];
-  function pushFav(b){
-    const idx=fav.findIndex(x=>x.id===b.id);
-    if(idx!==-1) fav.splice(idx,1);
-    fav.unshift(b);
-    if(fav.length>3) fav.pop();
-    favRow.innerHTML='';
-    fav.forEach(f=>{
-      const el=document.createElement('div'); el.className='pill'; el.textContent=f.name; el.onclick=()=>selectBuilding(f); favRow.appendChild(el);
-    })
-  }
+            // Favorites row (recent 3)
+            const fav = [];
+            function pushFav(b) {
+              const idx = fav.findIndex(x => x.id === b.id);
+              if (idx !== -1) fav.splice(idx, 1);
+              fav.unshift(b);
+              if (fav.length > 3) fav.pop();
+              favRow.innerHTML = '';
+              fav.forEach(f => {
+                const el = document.createElement('div'); el.className = 'pill'; el.textContent = f.name; el.onclick = () => selectBuilding(f); favRow.appendChild(el);
+              })
+            }
 
-  // ======= SELECTION & GHOST =======
-  let ghostEl = null; let ghostTip=null; let ghostMeta=null;
-  let hoverCell = {x:null,y:null};
+            // ======= SELECTION & GHOST =======
+            let ghostEl = null; let ghostTip = null; let ghostMeta = null;
+            let hoverCell = { x: null, y: null };
 
-  function selectBuilding(b){
-    state.selection = b;
-    document.body.classList.add('show-adj');
-    pushFav(b);
-    hint.textContent = `Placing: ${b.name} — Rotate Q/E · Hold Shift to stamp`;
-    updateDeltas();
-    renderCards();
-    ensureGhost();
-    updateAffordChip();
-  }
+            function selectBuilding(b) {
+              state.selection = b;
+              document.body.classList.add('show-adj');
+              pushFav(b);
+              hint.textContent = `Placing: ${b.name} — Rotate Q/E · Hold Shift to stamp`;
+              updateDeltas();
+              renderCards();
+              ensureGhost();
+              updateAffordChip();
+            }
 
-  function ensureGhost(){
-    removeGhost();
-    if(!state.selection) return;
-    ghostEl = document.createElement('div');
-    ghostEl.className='ghost-cell';
-    ghostMeta = document.createElement('div'); ghostMeta.className='ghost-meta'; ghostEl.appendChild(ghostMeta);
-    ghostTip = document.createElement('div'); ghostTip.className='tip'; ghostTip.style.display='none'; ghostEl.appendChild(ghostTip);
-    mapEl.appendChild(ghostEl);
-    updateGhostMeta();
-    positionGhost();
-  }
-  function removeGhost(){ if(ghostEl){ ghostEl.remove(); ghostEl=null; ghostMeta=null; ghostTip=null; } }
+            function ensureGhost() {
+              removeGhost();
+              if (!state.selection) return;
+              ghostEl = document.createElement('div');
+              ghostEl.className = 'ghost-cell';
+              ghostMeta = document.createElement('div'); ghostMeta.className = 'ghost-meta'; ghostEl.appendChild(ghostMeta);
+              ghostTip = document.createElement('div'); ghostTip.className = 'tip'; ghostTip.style.display = 'none'; ghostEl.appendChild(ghostTip);
+              mapEl.appendChild(ghostEl);
+              updateGhostMeta();
+              positionGhost();
+            }
+            function removeGhost() { if (ghostEl) { ghostEl.remove(); ghostEl = null; ghostMeta = null; ghostTip = null; } }
 
-  function footprintSize(){
-    const [w,h] = state.selection ? state.selection.footprint : [1,1];
-    return state.rotation===0 ? {w,h} : {w:h, h:w};
-  }
+            function footprintSize() {
+              const [w, h] = state.selection ? state.selection.footprint : [1, 1];
+              return state.rotation === 0 ? { w, h } : { w: h, h: w };
+            }
 
-  function updateGhostMeta(){
-    if(!state.selection||!ghostMeta) return;
-    const s=state.selection.slots; ghostMeta.innerHTML='';
-    if(s.D) ghostMeta.appendChild(chip(`🛡️ +${s.D}`));
-    if(s.W) ghostMeta.appendChild(chip(`🛠️ +${s.W}`));
-    if(s.S) ghostMeta.appendChild(chip(`📦 +${s.S}`));
-    if(s.F) ghostMeta.appendChild(chip(`🪑 +${s.F}`));
-    function chip(text){ const el=document.createElement('div'); el.className='gchip'; el.textContent=text; return el; }
-  }
+            function updateGhostMeta() {
+              if (!state.selection || !ghostMeta) return;
+              const s = state.selection.slots; ghostMeta.innerHTML = '';
+              if (s.D) ghostMeta.appendChild(chip(`🛡️ +${s.D}`));
+              if (s.W) ghostMeta.appendChild(chip(`🛠️ +${s.W}`));
+              if (s.S) ghostMeta.appendChild(chip(`📦 +${s.S}`));
+              if (s.F) ghostMeta.appendChild(chip(`🪑 +${s.F}`));
+              function chip(text) { const el = document.createElement('div'); el.className = 'gchip'; el.textContent = text; return el; }
+            }
 
-  function positionGhost(){
-    if(!ghostEl || hoverCell.x==null) return;
-    const {w,h} = footprintSize();
-    const x = Math.min(hoverCell.x, state.cols - w);
-    const y = Math.min(hoverCell.y, state.rows - h);
-    const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
-    const left = x*(cellSize+3);
-    const top  = y*(cellSize+3);
-    ghostEl.style.width = `calc(${w} * var(--cell) + ${(w-1)*3}px)`;
-    ghostEl.style.height= `calc(${h} * var(--cell) + ${(h-1)*3}px)`;
-    ghostEl.style.left = left+"px";
-    ghostEl.style.top  = top+"px";
+            function positionGhost() {
+              if (!ghostEl || hoverCell.x == null) return;
+              const { w, h } = footprintSize();
+              const x = Math.min(hoverCell.x, state.cols - w);
+              const y = Math.min(hoverCell.y, state.rows - h);
+              const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
+              const left = x * (cellSize + 3);
+              const top = y * (cellSize + 3);
+              ghostEl.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
+              ghostEl.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
+              ghostEl.style.left = left + "px";
+              ghostEl.style.top = top + "px";
 
-    const validity = validatePlacement(x,y,w,h);
-    ghostEl.classList.toggle('valid', validity.ok);
-    ghostEl.classList.toggle('invalid', !validity.ok);
-    if(ghostTip){
-      if(validity.ok){ ghostTip.style.display='none'; }
-      else { ghostTip.style.display='block'; ghostTip.textContent = validity.reason; }
-    }
-    showProjectedDeltas(validity);
-  }
+              const validity = validatePlacement(x, y, w, h);
+              ghostEl.classList.toggle('valid', validity.ok);
+              ghostEl.classList.toggle('invalid', !validity.ok);
+              if (ghostTip) {
+                if (validity.ok) { ghostTip.style.display = 'none'; }
+                else { ghostTip.style.display = 'block'; ghostTip.textContent = validity.reason; }
+              }
+              showProjectedDeltas(validity);
+            }
 
-  // Hover tracking
-  mapEl.addEventListener('mousemove', e=>{
-    const t = e.target.closest('.tile');
-    if(!t) return;
-    hoverCell = { x: +t.dataset.x, y: +t.dataset.y };
-    positionGhost();
-  });
-  mapEl.addEventListener('mouseleave', ()=>{ hoverCell={x:null,y:null}; removeGhost(); updateDeltas(true); });
+            // Hover tracking
+            mapEl.addEventListener('mousemove', e => {
+              const t = e.target.closest('.tile');
+              if (!t) return;
+              hoverCell = { x: +t.dataset.x, y: +t.dataset.y };
+              positionGhost();
+            });
+            mapEl.addEventListener('mouseleave', () => { hoverCell = { x: null, y: null }; removeGhost(); updateDeltas(true); });
 
-  // ======= ROTATE / KEYS =======
-  function rotate(dir){
-    if(!state.selection) return;
-    state.rotation = (state.rotation + (dir==='L'?-90:90) + 360) % 180; // only 0/90 needed
-    positionGhost();
-    updateGhostMeta();
-  }
-  rotateL.onclick=()=>rotate('L');
-  rotateR.onclick=()=>rotate('R');
+            // ======= ROTATE / KEYS =======
+            function rotate(dir) {
+              if (!state.selection) return;
+              state.rotation = (state.rotation + (dir === 'L' ? -90 : 90) + 360) % 180; // only 0/90 needed
+              positionGhost();
+              updateGhostMeta();
+            }
+            rotateL.onclick = () => rotate('L');
+            rotateR.onclick = () => rotate('R');
 
-  document.addEventListener('keydown', (e)=>{
-    if(e.key==='q' || e.key==='Q'){ rotate('L'); }
-    if(e.key==='e' || e.key==='E'){ rotate('R'); }
-    if(e.key==='Shift') state.chain = true;
-    if(e.key==='z' || e.key==='Z'){ undo(); }
-  });
-  document.addEventListener('keyup', (e)=>{ if(e.key==='Shift') state.chain=false; });
+            document.addEventListener('keydown', (e) => {
+              if (e.key === 'q' || e.key === 'Q') { rotate('L'); }
+              if (e.key === 'e' || e.key === 'E') { rotate('R'); }
+              if (e.key === 'Shift') state.chain = true;
+              if (e.key === 'z' || e.key === 'Z') { undo(); }
+            });
+            document.addEventListener('keyup', (e) => { if (e.key === 'Shift') state.chain = false; });
 
-  // ======= VALIDATION =======
-  function canAfford(b){ return state.wood>=b.cost.wood && state.stone>=b.cost.stone; }
+            // ======= VALIDATION =======
+            function canAfford(b) { return state.wood >= b.cost.wood && state.stone >= b.cost.stone; }
 
-  function validatePlacement(x,y,w,h){
-    const b = state.selection; if(!b) return {ok:false, reason:'No selection'};
-    if(x<0||y<0||x+w>state.cols||y+h>state.rows) return {ok:false, reason:'Out of bounds'};
-    for(let yy=y;yy<y+h;yy++){
-      for(let xx=x;xx<x+w;xx++){
-        const key = xx+","+yy;
-        if(state.roads.has(key)) return {ok:false, reason:'Cannot place on a road'};
-        if(state.occupied.has(key)) return {ok:false, reason:'Space occupied'};
-      }
-    }
-    let adjacent=false;
-    outer: for(let yy=y;yy<y+h;yy++){
-      for(let xx=x;xx<x+w;xx++){
-        const n = [ [xx+1,yy], [xx-1,yy], [xx,yy+1], [xx,yy-1] ];
-        for(const [nx,ny] of n){ if(state.roads.has(nx+","+ny)){ adjacent=true; break outer; } }
-      }
-    }
-    if(!adjacent) return {ok:false, reason:'Needs road adjacency'};
-    if(!canAfford(b)) return {ok:false, reason:'Insufficient resources'};
-    return {ok:true, reason:'OK'};
-  }
+            function validatePlacement(x, y, w, h) {
+              const b = state.selection; if (!b) return { ok: false, reason: 'No selection' };
+              if (x < 0 || y < 0 || x + w > state.cols || y + h > state.rows) return { ok: false, reason: 'Out of bounds' };
+              for (let yy = y; yy < y + h; yy++) {
+                for (let xx = x; xx < x + w; xx++) {
+                  const key = xx + "," + yy;
+                  if (state.roads.has(key)) return { ok: false, reason: 'Cannot place on a road' };
+                  if (state.occupied.has(key)) return { ok: false, reason: 'Space occupied' };
+                }
+              }
+              let adjacent = false;
+              outer: for (let yy = y; yy < y + h; yy++) {
+                for (let xx = x; xx < x + w; xx++) {
+                  const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
+                  for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny)) { adjacent = true; break outer; } }
+                }
+              }
+              if (!adjacent) return { ok: false, reason: 'Needs road adjacency' };
+              if (!canAfford(b)) return { ok: false, reason: 'Insufficient resources' };
+              return { ok: true, reason: 'OK' };
+            }
 
-  // ======= PLACE / UNDO =======
-  mapEl.addEventListener('click', (e)=>{
-    if(!state.selection) return;
-    const t = e.target.closest('.tile'); if(!t) return;
-    const baseX = +t.dataset.x; const baseY = +t.dataset.y;
-    const {w,h} = footprintSize();
-    const x = Math.min(baseX, state.cols - w);
-    const y = Math.min(baseY, state.rows - h);
-    const val = validatePlacement(x,y,w,h);
-    if(!val.ok){ toast(val.reason, 'warn'); return; }
-    doPlace(x,y,w,h);
-    if(!state.chain){ state.selection=null; removeGhost(); document.body.classList.remove('show-adj'); hint.textContent='Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
-    else { positionGhost(); updateAffordChip(); }
-  });
+            // ======= PLACE / UNDO =======
+            mapEl.addEventListener('click', (e) => {
+              if (!state.selection) return;
+              const t = e.target.closest('.tile'); if (!t) return;
+              const baseX = +t.dataset.x; const baseY = +t.dataset.y;
+              const { w, h } = footprintSize();
+              const x = Math.min(baseX, state.cols - w);
+              const y = Math.min(baseY, state.rows - h);
+              const val = validatePlacement(x, y, w, h);
+              if (!val.ok) { toast(val.reason, 'warn'); return; }
+              doPlace(x, y, w, h);
+              if (!state.chain) { state.selection = null; removeGhost(); document.body.classList.remove('show-adj'); hint.textContent = 'Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
+              else { positionGhost(); updateAffordChip(); }
+            });
 
-  function doPlace(x,y,w,h){
-    const b = state.selection;
-    tickResources(-b.cost.wood, -b.cost.stone);
+            function doPlace(x, y, w, h) {
+              const b = state.selection;
+              tickResources(-b.cost.wood, -b.cost.stone);
 
-    const cover=document.createElement('div');
-    cover.className='placed';
-    cover.style.position='absolute';
-    cover.style.left = `calc(${x} * var(--cell) + ${(x)*3}px)`;
-    cover.style.top  = `calc(${y} * var(--cell) + ${(y)*3}px)`;
-    cover.style.width= `calc(${w} * var(--cell) + ${(w-1)*3}px)`;
-    cover.style.height=`calc(${h} * var(--cell) + ${(h-1)*3}px)`;
-    cover.style.borderRadius='12px';
-    const label=document.createElement('div'); label.className='name'; label.textContent=b.name; cover.appendChild(label);
-    mapEl.appendChild(cover);
-    cover.animate([{transform:'scale(.96)',opacity:.0},{transform:'scale(1)',opacity:1}],{duration:220,easing:'ease-out'});
+              const cover = document.createElement('div');
+              cover.className = 'placed';
+              cover.style.position = 'absolute';
+              cover.style.left = `calc(${x} * var(--cell) + ${(x) * 3}px)`;
+              cover.style.top = `calc(${y} * var(--cell) + ${(y) * 3}px)`;
+              cover.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
+              cover.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
+              cover.style.borderRadius = '12px';
+              const label = document.createElement('div'); label.className = 'name'; label.textContent = b.name; cover.appendChild(label);
+              mapEl.appendChild(cover);
+              cover.animate([{ transform: 'scale(.96)', opacity: .0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 220, easing: 'ease-out' });
 
-    const cells=[];
-    for(let yy=y;yy<y+h;yy++){
-      for(let xx=x;xx<x+w;xx++){
-        const key=xx+","+yy; state.occupied.set(key,{id:b.id,name:b.name}); cells.push(key);
-      }
-    }
-    state.lastPlaced = { b, x, y, w, h, el: cover, cells };
-    undoBtn.disabled=false;
-    toast(`Placed ${b.name}`, 'info', true);
-  }
+              const cells = [];
+              for (let yy = y; yy < y + h; yy++) {
+                for (let xx = x; xx < x + w; xx++) {
+                  const key = xx + "," + yy; state.occupied.set(key, { id: b.id, name: b.name }); cells.push(key);
+                }
+              }
+              state.lastPlaced = { b, x, y, w, h, el: cover, cells };
+              undoBtn.disabled = false;
+              toast(`Placed ${b.name}`, 'info', true);
+            }
 
-  function undo(){
-    const lp=state.lastPlaced; if(!lp) return;
-    tickResources(lp.b.cost.wood, lp.b.cost.stone);
-    lp.cells.forEach(k=>state.occupied.delete(k));
-    lp.el.remove();
-    state.lastPlaced=null;
-    undoBtn.disabled=true;
-    toast('Undo placement');
-    updateAffordChip();
-  }
-  undoBtn.onclick=undo;
+            function undo() {
+              const lp = state.lastPlaced; if (!lp) return;
+              tickResources(lp.b.cost.wood, lp.b.cost.stone);
+              lp.cells.forEach(k => state.occupied.delete(k));
+              lp.el.remove();
+              state.lastPlaced = null;
+              undoBtn.disabled = true;
+              toast('Undo placement');
+              updateAffordChip();
+            }
+            undoBtn.onclick = undo;
 
-  function tickResources(dw, ds){
-    state.wood+=dw; state.stone+=ds; woodEl.textContent=state.wood; stoneEl.textContent=state.stone;
-    woodEl.animate([{transform:'scale(1.0)'},{transform:'scale(1.15)'},{transform:'scale(1.0)'}], {duration:240});
-    stoneEl.animate([{transform:'scale(1.0)'},{transform:'scale(1.15)'},{transform:'scale(1.0)'}], {duration:240});
-  }
+            function tickResources(dw, ds) {
+              state.wood += dw; state.stone += ds; woodEl.textContent = state.wood; stoneEl.textContent = state.stone;
+              woodEl.animate([{ transform: 'scale(1.0)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1.0)' }], { duration: 240 });
+              stoneEl.animate([{ transform: 'scale(1.0)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1.0)' }], { duration: 240 });
+            }
 
-  function updateDeltas(clear){
-    if(clear || !state.selection){ woodDeltaEl.textContent=''; stoneDeltaEl.textContent=''; return; }
-    woodDeltaEl.textContent='−'+state.selection.cost.wood; woodDeltaEl.className='delta minus';
-    stoneDeltaEl.textContent='−'+state.selection.cost.stone; stoneDeltaEl.className='delta minus';
-  }
+            function updateDeltas(clear) {
+              if (clear || !state.selection) { woodDeltaEl.textContent = ''; stoneDeltaEl.textContent = ''; return; }
+              woodDeltaEl.textContent = '−' + state.selection.cost.wood; woodDeltaEl.className = 'delta minus';
+              stoneDeltaEl.textContent = '−' + state.selection.cost.stone; stoneDeltaEl.className = 'delta minus';
+            }
 
-  function updateAffordChip(){
-    const b=state.selection; if(!b){ affordChip.textContent=''; affordChip.disabled=true; return; }
-    const w = Math.floor(state.wood / b.cost.wood);
-    const s = Math.floor(state.stone / b.cost.stone);
-    const count = Math.max(0, Math.min(w,s));
-    affordChip.textContent = `${count}× affordable`;
-    affordChip.disabled=false;
-  }
+            function updateAffordChip() {
+              const b = state.selection; if (!b) { affordChip.textContent = ''; affordChip.disabled = true; return; }
+              const w = Math.floor(state.wood / b.cost.wood);
+              const s = Math.floor(state.stone / b.cost.stone);
+              const count = Math.max(0, Math.min(w, s));
+              affordChip.textContent = `${count}× affordable`;
+              affordChip.disabled = false;
+            }
 
-  // ======= TOASTS =======
-  function toast(msg, type='info', withUndo=false){
-    const t=document.createElement('div'); t.className='toast';
-    t.style.borderLeftColor = type==='warn'? 'var(--warn)' : type==='error'? 'var(--danger)': 'var(--accent)';
-    t.textContent=msg;
-    if(withUndo){ const a=document.createElement('span'); a.className='link'; a.textContent='Undo'; a.onclick=undo; t.appendChild(a); }
-    toasts.appendChild(t);
-    setTimeout(()=>{ t.animate([{opacity:1},{opacity:0}],{duration:350}); setTimeout(()=>t.remove(),360); }, 2200);
-  }
+            // ======= TOASTS =======
+            function toast(msg, type = 'info', withUndo = false) {
+              const t = document.createElement('div'); t.className = 'toast';
+              t.style.borderLeftColor = type === 'warn' ? 'var(--warn)' : type === 'error' ? 'var(--danger)' : 'var(--accent)';
+              t.textContent = msg;
+              if (withUndo) { const a = document.createElement('span'); a.className = 'link'; a.textContent = 'Undo'; a.onclick = undo; t.appendChild(a); }
+              toasts.appendChild(t);
+              setTimeout(() => { t.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }); setTimeout(() => t.remove(), 360); }, 2200);
+            }
 
-})();
-</script></div><div class="page-content" id="bank-page" style="display: none">
-<div class="content-header">
-<h1 class="content-title">Bank</h1>
-<p>
+          })();
+        </script>
+      </div>
+      <div class="page-content" id="bank-page" style="display: none">
+        <div class="content-header">
+          <h1 class="content-title">Bank</h1>
+          <p>
             Your item storage. Capacity:
             <span id="bank-capacity">0/30</span>
-</p>
-</div>
-<div class="bank-grid" id="bank-grid"></div>
-</div>
-<div class="page-content" id="shop-page" style="display: none">
-<div class="content-header">
-<h1 class="content-title">Shop</h1>
-<p>Purchase upgrades and equipment</p>
-</div>
-<div class="tab-container">
-<div class="tab active" data-tab="general">General</div>
-<div class="tab" data-tab="equipment">Equipment</div>
-<div class="tab" data-tab="upgrades">Upgrades</div>
-</div>
-<div class="shop-grid" id="shop-items"></div>
-</div>
-<div class="page-content" id="skill-page" style="display: none">
-<div class="content-header">
-<h1 class="content-title" id="skill-page-title">Skill</h1>
-</div>
-<div class="skill-info">
-<div class="stats-grid">
-<div class="stat-item">
-<span>Level:</span>
-<span id="skill-level-display">1</span>
-</div>
-<div class="stat-item">
-<span>XP:</span>
-<span id="skill-xp-display">0/100</span>
-</div>
-</div>
-<div class="xp-bar">
-<div class="xp-fill" id="skill-page-xp-bar" style="width: 0%"></div>
-</div>
-</div>
-<div id="skill-content"></div>
-</div>
-</main></div>
+          </p>
+        </div>
+        <div class="bank-grid" id="bank-grid"></div>
+      </div>
+      <div class="page-content" id="shop-page" style="display: none">
+        <div class="content-header">
+          <h1 class="content-title">Shop</h1>
+          <p>Purchase upgrades and equipment</p>
+        </div>
+        <div class="tab-container">
+          <div class="tab active" data-tab="general">General</div>
+          <div class="tab" data-tab="equipment">Equipment</div>
+          <div class="tab" data-tab="upgrades">Upgrades</div>
+        </div>
+        <div class="shop-grid" id="shop-items"></div>
+      </div>
+      <div class="page-content" id="skill-page" style="display: none">
+        <div class="content-header">
+          <h1 class="content-title" id="skill-page-title">Skill</h1>
+        </div>
+        <div class="skill-info">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span>Level:</span>
+              <span id="skill-level-display">1</span>
+            </div>
+            <div class="stat-item">
+              <span>XP:</span>
+              <span id="skill-xp-display">0/100</span>
+            </div>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-fill" id="skill-page-xp-bar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div id="skill-content"></div>
+      </div>
+    </main>
+  </div>
 
 
-<div aria-live="polite" class="notification" id="notification" role="status"></div>
-<script>
+  <div aria-live="polite" class="notification" id="notification" role="status"></div>
+  <script>
     (function () {
       function onReady(fn) {
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn();
@@ -2492,7 +3036,7 @@ body.show-adj .tile.adj::after{content:"";position:absolute;inset:0;border:2px d
       });
     })();
   </script>
-<script>
+  <script>
 
 
     const AREAS_DATA = {
@@ -11541,372 +12085,610 @@ body.show-adj .tile.adj::after{content:"";position:absolute;inset:0;border:2px d
       initGame();
     }
   </script>
-<script>
-// Home Base merged module (scoped)
+  <script>
+    // Home Base merged module (scoped)
 
-(function(){
-  // ======= DATA =======
-  const CATS = [
-    { id:'res', name:'Residential' },
-    { id:'ind', name:'Industrial' },
-    { id:'def', name:'Defensive' },
-    { id:'spe', name:'Special' },
-  ];
+    (function () {
+      // ======= DATA =======
+      const CATS = [
+        { id: 'res', name: 'Residential' },
+        { id: 'ind', name: 'Industrial' },
+        { id: 'def', name: 'Defensive' },
+        { id: 'spe', name: 'Special' },
+      ];
 
-  const BUILDINGS = [
-    // Residential
-    { id:'shack', cat:'res', name:'Shack', cost:{wood:15, stone:5}, slots:{F:1,W:1,S:0,D:0}, durability:50, footprint:[1,1], tags:['Road-adjacent'] },
-    { id:'shelter', cat:'res', name:'Shelter', cost:{wood:30, stone:10}, slots:{F:2,W:1,S:0,D:0}, durability:100, footprint:[2,1], tags:['Road-adjacent'] },
-    { id:'apt', cat:'res', name:'Apartment Block', cost:{wood:60, stone:25}, slots:{F:3,W:1,S:0,D:1}, durability:150, footprint:[2,2], tags:['Road-adjacent'] },
-    // Industrial
-    { id:'workshop', cat:'ind', name:'Workshop', cost:{wood:20, stone:20}, slots:{F:0,W:2,S:1,D:0}, durability:120, footprint:[2,1], tags:['Road-adjacent'] },
-    { id:'factory', cat:'ind', name:'Factory Floor', cost:{wood:35, stone:40}, slots:{F:0,W:3,S:2,D:0}, durability:160, footprint:[3,2], tags:['Road-adjacent'] },
-    // Defensive
-    { id:'guard', cat:'def', name:'Guard Post', cost:{wood:15, stone:10}, slots:{F:0,W:0,S:0,D:2}, durability:100, footprint:[1,1], tags:['Road-adjacent','Defense +2'] },
-    { id:'watch', cat:'def', name:'Watchtower', cost:{wood:25, stone:25}, slots:{F:0,W:0,S:0,D:3}, durability:200, footprint:[1,1], tags:['Road-adjacent','Vision +'] },
-    // Special
-    { id:'expo', cat:'spe', name:'Expedition Center', cost:{wood:50, stone:30}, slots:{F:0,W:0,S:0,D:0}, durability:120, footprint:[2,2], tags:['Road-adjacent','Unlocks exploration'] },
-  ];
+      const BUILDINGS = [
+        // Residential
+        { id: 'shack', cat: 'res', name: 'Shack', cost: { wood: 15, stone: 5 }, slots: { F: 1, W: 1, S: 0, D: 0 }, durability: 50, footprint: [1, 1], tags: ['Road-adjacent'] },
+        { id: 'shelter', cat: 'res', name: 'Shelter', cost: { wood: 30, stone: 10 }, slots: { F: 2, W: 1, S: 0, D: 0 }, durability: 100, footprint: [2, 1], tags: ['Road-adjacent'] },
+        { id: 'apt', cat: 'res', name: 'Apartment Block', cost: { wood: 60, stone: 25 }, slots: { F: 3, W: 1, S: 0, D: 1 }, durability: 150, footprint: [2, 2], tags: ['Road-adjacent'] },
+        // Industrial
+        { id: 'workshop', cat: 'ind', name: 'Workshop', cost: { wood: 20, stone: 20 }, slots: { F: 0, W: 2, S: 1, D: 0 }, durability: 120, footprint: [2, 1], tags: ['Road-adjacent'] },
+        { id: 'factory', cat: 'ind', name: 'Factory Floor', cost: { wood: 35, stone: 40 }, slots: { F: 0, W: 3, S: 2, D: 0 }, durability: 160, footprint: [3, 2], tags: ['Road-adjacent'] },
+        // Defensive
+        { id: 'guard', cat: 'def', name: 'Guard Post', cost: { wood: 15, stone: 10 }, slots: { F: 0, W: 0, S: 0, D: 2 }, durability: 100, footprint: [1, 1], tags: ['Road-adjacent', 'Defense +2'] },
+        { id: 'watch', cat: 'def', name: 'Watchtower', cost: { wood: 25, stone: 25 }, slots: { F: 0, W: 0, S: 0, D: 3 }, durability: 200, footprint: [1, 1], tags: ['Road-adjacent', 'Vision +'] },
+        // Special
+        { id: 'expo', cat: 'spe', name: 'Expedition Center', cost: { wood: 50, stone: 30 }, slots: { F: 0, W: 0, S: 0, D: 0 }, durability: 120, footprint: [2, 2], tags: ['Road-adjacent', 'Unlocks exploration'] },
+      ];
 
-  // ======= STATE =======
-  const state = {
-    cols: 18,
-    rows: 12,
-    wood: 150,
-    stone: 120,
-    rotation: 0, // 0 or 90
-    selection: null, // building object
-    chain: false,
-    lastPlaced: null,
-    roads: new Set(),
-    occupied: new Map(), // key "x,y" -> { id, name }
-  };
+      // ======= STATE =======
+      const state = {
+        cols: 33,
+        rows: 66,
+        wood: 150,
+        stone: 120,
+        rotation: 0, // 0 or 90
+        selection: null, // building object
+        chain: false,
+        lastPlaced: null,
+        roads: new Set(),
+        occupied: new Map(), // key "x,y" -> { id, name }
+      };
 
-  // ======= DOM REFS =======
-  const mapEl = document.querySelector('#homebase-page #map');
-  const tabsEl = document.querySelector('#homebase-page #tabs');
-  const cardsEl = document.querySelector('#homebase-page #cards');
-  const favRow = document.querySelector('#homebase-page #favRow');
-  const woodEl = document.querySelector('#homebase-page #wood');
-  const stoneEl = document.querySelector('#homebase-page #stone');
-  const woodDeltaEl = document.querySelector('#homebase-page #woodDelta');
-  const stoneDeltaEl = document.querySelector('#homebase-page #stoneDelta');
-  const rotateL = document.querySelector('#homebase-page #rotateLeft');
-  const rotateR = document.querySelector('#homebase-page #rotateRight');
-  const undoBtn = document.querySelector('#homebase-page #undoBtn');
-  const toasts = document.querySelector('#homebase-page #toasts');
-  const hint = document.querySelector('#homebase-page #hint');
-  const corner = document.querySelector('#homebase-page .overlay .corner');
+      // ======= DOM REFS =======
+      const mapEl = document.querySelector('#homebase-page #map');
+      const tabsEl = document.querySelector('#homebase-page #tabs');
+      const cardsEl = document.querySelector('#homebase-page #cards');
+      const favRow = document.querySelector('#homebase-page #favRow');
+      const woodEl = document.querySelector('#homebase-page #wood');
+      const stoneEl = document.querySelector('#homebase-page #stone');
+      const woodDeltaEl = document.querySelector('#homebase-page #woodDelta');
+      const stoneDeltaEl = document.querySelector('#homebase-page #stoneDelta');
+      const rotateL = document.querySelector('#homebase-page #rotateLeft');
+      const rotateR = document.querySelector('#homebase-page #rotateRight');
+      const undoBtn = document.querySelector('#homebase-page #undoBtn');
+      const toasts = document.querySelector('#homebase-page #toasts');
+      const hint = document.querySelector('#homebase-page #hint');
+      const corner = document.querySelector('#homebase-page .overlay .corner');
 
-  // Affordable counter chip
-  const affordChip = document.createElement('button');
-  affordChip.className = 'btn mini';
-  affordChip.id = 'affordChip';
-  affordChip.textContent = '';
-  affordChip.disabled = true;
-  corner.appendChild(affordChip);
+      // ======= INIT GRID & ROADS =======
+      mapEl.style.setProperty('--cols', state.cols);
+      mapEl.style.setProperty('--rows', state.rows);
 
-  // ======= INIT GRID & ROADS =======
-  mapEl.style.setProperty('--cols', state.cols);
-  mapEl.style.setProperty('--rows', state.rows);
-
-  // Build tiles
-  const tiles = [];
-  for(let y=0;y<state.rows;y++){
-    for(let x=0;x<state.cols;x++){
-      const t=document.createElement('div');
-      t.className='tile';
-      t.dataset.x=x; t.dataset.y=y;
-      mapEl.appendChild(t);
-      tiles.push(t);
-    }
-  }
-
-  function roadKey(x,y){ return x+","+y; }
-  function setRoad(x,y){ state.roads.add(roadKey(x,y)); tileAt(x,y)?.classList.add('road'); }
-  function tileAt(x,y){ if(x<0||y<0||x>=state.cols||y>=state.rows)return null; return tiles[y*state.cols+x]; }
-
-  // Main avenues
-  for(let x=0;x<state.cols;x++){ setRoad(x,5); } // horizontal
-  for(let y=0;y<state.rows;y++){ setRoad(9,y); } // vertical
-  // Side streets
-  for(let x=2;x<state.cols-2;x++){ if(x%4===0) setRoad(x,2); if(x%5===0) setRoad(x,9); }
-  for(let y=2;y<state.rows-2;y++){ if(y%3===0) setRoad(14,y); }
-
-  // Precompute adjacency (non-road tiles touching a road)
-  function markAdjacency(){
-    for(let y=0;y<state.rows;y++){
-      for(let x=0;x<state.cols;x++){
-        const t=tileAt(x,y); if(!t || t.classList.contains('road')) continue;
-        const n=[[x+1,y],[x-1,y],[x,y+1],[x,y-1]];
-        for(const [nx,ny] of n){ if(state.roads.has(roadKey(nx,ny))){ t.classList.add('adj'); break; } }
+      // Build tiles
+      const tiles = [];
+      for (let y = 0; y < state.rows; y++) {
+        for (let x = 0; x < state.cols; x++) {
+          const t = document.createElement('div');
+          t.className = 'tile';
+          t.dataset.x = x; t.dataset.y = y;
+          mapEl.appendChild(t);
+          tiles.push(t);
+        }
       }
-    }
-  }
-  markAdjacency();
 
-  // ======= PALETTE TABS & CARDS =======
-  let activeCat = 'res';
-  // Defensive: avoid duplicate initialization if this module is evaluated twice
-  if (!tabsEl.dataset._homebaseInited) {
-    CATS.forEach((c,i)=>{
-      const el=document.createElement('div');
-      el.className='tab'+(i===0?' active':'');
-      el.textContent=c.name;
-      el.onclick=()=>{ activeCat=c.id; renderCards(); [...tabsEl.children].forEach(n=>n.classList.remove('active')); el.classList.add('active'); };
-      tabsEl.appendChild(el);
-    });
-    tabsEl.dataset._homebaseInited = '1';
-  }
+      function roadKey(x, y) { return x + "," + y; }
+      function setRoad(x, y) { state.roads.add(roadKey(x, y)); tileAt(x, y)?.classList.add('road'); }
+      function riverKey(x, y) { return x + "," + y; }
+      function setRiver(x, y) { state.rivers.add(riverKey(x, y)); const t = tileAt(x, y); if (t) t.classList.add('river'); }
+      function clearRiver(x, y) { state.rivers.delete(riverKey(x, y)); const t = tileAt(x, y); if (t) t.classList.remove('river'); }
+      function isRiver(x, y) { return state.rivers.has(riverKey(x, y)); }
+      function tileAt(x, y) { if (x < 0 || y < 0 || x >= state.cols || y >= state.rows) return null; return tiles[y * state.cols + x]; }
 
-  function renderCards(){
-    cardsEl.innerHTML='';
-    const list = BUILDINGS.filter(b=>b.cat===activeCat);
-    for(const b of list){
-      const card=document.createElement('div'); card.className='card';
-      const afford = canAfford(b);
-      if(state.selection && state.selection.id===b.id) card.classList.add('selected');
-      card.innerHTML=`
+      // helper: fill a vertical river segment
+      function fillRiverCol(col, y0, y1) {
+        for (let y = Math.max(0, y0); y <= Math.min(state.rows - 1, y1); y++) { setRiver(col, y); }
+      }
+
+      // Homebase tile configuration - clean coordinate-based setup
+      const homebaseTileConfig = {
+        // Roads:
+        road: [
+          "4,0", "4,1", "4,2", "4,3", "4,4", "4,5", "4,6", "4,7", "4,8", "4,9", "4,10", "4,11", "4,12", "4,13",
+          "8,0", "8,1", "8,2", "8,3", "8,4", "8,5", "8,6", "8,7", "8,8", "8,9", "8,10", "8,11", "8,12", "8,13", "8,14", "8,15", "8,16", "8,17", "8,18", "8,19", "8,20", "8,21", "8,22", "8,23", "8,24", "8,25", "8,26", "8,27", "8,28", "8,29", "8,30", "8,31", "8,32",
+          "12,0", "12,1", "12,2", "12,3", "12,4", "12,5", "12,6", "12,7", "12,8", "12,9", "12,10", "12,11", "12,12", "12,13", "12,18", "12,19",
+          "16,0", "16,1", "16,2", "16,3", "16,4", "16,5", "16,6", "16,7", "16,8", "16,9", "16,10", "16,11", "16,12", "16,13", "16,14", "16,15", "16,16", "16,17", "16,18", "16,19", "16,20", "16,21", "16,22", "16,23", "16,24", "16,25", "16,26", "16,27", "16,28", "16,29", "16,30", "16,31", "16,32",
+          "20,0", "20,1", "20,2", "20,3", "20,4", "20,5", "20,6", "20,7", "20,8", "20,9", "20,10", "20,11", "20,12", "20,13", "20,14", "20,15", "20,19", "20,20",
+          "24,0", "24,1", "24,2", "24,3", "24,4", "24,5", "24,6", "24,7", "24,8", "24,9", "24,10", "24,11", "24,12", "24,13", "24,14", "24,15", "24,16", "24,20", "24,21",
+          "28,0", "28,1", "28,2", "28,3", "28,4", "28,5", "28,6", "28,7", "28,8", "28,9", "28,10", "28,11", "28,12", "28,13", "28,14", "28,15", "28,16", "28,17", "28,18", "28,19", "28,20", "28,21", "28,22", "28,23", "28,24", "28,25", "28,26", "28,27", "28,28", "28,29", "28,30", "28,31", "28,32",
+          "2,4", "3,4", "5,4", "6,4", "7,4", "9,4", "10,4", "11,4", "13,4", "14,4", "15,4", "17,4", "18,4", "19,4", "21,4", "22,4", "23,4", "25,4", "26,4", "27,4", "29,4", "30,4",
+          "2,13", "3,13", "5,13", "6,13", "7,13", "9,13", "10,13", "11,13", "13,13", "14,13", "15,13",
+          "17,9", "18,9", "19,9", "21,9", "22,9", "23,9", "25,9", "26,9", "27,9", "29,9", "30,9",
+          "2,18", "3,18", "5,18", "6,18", "7,18", "9,18", "10,18", "11,18",
+          "13,19", "14,19", "15,19", "17,19", "18,19", "19,19",
+          "21,20", "22,20", "23,20",
+          "25,21", "26,21", "4,18",
+          "27,21", "29,22", "30,22",
+          "17,14", "18,14", "19,14",
+          "21,15", "22,15",
+          "23,15", "25,16", "26,16",
+          "27,16", "29,17", "30,17"
+        ],
+        
+        // Water:
+        water: [
+          "0,14", "1,14", "2,14", "3,14", "4,14", "5,14", "6,14", "7,14",
+          "0,15", "1,15", "2,15", "3,15", "4,15", "5,15", "6,15", "7,15",
+          "0,16", "1,16", "2,16", "3,16", "4,16", "5,16", "6,16", "7,16",
+          "0,17", "1,17", "2,17", "3,17", "4,17", "5,17", "6,17", "7,17",
+          "9,14", "10,14", "11,14", "12,14", "13,14", "14,14", "15,14",
+          "9,15", "10,15", "11,15", "12,15", "13,15", "14,15", "15,15",
+          "9,16", "10,16", "11,16", "12,16", "13,16", "14,16", "15,16",
+          "9,17", "10,17", "11,17", "12,17", "13,17", "14,17", "15,17",
+          "29,18", "30,18", "31,18", "32,18",
+          "29,19", "30,19", "31,19", "32,19",
+          "29,20", "30,20", "31,20", "32,20",
+          "29,21", "30,21", "31,21", "32,21",
+          "13,18", "14,18", "15,18"
+        ]
+      };
+
+      // Parse coordinates from config and apply tile types
+      function parseCoordinates(coordString) {
+        if (!coordString) return [];
+        return coordString.split(/[\s,]+/).filter(s => s.includes(',')).map(coord => {
+          const [x, y] = coord.split(',').map(Number);
+          return { x, y };
+        });
+      }
+
+      function setTileType(x, y, type) {
+        if (x < 0 || x >= state.cols || y < 0 || y >= state.rows) return;
+        
+        const t = tileAt(x, y);
+        if (!t) return;
+        
+        // Clear existing type classes
+        t.classList.remove('road', 'river');
+        
+        // Apply new type
+        switch (type) {
+          case 'road':
+            state.roads.add(roadKey(x, y));
+            t.classList.add('road');
+            break;
+          case 'water':
+            state.rivers.add(riverKey(x, y));
+            t.classList.add('river');
+            // Remove from roads if it was there
+            const rk = roadKey(x, y);
+            if (state.roads.has(rk)) state.roads.delete(rk);
+            break;
+          case 'grass':
+            // Default tile, no special class needed
+            break;
+        }
+      }
+
+      // Road network generation - now uses config-based approach
+      function generateRoadNetwork() {
+        // Clear existing state
+        state.roads = new Set();
+        if (!state.rivers) state.rivers = new Set();
+        
+        // Clear all tile classes
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            if (t) t.classList.remove('road', 'river', 'adj');
+          }
+        }
+        
+        // Apply tile types from config
+        for (const [tileType, coordinates] of Object.entries(homebaseTileConfig)) {
+          for (const coord of coordinates) {
+            const [x, y] = coord.split(',').map(Number);
+            setTileType(x, y, tileType);
+          }
+        }
+      }
+
+      // Run road generation using new config-based approach
+      generateRoadNetwork();
+
+      // Helper functions for easy coordinate management
+      function addCoordinates(tileType, coordString) {
+        if (!homebaseTileConfig[tileType]) homebaseTileConfig[tileType] = [];
+        const newCoords = coordString.split(/[\s,]+/).filter(s => s.includes(','));
+        homebaseTileConfig[tileType].push(...newCoords);
+        generateRoadNetwork(); // Regenerate to apply changes
+        updateRoadSprites();
+        markAdjacency();
+      }
+
+      function removeCoordinates(tileType, coordString) {
+        if (!homebaseTileConfig[tileType]) return;
+        const coordsToRemove = coordString.split(/[\s,]+/).filter(s => s.includes(','));
+        homebaseTileConfig[tileType] = homebaseTileConfig[tileType].filter(coord => !coordsToRemove.includes(coord));
+        generateRoadNetwork(); // Regenerate to apply changes
+        updateRoadSprites();
+        markAdjacency();
+      }
+
+      function showConfig() {
+        console.log('Current homebase tile configuration:');
+        for (const [type, coords] of Object.entries(homebaseTileConfig)) {
+          console.log(`${type}: ${coords.join(', ')}`);
+        }
+      }
+
+      // Expose config and helpers to console for easy editing
+      window.homebaseTileConfig = homebaseTileConfig;
+      window.addCoordinates = addCoordinates;
+      window.removeCoordinates = removeCoordinates;
+      window.showConfig = showConfig;
+
+      // Update road sprite classes to show connected center-lines
+      function updateRoadSprites() {
+        // First pass: compute neighbor connectivity for all road tiles
+        const conn = new Map(); // key -> { north, south, west, east }
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y); if (!t || !t.classList.contains('road')) continue;
+            const tn = tileAt(x, y - 1); const ts = tileAt(x, y + 1); const tw = tileAt(x - 1, y); const te = tileAt(x + 1, y);
+            const north = !!(tn && tn.classList.contains('road'));
+            const south = !!(ts && ts.classList.contains('road'));
+            const west = !!(tw && tw.classList.contains('road'));
+            const east = !!(te && te.classList.contains('road'));
+            conn.set(x + ',' + y, { north, south, west, east });
+          }
+        }
+
+        // Second pass: update DOM based on the connectivity map
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y); if (!t) continue;
+            const key = x + ',' + y;
+            const c = conn.get(key);
+            if (!c) {
+              // not a road: remove caps and side classes/elements
+              t.classList.remove('cap-n', 'cap-s', 'cap-w', 'cap-e', 'side-n', 'side-s', 'side-w', 'side-e');
+              ['cap-n', 'cap-s', 'cap-w', 'cap-e', 'side-n', 'side-s', 'side-w', 'side-e'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+              continue;
+            }
+
+            const { north, south, west, east } = c;
+            // caps
+            if (north) { t.classList.add('cap-n'); if (!t.querySelector('.cap-n')) { const el = document.createElement('div'); el.className = 'cap-n'; t.appendChild(el); } } else { t.classList.remove('cap-n'); const el = t.querySelector('.cap-n'); if (el) el.remove(); }
+            if (south) { t.classList.add('cap-s'); if (!t.querySelector('.cap-s')) { const el = document.createElement('div'); el.className = 'cap-s'; t.appendChild(el); } } else { t.classList.remove('cap-s'); const el = t.querySelector('.cap-s'); if (el) el.remove(); }
+            if (west) { t.classList.add('cap-w'); if (!t.querySelector('.cap-w')) { const el = document.createElement('div'); el.className = 'cap-w'; t.appendChild(el); } } else { t.classList.remove('cap-w'); const el = t.querySelector('.cap-w'); if (el) el.remove(); }
+            if (east) { t.classList.add('cap-e'); if (!t.querySelector('.cap-e')) { const el = document.createElement('div'); el.className = 'cap-e'; t.appendChild(el); } } else { t.classList.remove('cap-e'); const el = t.querySelector('.cap-e'); if (el) el.remove(); }
+
+            // sidewalks: show side if this tile is road and neighbor is NOT a road
+            if (!north) { t.classList.add('side-n'); if (!t.querySelector('.side-n')) { const s = document.createElement('div'); s.className = 'side-n'; t.appendChild(s); } } else { t.classList.remove('side-n'); const s = t.querySelector('.side-n'); if (s) s.remove(); }
+            if (!south) { t.classList.add('side-s'); if (!t.querySelector('.side-s')) { const s = document.createElement('div'); s.className = 'side-s'; t.appendChild(s); } } else { t.classList.remove('side-s'); const s = t.querySelector('.side-s'); if (s) s.remove(); }
+            if (!west) { t.classList.add('side-w'); if (!t.querySelector('.side-w')) { const s = document.createElement('div'); s.className = 'side-w'; t.appendChild(s); } } else { t.classList.remove('side-w'); const s = t.querySelector('.side-w'); if (s) s.remove(); }
+            if (!east) { t.classList.add('side-e'); if (!t.querySelector('.side-e')) { const s = document.createElement('div'); s.className = 'side-e'; t.appendChild(s); } } else { t.classList.remove('side-e'); const s = t.querySelector('.side-e'); if (s) s.remove(); }
+
+            // Create corner fills on road tiles when they form T or 4-way intersections
+            const neighborCount = (north?1:0) + (south?1:0) + (west?1:0) + (east?1:0);
+            // place corner elements for T / 4-way (3 or 4 neighbors) or perpendicular elbows (2 neighbors that are perpendicular)
+            const isElbowNW = north && west && !south && !east;
+            const isElbowNE = north && east && !south && !west;
+            const isElbowSW = south && west && !north && !east;
+            const isElbowSE = south && east && !north && !west;
+            if (neighborCount >= 3 || isElbowNW || isElbowNE || isElbowSW || isElbowSE) {
+              if (!t.querySelector('.corner-nw')) { const c = document.createElement('div'); c.className = 'corner-nw'; t.appendChild(c); }
+              if (!t.querySelector('.corner-ne')) { const c = document.createElement('div'); c.className = 'corner-ne'; t.appendChild(c); }
+              if (!t.querySelector('.corner-sw')) { const c = document.createElement('div'); c.className = 'corner-sw'; t.appendChild(c); }
+              if (!t.querySelector('.corner-se')) { const c = document.createElement('div'); c.className = 'corner-se'; t.appendChild(c); }
+            } else {
+              ['corner-nw','corner-ne','corner-sw','corner-se'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+            }
+          }
+        }
+      }
+
+      // Precompute adjacency (non-road tiles touching a road)
+      function markAdjacency() {
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y); if (!t || t.classList.contains('road')) continue;
+            // clear previous adj state
+            t.classList.remove('adj', 'adj-n', 'adj-s', 'adj-w', 'adj-e');
+            ['corner-nw','corner-ne','corner-sw','corner-se'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+
+            const northIsRoad = state.roads.has(roadKey(x, y - 1));
+            const southIsRoad = state.roads.has(roadKey(x, y + 1));
+            const westIsRoad = state.roads.has(roadKey(x - 1, y));
+            const eastIsRoad = state.roads.has(roadKey(x + 1, y));
+
+            if (northIsRoad || southIsRoad || westIsRoad || eastIsRoad) {
+              t.classList.add('adj');
+            }
+            if (northIsRoad) t.classList.add('adj-n');
+            if (southIsRoad) t.classList.add('adj-s');
+            if (westIsRoad) t.classList.add('adj-w');
+            if (eastIsRoad) t.classList.add('adj-e');
+
+            // corners for non-road tiles are no longer created here (they're handled on road tiles)
+          }
+        }
+      }
+      // Update sprites then compute adjacency
+      updateRoadSprites();
+      markAdjacency();
+
+      // Expose helpers for console/debugging
+      window.generateRoadNetwork = generateRoadNetwork;
+      window.updateRoadSprites = updateRoadSprites;
+      window.markAdjacency = markAdjacency;
+
+      // ======= PALETTE TABS & CARDS =======
+      let activeCat = 'res';
+      // Defensive: avoid duplicate initialization if this module is evaluated twice
+      if (!tabsEl.dataset._homebaseInited) {
+        CATS.forEach((c, i) => {
+          const el = document.createElement('div');
+          el.className = 'tab' + (i === 0 ? ' active' : '');
+          el.textContent = c.name;
+          el.onclick = () => { activeCat = c.id; renderCards();[...tabsEl.children].forEach(n => n.classList.remove('active')); el.classList.add('active'); };
+          tabsEl.appendChild(el);
+        });
+        tabsEl.dataset._homebaseInited = '1';
+      }
+
+      function renderCards() {
+        cardsEl.innerHTML = '';
+        const list = BUILDINGS.filter(b => b.cat === activeCat);
+        for (const b of list) {
+          const card = document.createElement('div'); card.className = 'card';
+          const afford = canAfford(b);
+          if (state.selection && state.selection.id === b.id) card.classList.add('selected');
+          card.innerHTML = `
         <h4>${b.name}</h4>
         <div class="row">
-          <span class="chip ${afford?'':'red'}">🪵 ${b.cost.wood}</span>
-          <span class="chip ${afford?'':'red'}">🪨 ${b.cost.stone}</span>
+          <span class="chip ${afford ? '' : 'red'}">🪵 ${b.cost.wood}</span>
+          <span class="chip ${afford ? '' : 'red'}">🪨 ${b.cost.stone}</span>
           <span class="chip">🛡 ${b.durability} dur</span>
           <span class="chip">📐 ${b.footprint[0]}×${b.footprint[1]}</span>
         </div>
         <div class="slots">
-          ${b.slots.F?`<span class='slot'>🪑 ×${b.slots.F}</span>`:''}
-          ${b.slots.W?`<span class='slot'>🛠️ ×${b.slots.W}</span>`:''}
-          ${b.slots.S?`<span class='slot'>📦 ×${b.slots.S}</span>`:''}
-          ${b.slots.D?`<span class='slot'>🛡️ ×${b.slots.D}</span>`:''}
+          ${b.slots.F ? `<span class='slot'>🪑 ×${b.slots.F}</span>` : ''}
+          ${b.slots.W ? `<span class='slot'>🛠️ ×${b.slots.W}</span>` : ''}
+          ${b.slots.S ? `<span class='slot'>📦 ×${b.slots.S}</span>` : ''}
+          ${b.slots.D ? `<span class='slot'>🛡️ ×${b.slots.D}</span>` : ''}
         </div>
         <div class="desc">${b.tags.join(' • ')}</div>
-        <div class="choose"><button class="btn primary" ${state.selection&&state.selection.id===b.id?'disabled':''}>${state.selection&&state.selection.id===b.id?'Selected':'Select'}</button></div>
+        <div class="choose"><button class="btn primary" ${state.selection && state.selection.id === b.id ? 'disabled' : ''}>${state.selection && state.selection.id === b.id ? 'Selected' : 'Select'}</button></div>
       `;
-      card.querySelector('button').onclick=()=>selectBuilding(b);
-      cardsEl.appendChild(card);
-    }
-  }
-  renderCards();
-
-  // Favorites row (recent 3)
-  const fav = [];
-  function pushFav(b){
-    const idx=fav.findIndex(x=>x.id===b.id);
-    if(idx!==-1) fav.splice(idx,1);
-    fav.unshift(b);
-    if(fav.length>3) fav.pop();
-    favRow.innerHTML='';
-    fav.forEach(f=>{
-      const el=document.createElement('div'); el.className='pill'; el.textContent=f.name; el.onclick=()=>selectBuilding(f); favRow.appendChild(el);
-    })
-  }
-
-  // ======= SELECTION & GHOST =======
-  let ghostEl = null; let ghostTip=null; let ghostMeta=null;
-  let hoverCell = {x:null,y:null};
-
-  function selectBuilding(b){
-    state.selection = b;
-    document.body.classList.add('show-adj');
-    pushFav(b);
-    hint.textContent = `Placing: ${b.name} — Rotate Q/E · Hold Shift to stamp`;
-    updateDeltas();
-    renderCards();
-    ensureGhost();
-    updateAffordChip();
-  }
-
-  function ensureGhost(){
-    removeGhost();
-    if(!state.selection) return;
-    ghostEl = document.createElement('div');
-    ghostEl.className='ghost-cell';
-    ghostMeta = document.createElement('div'); ghostMeta.className='ghost-meta'; ghostEl.appendChild(ghostMeta);
-    ghostTip = document.createElement('div'); ghostTip.className='tip'; ghostTip.style.display='none'; ghostEl.appendChild(ghostTip);
-    mapEl.appendChild(ghostEl);
-    updateGhostMeta();
-    positionGhost();
-  }
-  function removeGhost(){ if(ghostEl){ ghostEl.remove(); ghostEl=null; ghostMeta=null; ghostTip=null; } }
-
-  function footprintSize(){
-    const [w,h] = state.selection ? state.selection.footprint : [1,1];
-    return state.rotation===0 ? {w,h} : {w:h, h:w};
-  }
-
-  function updateGhostMeta(){
-    if(!state.selection||!ghostMeta) return;
-    const s=state.selection.slots; ghostMeta.innerHTML='';
-    if(s.D) ghostMeta.appendChild(chip(`🛡️ +${s.D}`));
-    if(s.W) ghostMeta.appendChild(chip(`🛠️ +${s.W}`));
-    if(s.S) ghostMeta.appendChild(chip(`📦 +${s.S}`));
-    if(s.F) ghostMeta.appendChild(chip(`🪑 +${s.F}`));
-    function chip(text){ const el=document.createElement('div'); el.className='gchip'; el.textContent=text; return el; }
-  }
-
-  function positionGhost(){
-    if(!ghostEl || hoverCell.x==null) return;
-    const {w,h} = footprintSize();
-    const x = Math.min(hoverCell.x, state.cols - w);
-    const y = Math.min(hoverCell.y, state.rows - h);
-    const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
-    const left = x*(cellSize+3);
-    const top  = y*(cellSize+3);
-    ghostEl.style.width = `calc(${w} * var(--cell) + ${(w-1)*3}px)`;
-    ghostEl.style.height= `calc(${h} * var(--cell) + ${(h-1)*3}px)`;
-    ghostEl.style.left = left+"px";
-    ghostEl.style.top  = top+"px";
-
-    const validity = validatePlacement(x,y,w,h);
-    ghostEl.classList.toggle('valid', validity.ok);
-    ghostEl.classList.toggle('invalid', !validity.ok);
-    if(ghostTip){
-      if(validity.ok){ ghostTip.style.display='none'; }
-      else { ghostTip.style.display='block'; ghostTip.textContent = validity.reason; }
-    }
-    showProjectedDeltas(validity);
-  }
-
-  // Hover tracking
-  mapEl.addEventListener('mousemove', e=>{
-    const t = e.target.closest('.tile');
-    if(!t) return;
-    hoverCell = { x: +t.dataset.x, y: +t.dataset.y };
-    positionGhost();
-  });
-  mapEl.addEventListener('mouseleave', ()=>{ hoverCell={x:null,y:null}; removeGhost(); updateDeltas(true); });
-
-  // ======= ROTATE / KEYS =======
-  function rotate(dir){
-    if(!state.selection) return;
-    state.rotation = (state.rotation + (dir==='L'?-90:90) + 360) % 180; // only 0/90 needed
-    positionGhost();
-    updateGhostMeta();
-  }
-  rotateL.onclick=()=>rotate('L');
-  rotateR.onclick=()=>rotate('R');
-
-  document.addEventListener('keydown', (e)=>{
-    if(e.key==='q' || e.key==='Q'){ rotate('L'); }
-    if(e.key==='e' || e.key==='E'){ rotate('R'); }
-    if(e.key==='Shift') state.chain = true;
-    if(e.key==='z' || e.key==='Z'){ undo(); }
-  });
-  document.addEventListener('keyup', (e)=>{ if(e.key==='Shift') state.chain=false; });
-
-  // ======= VALIDATION =======
-  function canAfford(b){ return state.wood>=b.cost.wood && state.stone>=b.cost.stone; }
-
-  function validatePlacement(x,y,w,h){
-    const b = state.selection; if(!b) return {ok:false, reason:'No selection'};
-    if(x<0||y<0||x+w>state.cols||y+h>state.rows) return {ok:false, reason:'Out of bounds'};
-    for(let yy=y;yy<y+h;yy++){
-      for(let xx=x;xx<x+w;xx++){
-        const key = xx+","+yy;
-        if(state.roads.has(key)) return {ok:false, reason:'Cannot place on a road'};
-        if(state.occupied.has(key)) return {ok:false, reason:'Space occupied'};
+          card.querySelector('button').onclick = () => selectBuilding(b);
+          cardsEl.appendChild(card);
+        }
       }
-    }
-    let adjacent=false;
-    outer: for(let yy=y;yy<y+h;yy++){
-      for(let xx=x;xx<x+w;xx++){
-        const n = [ [xx+1,yy], [xx-1,yy], [xx,yy+1], [xx,yy-1] ];
-        for(const [nx,ny] of n){ if(state.roads.has(nx+","+ny)){ adjacent=true; break outer; } }
+      renderCards();
+
+      // Favorites row (recent 3)
+      const fav = [];
+      function pushFav(b) {
+        const idx = fav.findIndex(x => x.id === b.id);
+        if (idx !== -1) fav.splice(idx, 1);
+        fav.unshift(b);
+        if (fav.length > 3) fav.pop();
+        favRow.innerHTML = '';
+        fav.forEach(f => {
+          const el = document.createElement('div'); el.className = 'pill'; el.textContent = f.name; el.onclick = () => selectBuilding(f); favRow.appendChild(el);
+        })
       }
-    }
-    if(!adjacent) return {ok:false, reason:'Needs road adjacency'};
-    if(!canAfford(b)) return {ok:false, reason:'Insufficient resources'};
-    return {ok:true, reason:'OK'};
-  }
 
-  // ======= PLACE / UNDO =======
-  mapEl.addEventListener('click', (e)=>{
-    if(!state.selection) return;
-    const t = e.target.closest('.tile'); if(!t) return;
-    const baseX = +t.dataset.x; const baseY = +t.dataset.y;
-    const {w,h} = footprintSize();
-    const x = Math.min(baseX, state.cols - w);
-    const y = Math.min(baseY, state.rows - h);
-    const val = validatePlacement(x,y,w,h);
-    if(!val.ok){ toast(val.reason, 'warn'); return; }
-    doPlace(x,y,w,h);
-    if(!state.chain){ state.selection=null; removeGhost(); document.body.classList.remove('show-adj'); hint.textContent='Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
-    else { positionGhost(); updateAffordChip(); }
-  });
+      // ======= SELECTION & GHOST =======
+      let ghostEl = null; let ghostTip = null; let ghostMeta = null;
+      let hoverCell = { x: null, y: null };
 
-  function doPlace(x,y,w,h){
-    const b = state.selection;
-    tickResources(-b.cost.wood, -b.cost.stone);
-
-    const cover=document.createElement('div');
-    cover.className='placed';
-    cover.style.position='absolute';
-    cover.style.left = `calc(${x} * var(--cell) + ${(x)*3}px)`;
-    cover.style.top  = `calc(${y} * var(--cell) + ${(y)*3}px)`;
-    cover.style.width= `calc(${w} * var(--cell) + ${(w-1)*3}px)`;
-    cover.style.height=`calc(${h} * var(--cell) + ${(h-1)*3}px)`;
-    cover.style.borderRadius='12px';
-    const label=document.createElement('div'); label.className='name'; label.textContent=b.name; cover.appendChild(label);
-    mapEl.appendChild(cover);
-    cover.animate([{transform:'scale(.96)',opacity:.0},{transform:'scale(1)',opacity:1}],{duration:220,easing:'ease-out'});
-
-    const cells=[];
-    for(let yy=y;yy<y+h;yy++){
-      for(let xx=x;xx<x+w;xx++){
-        const key=xx+","+yy; state.occupied.set(key,{id:b.id,name:b.name}); cells.push(key);
+      function selectBuilding(b) {
+        state.selection = b;
+        document.body.classList.add('show-adj');
+        pushFav(b);
+        hint.textContent = `Placing: ${b.name} — Rotate Q/E · Hold Shift to stamp`;
+        updateDeltas();
+        renderCards();
+        ensureGhost();
+        updateAffordChip();
       }
-    }
-    state.lastPlaced = { b, x, y, w, h, el: cover, cells };
-    undoBtn.disabled=false;
-    toast(`Placed ${b.name}`, 'info', true);
-  }
 
-  function undo(){
-    const lp=state.lastPlaced; if(!lp) return;
-    tickResources(lp.b.cost.wood, lp.b.cost.stone);
-    lp.cells.forEach(k=>state.occupied.delete(k));
-    lp.el.remove();
-    state.lastPlaced=null;
-    undoBtn.disabled=true;
-    toast('Undo placement');
-    updateAffordChip();
-  }
-  undoBtn.onclick=undo;
+      function ensureGhost() {
+        removeGhost();
+        if (!state.selection) return;
+        ghostEl = document.createElement('div');
+        ghostEl.className = 'ghost-cell';
+        ghostMeta = document.createElement('div'); ghostMeta.className = 'ghost-meta'; ghostEl.appendChild(ghostMeta);
+        ghostTip = document.createElement('div'); ghostTip.className = 'tip'; ghostTip.style.display = 'none'; ghostEl.appendChild(ghostTip);
+        mapEl.appendChild(ghostEl);
+        updateGhostMeta();
+        positionGhost();
+      }
+      function removeGhost() { if (ghostEl) { ghostEl.remove(); ghostEl = null; ghostMeta = null; ghostTip = null; } }
 
-  function tickResources(dw, ds){
-    state.wood+=dw; state.stone+=ds; woodEl.textContent=state.wood; stoneEl.textContent=state.stone;
-    woodEl.animate([{transform:'scale(1.0)'},{transform:'scale(1.15)'},{transform:'scale(1.0)'}], {duration:240});
-    stoneEl.animate([{transform:'scale(1.0)'},{transform:'scale(1.15)'},{transform:'scale(1.0)'}], {duration:240});
-  }
+      function footprintSize() {
+        const [w, h] = state.selection ? state.selection.footprint : [1, 1];
+        return state.rotation === 0 ? { w, h } : { w: h, h: w };
+      }
 
-  function updateDeltas(clear){
-    if(clear || !state.selection){ woodDeltaEl.textContent=''; stoneDeltaEl.textContent=''; return; }
-    woodDeltaEl.textContent='−'+state.selection.cost.wood; woodDeltaEl.className='delta minus';
-    stoneDeltaEl.textContent='−'+state.selection.cost.stone; stoneDeltaEl.className='delta minus';
-  }
+      function updateGhostMeta() {
+        if (!state.selection || !ghostMeta) return;
+        const s = state.selection.slots; ghostMeta.innerHTML = '';
+        if (s.D) ghostMeta.appendChild(chip(`🛡️ +${s.D}`));
+        if (s.W) ghostMeta.appendChild(chip(`🛠️ +${s.W}`));
+        if (s.S) ghostMeta.appendChild(chip(`📦 +${s.S}`));
+        if (s.F) ghostMeta.appendChild(chip(`🪑 +${s.F}`));
+        function chip(text) { const el = document.createElement('div'); el.className = 'gchip'; el.textContent = text; return el; }
+      }
 
-  function updateAffordChip(){
-    const b=state.selection; if(!b){ affordChip.textContent=''; affordChip.disabled=true; return; }
-    const w = Math.floor(state.wood / b.cost.wood);
-    const s = Math.floor(state.stone / b.cost.stone);
-    const count = Math.max(0, Math.min(w,s));
-    affordChip.textContent = `${count}× affordable`;
-    affordChip.disabled=false;
-  }
+      function positionGhost() {
+        if (!ghostEl || hoverCell.x == null) return;
+        const { w, h } = footprintSize();
+        const x = Math.min(hoverCell.x, state.cols - w);
+        const y = Math.min(hoverCell.y, state.rows - h);
+        const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
+        const left = x * (cellSize + 3);
+        const top = y * (cellSize + 3);
+        ghostEl.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
+        ghostEl.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
+        ghostEl.style.left = left + "px";
+        ghostEl.style.top = top + "px";
 
-  // ======= TOASTS =======
-  function toast(msg, type='info', withUndo=false){
-    const t=document.createElement('div'); t.className='toast';
-    t.style.borderLeftColor = type==='warn'? 'var(--warn)' : type==='error'? 'var(--danger)': 'var(--accent)';
-    t.textContent=msg;
-    if(withUndo){ const a=document.createElement('span'); a.className='link'; a.textContent='Undo'; a.onclick=undo; t.appendChild(a); }
-    toasts.appendChild(t);
-    setTimeout(()=>{ t.animate([{opacity:1},{opacity:0}],{duration:350}); setTimeout(()=>t.remove(),360); }, 2200);
-  }
+        const validity = validatePlacement(x, y, w, h);
+        ghostEl.classList.toggle('valid', validity.ok);
+        ghostEl.classList.toggle('invalid', !validity.ok);
+        if (ghostTip) {
+          if (validity.ok) { ghostTip.style.display = 'none'; }
+          else { ghostTip.style.display = 'block'; ghostTip.textContent = validity.reason; }
+        }
+        showProjectedDeltas(validity);
+      }
 
-  window.initializeHomeBase = window.initializeHomeBase || function(){};
+      // Hover tracking and coordinate HUD
+      // create coord hud if missing
+      let coordHud = document.querySelector('#homebase-coord-hud');
+      if (!coordHud) {
+        coordHud = document.createElement('div');
+        coordHud.id = 'homebase-coord-hud';
+        coordHud.className = 'coord-hud';
+        document.body.appendChild(coordHud);
+      }
 
-})();
-</script><script>function initializeHomeBase(){}</script></body>
+      mapEl.addEventListener('mousemove', e => {
+        const t = e.target.closest('.tile');
+        if (!t) { coordHud.style.display = 'none'; return; }
+        const tx = +t.dataset.x, ty = +t.dataset.y;
+        hoverCell = { x: tx, y: ty };
+        positionGhost();
+
+        // show coord HUD near cursor
+        coordHud.style.display = 'block';
+        coordHud.textContent = `x:${tx} y:${ty}`;
+        // offset slightly from cursor
+        coordHud.style.left = (e.clientX + 12) + 'px';
+        coordHud.style.top = (e.clientY + 12) + 'px';
+        coordHud.style.transform = 'translate(0,0)';
+      });
+
+      mapEl.addEventListener('mouseleave', () => { hoverCell = { x: null, y: null }; removeGhost(); updateDeltas(true); coordHud.style.display = 'none'; });
+
+      // ======= ROTATE / KEYS =======
+      function rotate(dir) {
+        if (!state.selection) return;
+        state.rotation = (state.rotation + (dir === 'L' ? -90 : 90) + 360) % 180; // only 0/90 needed
+        positionGhost();
+        updateGhostMeta();
+      }
+      rotateL.onclick = () => rotate('L');
+      rotateR.onclick = () => rotate('R');
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'q' || e.key === 'Q') { rotate('L'); }
+        if (e.key === 'e' || e.key === 'E') { rotate('R'); }
+        if (e.key === 'Shift') state.chain = true;
+        if (e.key === 'z' || e.key === 'Z') { undo(); }
+      });
+      document.addEventListener('keyup', (e) => { if (e.key === 'Shift') state.chain = false; });
+
+      // ======= VALIDATION =======
+      function canAfford(b) { return state.wood >= b.cost.wood && state.stone >= b.cost.stone; }
+
+      function validatePlacement(x, y, w, h) {
+        const b = state.selection; if (!b) return { ok: false, reason: 'No selection' };
+        if (x < 0 || y < 0 || x + w > state.cols || y + h > state.rows) return { ok: false, reason: 'Out of bounds' };
+        for (let yy = y; yy < y + h; yy++) {
+          for (let xx = x; xx < x + w; xx++) {
+            const key = xx + "," + yy;
+            if (state.roads.has(key)) return { ok: false, reason: 'Cannot place on a road' };
+            if (state.occupied.has(key)) return { ok: false, reason: 'Space occupied' };
+          }
+        }
+        let adjacent = false;
+        outer: for (let yy = y; yy < y + h; yy++) {
+          for (let xx = x; xx < x + w; xx++) {
+            const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
+            for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny)) { adjacent = true; break outer; } }
+          }
+        }
+        if (!adjacent) return { ok: false, reason: 'Needs road adjacency' };
+        if (!canAfford(b)) return { ok: false, reason: 'Insufficient resources' };
+        return { ok: true, reason: 'OK' };
+      }
+
+      // ======= PLACE / UNDO =======
+      mapEl.addEventListener('click', (e) => {
+        if (!state.selection) return;
+        const t = e.target.closest('.tile'); if (!t) return;
+        const baseX = +t.dataset.x; const baseY = +t.dataset.y;
+        const { w, h } = footprintSize();
+        const x = Math.min(baseX, state.cols - w);
+        const y = Math.min(baseY, state.rows - h);
+        const val = validatePlacement(x, y, w, h);
+        if (!val.ok) { toast(val.reason, 'warn'); return; }
+        doPlace(x, y, w, h);
+        if (!state.chain) { state.selection = null; removeGhost(); document.body.classList.remove('show-adj'); hint.textContent = 'Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
+        else { positionGhost(); updateAffordChip(); }
+      });
+
+      function doPlace(x, y, w, h) {
+        const b = state.selection;
+        tickResources(-b.cost.wood, -b.cost.stone);
+
+        const cover = document.createElement('div');
+        cover.className = 'placed';
+        cover.style.position = 'absolute';
+        cover.style.left = `calc(${x} * var(--cell) + ${(x) * 3}px)`;
+        cover.style.top = `calc(${y} * var(--cell) + ${(y) * 3}px)`;
+        cover.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
+        cover.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
+        cover.style.borderRadius = '12px';
+        const label = document.createElement('div'); label.className = 'name'; label.textContent = b.name; cover.appendChild(label);
+        mapEl.appendChild(cover);
+        cover.animate([{ transform: 'scale(.96)', opacity: .0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 220, easing: 'ease-out' });
+
+        const cells = [];
+        for (let yy = y; yy < y + h; yy++) {
+          for (let xx = x; xx < x + w; xx++) {
+            const key = xx + "," + yy; state.occupied.set(key, { id: b.id, name: b.name }); cells.push(key);
+          }
+        }
+        state.lastPlaced = { b, x, y, w, h, el: cover, cells };
+        undoBtn.disabled = false;
+        toast(`Placed ${b.name}`, 'info', true);
+      }
+
+      function undo() {
+        const lp = state.lastPlaced; if (!lp) return;
+        tickResources(lp.b.cost.wood, lp.b.cost.stone);
+        lp.cells.forEach(k => state.occupied.delete(k));
+        lp.el.remove();
+        state.lastPlaced = null;
+        undoBtn.disabled = true;
+        toast('Undo placement');
+        updateAffordChip();
+      }
+      undoBtn.onclick = undo;
+
+      function tickResources(dw, ds) {
+        state.wood += dw; state.stone += ds; woodEl.textContent = state.wood; stoneEl.textContent = state.stone;
+        woodEl.animate([{ transform: 'scale(1.0)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1.0)' }], { duration: 240 });
+        stoneEl.animate([{ transform: 'scale(1.0)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1.0)' }], { duration: 240 });
+      }
+
+      function updateDeltas(clear) {
+        if (clear || !state.selection) { woodDeltaEl.textContent = ''; stoneDeltaEl.textContent = ''; return; }
+        woodDeltaEl.textContent = '−' + state.selection.cost.wood; woodDeltaEl.className = 'delta minus';
+        stoneDeltaEl.textContent = '−' + state.selection.cost.stone; stoneDeltaEl.className = 'delta minus';
+      }
+
+      function updateAffordChip() {
+        const b = state.selection; if (!b) { affordChip.textContent = ''; affordChip.disabled = true; return; }
+        const w = Math.floor(state.wood / b.cost.wood);
+        const s = Math.floor(state.stone / b.cost.stone);
+        const count = Math.max(0, Math.min(w, s));
+        affordChip.textContent = `${count}× affordable`;
+        affordChip.disabled = false;
+      }
+
+      // ======= TOASTS =======
+      function toast(msg, type = 'info', withUndo = false) {
+        const t = document.createElement('div'); t.className = 'toast';
+        t.style.borderLeftColor = type === 'warn' ? 'var(--warn)' : type === 'error' ? 'var(--danger)' : 'var(--accent)';
+        t.textContent = msg;
+        if (withUndo) { const a = document.createElement('span'); a.className = 'link'; a.textContent = 'Undo'; a.onclick = undo; t.appendChild(a); }
+        toasts.appendChild(t);
+        setTimeout(() => { t.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }); setTimeout(() => t.remove(), 360); }, 2200);
+      }
+
+      window.initializeHomeBase = window.initializeHomeBase || function () { };
+
+    })();
+  </script>
+  <script>function initializeHomeBase() { }</script>
+</body>
+
 </html>
