@@ -310,8 +310,7 @@
     /* Roads */
     .city-road {
       fill: #404040;
-      stroke: #505050;
-      stroke-width: 1;
+      stroke: none;
     }
 
     /* Buildings */
@@ -1827,20 +1826,66 @@
     #homebase-page .tile {
       width: var(--cell);
       height: var(--cell);
-      background: var(--plot);
+      background: #4a5c42; /* default grass color instead of var(--plot) */
       border-radius: 0px;
       position: relative;
       /* remove inset highlights/shadows so textures fill edge-to-edge */
       box-shadow: none;
     }
 
+    /* Default grass texture for all tiles */
+    #homebase-page .tile::after { 
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        /* Continuous grass blade patterns that align across tiles */
+        linear-gradient(90deg, transparent 40%, rgba(255, 255, 255, 0.015) 45%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.015) 55%, transparent 60%),
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.01) 45%, rgba(255, 255, 255, 0.015) 50%, rgba(255, 255, 255, 0.01) 55%, transparent 60%),
+        linear-gradient(135deg, transparent 40%, rgba(0, 0, 0, 0.015) 45%, rgba(0, 0, 0, 0.02) 50%, rgba(0, 0, 0, 0.015) 55%, transparent 60%),
+        /* Seamless natural variation using larger patterns */
+        radial-gradient(ellipse at 25% 25%, rgba(0, 0, 0, 0.02) 20%, transparent 40%),
+        radial-gradient(ellipse at 75% 35%, rgba(255, 255, 255, 0.015) 25%, transparent 45%),
+        radial-gradient(ellipse at 45% 75%, rgba(0, 0, 0, 0.018) 22%, transparent 42%),
+        radial-gradient(ellipse at 85% 85%, rgba(255, 255, 255, 0.012) 18%, transparent 38%),
+        /* Overall smooth gradient that creates seamless transitions */
+        linear-gradient(135deg, rgba(0, 0, 0, 0.015) 0%, transparent 25%, rgba(255, 255, 255, 0.008) 50%, transparent 75%, rgba(0, 0, 0, 0.01) 100%);
+      background-size: 
+        /* Larger pattern sizes that span multiple tiles for seamless transitions */
+        8px 8px, 12px 12px, 16px 16px, 
+        24px 24px, 32px 32px, 28px 28px, 36px 36px,
+        100% 100%;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 1;
+    }
+
     #homebase-page .road {
-      background: linear-gradient(180deg, #222a38, #1d2431);
+      background: #3a3c40; /* dirtier, darker base color */
       /* make road tiles visually square and flush so textures connect */
-  border-radius: 0px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .02), inset 0 -1px 0 rgba(0, 0, 0, .35);
+      border-radius: -1px;
       position: relative;
       overflow: visible;
+    }
+
+    /* Dirty road texture overlay */
+    #homebase-page .road::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        /* Asphalt dirt and stains */
+        radial-gradient(ellipse at 25% 30%, rgba(60, 50, 40, 0.3) 2px, transparent 6px),
+        radial-gradient(ellipse at 75% 70%, rgba(80, 70, 60, 0.2) 1px, transparent 4px),
+        radial-gradient(ellipse at 45% 15%, rgba(50, 40, 30, 0.25) 2px, transparent 5px),
+        radial-gradient(ellipse at 85% 45%, rgba(70, 60, 50, 0.2) 1px, transparent 3px),
+        /* Tire marks and wear patterns */
+        linear-gradient(90deg, transparent 0%, rgba(30, 25, 20, 0.15) 15%, transparent 30%, rgba(40, 35, 30, 0.1) 70%, transparent 85%),
+        linear-gradient(0deg, transparent 20%, rgba(35, 30, 25, 0.08) 40%, transparent 60%);
+      background-size: 15px 15px, 20px 20px, 18px 18px, 25px 25px, 100% 100%, 100% 100%;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0; /* below the road surface overlay */
     }
 
     /* road caps: draw two halves per axis so we can hide the unconnected side */
@@ -1852,7 +1897,6 @@
       transform: translateX(-50%);
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.85));
       border-radius: 2px;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, .6);
       opacity: 0.9;
       pointer-events: none;
       display: none;
@@ -1877,7 +1921,6 @@
       transform: translateY(-50%);
       background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.85));
       border-radius: 2px;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, .6);
       opacity: 0.9;
       pointer-events: none;
       display: none;
@@ -1893,6 +1936,8 @@
       right: 6%;
       width: 24%;
     }
+
+    
 
     /* show caps when specific connection exists */
     #homebase-page .road.cap-n .cap-n {
@@ -1918,11 +1963,30 @@
       left: 0;
       right: 0;
       height: 6px;
-      background: rgba(210, 210, 210, 0.95);
+      background: rgba(180, 175, 165, 0.95); /* dirtier base color */
       border-radius: 0;
       pointer-events: none;
       display: none;
       z-index: 2;
+    }
+
+    /* Dirty texture overlay for horizontal sidewalks */
+    #homebase-page .tile .side-n::after,
+    #homebase-page .tile .side-s::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        /* Dirt stains and grime */
+        radial-gradient(ellipse at 20% 30%, rgba(80, 70, 60, 0.2) 1px, transparent 3px),
+        radial-gradient(ellipse at 70% 70%, rgba(60, 50, 40, 0.15) 1px, transparent 2px),
+        radial-gradient(ellipse at 45% 10%, rgba(90, 80, 70, 0.12) 1px, transparent 2px),
+        radial-gradient(ellipse at 85% 40%, rgba(70, 60, 50, 0.2) 1px, transparent 3px),
+        /* Weathering and wear patterns */
+        linear-gradient(90deg, transparent 0%, rgba(60, 50, 40, 0.1) 20%, transparent 40%, rgba(80, 70, 60, 0.08) 60%, transparent 80%);
+      background-size: 8px 6px, 12px 6px, 10px 6px, 15px 6px, 100% 100%;
+      opacity: 0.6;
+      z-index: 1;
     }
 
     #homebase-page .tile .side-n { top: 0; }
@@ -1934,21 +1998,44 @@
       top: 0;
       bottom: 0;
       width: 6px;
-      background: rgba(210, 210, 210, 0.95);
+      background: rgba(180, 175, 165, 0.95); /* dirtier base color */
       border-radius: 0;
       pointer-events: none;
       display: none;
       z-index: 2;
     }
 
+    /* Dirty texture overlay for vertical sidewalks */
+    #homebase-page .tile .side-w::after,
+    #homebase-page .tile .side-e::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        /* Dirt stains and grime */
+        radial-gradient(ellipse at 30% 20%, rgba(80, 70, 60, 0.2) 1px, transparent 3px),
+        radial-gradient(ellipse at 70% 60%, rgba(60, 50, 40, 0.15) 1px, transparent 2px),
+        radial-gradient(ellipse at 10% 80%, rgba(90, 80, 70, 0.12) 1px, transparent 2px),
+        radial-gradient(ellipse at 80% 35%, rgba(70, 60, 50, 0.2) 1px, transparent 3px),
+        /* Weathering and wear patterns */
+        linear-gradient(0deg, transparent 0%, rgba(60, 50, 40, 0.1) 20%, transparent 40%, rgba(80, 70, 60, 0.08) 60%, transparent 80%);
+      background-size: 6px 8px, 6px 12px, 6px 10px, 6px 15px, 100% 100%;
+      opacity: 0.6;
+      z-index: 1;
+    }
+
     #homebase-page .tile .side-w { left: 0; }
     #homebase-page .tile .side-e { right: 0; }
 
   /* show per-side sidewalks when the tile has the matching side class */
-  #homebase-page .tile.road.side-n .side-n { display: block; }
-  #homebase-page .tile.road.side-s .side-s { display: block; }
-  #homebase-page .tile.road.side-w .side-w { display: block; }
-  #homebase-page .tile.road.side-e .side-e { display: block; }
+  #homebase-page .tile.road.side-n .side-n,
+  #homebase-page .tile.bridge.side-n .side-n { display: block; }
+  #homebase-page .tile.road.side-s .side-s,
+  #homebase-page .tile.bridge.side-s .side-s { display: block; }
+  #homebase-page .tile.road.side-w .side-w,
+  #homebase-page .tile.bridge.side-w .side-w { display: block; }
+  #homebase-page .tile.road.side-e .side-e,
+  #homebase-page .tile.bridge.side-e .side-e { display: block; }
 
   /* corner fills for sidewalk corners (hidden by default) */
   #homebase-page .tile .corner-nw,
@@ -1958,10 +2045,31 @@
     position: absolute;
     width: 6px;
     height: 6px;
-    background: rgba(210, 210, 210, 0.95);
+    background: rgba(180, 175, 165, 0.95); /* dirtier base color to match sidewalks */
     display: none;
     z-index: 3;
     pointer-events: none;
+  }
+
+  /* Dirty texture overlay for corner pieces */
+  #homebase-page .tile .corner-nw::after,
+  #homebase-page .tile .corner-ne::after,
+  #homebase-page .tile .corner-sw::after,
+  #homebase-page .tile .corner-se::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: 
+      /* Dirt stains and grime for corners */
+      radial-gradient(ellipse at 30% 30%, rgba(80, 70, 60, 0.25) 1px, transparent 2px),
+      radial-gradient(ellipse at 70% 70%, rgba(60, 50, 40, 0.2) 1px, transparent 2px),
+      radial-gradient(ellipse at 50% 20%, rgba(90, 80, 70, 0.15) 1px, transparent 1px),
+      /* Corner-specific weathering */
+      linear-gradient(45deg, rgba(60, 50, 40, 0.12) 0%, transparent 60%),
+      linear-gradient(135deg, transparent 40%, rgba(80, 70, 60, 0.1) 100%);
+    background-size: 6px 6px, 6px 6px, 6px 6px, 100% 100%, 100% 100%;
+    opacity: 0.6;
+    z-index: 1;
   }
 
   #homebase-page .tile .corner-nw { left: 0; top: 0; }
@@ -1979,40 +2087,66 @@
   #homebase-page .tile.road .corner-sw { display: block; }
   #homebase-page .tile.road .corner-se { display: block; }
 
-    /* river tile styling */
-    @keyframes riverFlow {
-      from {
-        background-position: 0 0
-      }
-
-      to {
-        background-position: 100% 0
-      }
-    }
-
-    /* River tiles should bleed into the grid gap so textures connect between adjacent river tiles. */
+    /* river tile styling - textured dirty bluish green water */
     #homebase-page .tile.river {
-      background: linear-gradient(90deg, rgba(40, 120, 200, 0.95), rgba(24, 90, 170, 0.95));
-      /* remove inset shadow so river color reaches the edges */
+      background: #2f5e57; /* dirty bluish green base */
       box-shadow: none;
-      /* keep river surface flush so neighboring river tiles join visually */
       border-radius: 0px;
       overflow: visible;
+      position: relative;
     }
 
-    #homebase-page .tile.river::after {
-      content: '';
+    /* Water texture overlay */
+    #homebase-page .tile.river::after { 
+      content: "";
       position: absolute;
-      /* gap is 0 now, so fill the tile fully */
       inset: 0;
-      border-radius: 0px;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.06) 100%);
-      mix-blend-mode: overlay;
-      opacity: .9;
-      background-size: 200% 100%;
-      animation: riverFlow 6s linear infinite;
+      background: 
+        /* Subtle ripple pattern */
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+        /* Subtle flow lines */
+        linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.03) 50%, transparent 55%),
+        linear-gradient(-45deg, transparent 45%, rgba(255, 255, 255, 0.02) 50%, transparent 55%),
+        /* Overall subtle shimmer */
+        linear-gradient(120deg, rgba(255, 255, 255, 0.04) 0%, transparent 30%, rgba(255, 255, 255, 0.02) 70%, transparent 100%);
+      background-size: 12px 12px, 16px 16px, 14px 14px, 18px 18px, 8px 8px, 10px 10px, 100% 100%;
+      opacity: 0.8;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
+    }
+
+    /* grass tile styling - muted natural green with subtle texture */
+    #homebase-page .tile.grass {
+      background: #4a5c42; /* muted dark green base */
+      box-shadow: none;
+      border-radius: 0px;
+      overflow: visible;
+      position: relative;
+    }
+
+    /* Grass texture overlay */
+    #homebase-page .tile.grass::after { 
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        /* Grass blade patterns */
+        linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.02) 49%, rgba(0, 0, 0, 0.03) 51%, transparent 53%),
+        linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.015) 50%, transparent 52%),
+        linear-gradient(135deg, transparent 48%, rgba(0, 0, 0, 0.02) 50%, transparent 52%),
+        /* Subtle natural variation */
+        radial-gradient(circle at 30% 40%, rgba(0, 0, 0, 0.03) 1px, transparent 2px),
+        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.02) 1px, transparent 2px),
+        radial-gradient(circle at 20% 80%, rgba(0, 0, 0, 0.025) 1px, transparent 2px),
+        /* Overall subtle shading */
+        linear-gradient(160deg, rgba(0, 0, 0, 0.02) 0%, transparent 40%, rgba(255, 255, 255, 0.01) 80%, transparent 100%);
+      background-size: 3px 3px, 6px 6px, 8px 8px, 12px 12px, 15px 15px, 18px 18px, 100% 100%;
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 1;
     }
 
     /* road surface overlay (no global sidewalk) */
@@ -2023,8 +2157,677 @@
       border-radius: 0px;
       pointer-events: none;
       z-index: 1;
-      background: linear-gradient(transparent 48%, rgba(255, 255, 255, 0.02) 50%, transparent 52%);
+      background: 
+        /* Subtle center line with weathering */
+        linear-gradient(transparent 47%, rgba(200, 190, 180, 0.03) 49%, rgba(220, 210, 200, 0.04) 50%, rgba(200, 190, 180, 0.03) 51%, transparent 53%),
+        /* Additional weathering on the surface */
+        linear-gradient(45deg, transparent 70%, rgba(255, 255, 255, 0.008) 85%, transparent 100%);
+      opacity: 0.8;
+    }
+
+    /* Bridge tiles - George Washington Bridge style (flat colors, no gradients) */
+    #homebase-page .bridge {
+      /* Weathered steel gray deck */
+      background: #2f3338; /* dirtier, darker steel gray */
+      border-radius: 0px;
+      box-shadow: none; /* remove inset highlights/shadows to avoid seams */
+      position: relative;
+      overflow: visible;
+    }
+
+    /* Dirty bridge surface texture */
+    #homebase-page .bridge::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        /* Rust stains and corrosion */
+        radial-gradient(ellipse at 20% 25%, rgba(120, 80, 50, 0.2) 2px, transparent 6px),
+        radial-gradient(ellipse at 80% 75%, rgba(100, 70, 45, 0.15) 1px, transparent 4px),
+        radial-gradient(ellipse at 50% 10%, rgba(110, 75, 50, 0.15) 2px, transparent 5px),
+        radial-gradient(ellipse at 10% 85%, rgba(90, 65, 40, 0.25) 1px, transparent 3px),
+        /* Steel weathering patterns */
+        linear-gradient(90deg, transparent 0%, rgba(50, 45, 40, 0.15) 20%, transparent 40%, rgba(60, 55, 50, 0.1) 60%, transparent 80%),
+        linear-gradient(45deg, transparent 30%, rgba(40, 35, 30, 0.08) 50%, transparent 70%);
+      background-size: 12px 12px, 18px 18px, 15px 15px, 22px 22px, 100% 100%, 100% 100%;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0; /* below the bridge surface overlay */
+    }
+
+    /* Steel railings for bridges - George Washington Bridge style (flat colors) */
+    #homebase-page .tile .bridge-cap-n,
+    #homebase-page .tile .bridge-cap-s {
+      position: absolute;
+      left: 50%;
+      width: 6px;
+      transform: translateX(-50%);
+      background: #6f7c8d; /* flat steel gray */
+      border-radius: 2px;
+      box-shadow: 0 1px 0 rgba(100, 99, 99, 0.2), 0 -1px 0 rgba(0, 0, 0, .6);
       opacity: 0.9;
+      pointer-events: none;
+      display: none;
+      z-index: 4;
+    }
+
+    #homebase-page .tile .bridge-cap-n {
+      top: 8%;
+      height: 40%;
+    }
+
+    #homebase-page .tile .bridge-cap-s {
+      bottom: 8%;
+      height: 40%;
+    }
+
+    #homebase-page .tile .bridge-cap-w,
+    #homebase-page .tile .bridge-cap-e {
+      position: absolute;
+      top: 50%;
+      height: 3px;
+      transform: translateY(-50%);
+      background: #4b5563; /* flat steel gray */
+      border-radius: 2px;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.267), 0 -1px 0 rgba(0, 0, 0, .6);
+      opacity: 0.9;
+      pointer-events: none;
+      display: none;
+      z-index: 4;
+    }
+
+    #homebase-page .tile .bridge-cap-w {
+      left: 8%;
+      width: 40%;
+    }
+
+    #homebase-page .tile .bridge-cap-e {
+      right: 8%;
+      width: 40%;
+    }
+
+    /* Show bridge caps when specific connection exists */
+    #homebase-page .bridge.bridge-cap-n .bridge-cap-n {
+      display: block;
+    }
+
+    #homebase-page .bridge.bridge-cap-s .bridge-cap-s {
+      display: block;
+    }
+
+    #homebase-page .bridge.bridge-cap-w .bridge-cap-w {
+      display: block;
+    }
+
+    /* Bridge center-line segments (match road cap styling) */
+    #homebase-page .tile .bridge-line-n,
+    #homebase-page .tile .bridge-line-s {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(240,240,240,0.85));
+      border-radius: 2px;
+      opacity: 0.9;
+      pointer-events: none;
+      display: none;
+      z-index: 4;
+      box-shadow: none;
+    }
+
+    #homebase-page .tile .bridge-line-n { top: 6%; height: 24%; }
+    #homebase-page .tile .bridge-line-s { bottom: 6%; height: 24%; }
+
+    #homebase-page .tile .bridge-line-w,
+    #homebase-page .tile .bridge-line-e {
+      position: absolute;
+      top: 50%;
+      height: 2px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(240,240,240,0.85));
+      border-radius: 2px;
+      opacity: 0.9;
+      pointer-events: none;
+      display: none;
+      z-index: 4;
+      box-shadow: none;
+    }
+
+    #homebase-page .tile .bridge-line-w { left: 6%; width: 24%; }
+    #homebase-page .tile .bridge-line-e { right: 6%; width: 24%; }
+
+    /* Show bridge center lines when tile is a bridge and corresponding connection exists */
+    #homebase-page .tile.bridge .bridge-line-n { display: block; }
+    #homebase-page .tile.bridge .bridge-line-s { display: block; }
+    #homebase-page .tile.bridge .bridge-line-w { display: block; }
+    #homebase-page .tile.bridge .bridge-line-e { display: block; }
+
+    #homebase-page .bridge.bridge-cap-e .bridge-cap-e {
+      display: block;
+    }
+
+    /* Steel side railings for bridges - anchored to land (solid, no borders) */
+    #homebase-page .tile .bridge-side-n,
+    #homebase-page .tile .bridge-side-s {
+      position: absolute;
+      left: -4px; /* reduced from -6px for narrower water rail */
+      right: -4px; /* reduced from -6px for narrower water rail */
+      height: 4px; /* reduced from 6px for narrower water rail */
+      background: #2A3439; /* dark steel color */
+      border-radius: 0px; /* remove rounded corners/borders */
+      box-shadow: none; /* remove shadows for clean look */
+      opacity: 1.0; /* fully opaque steel */
+      pointer-events: none;
+      display: none;
+      z-index: 5; /* higher z-index to appear over adjacent tiles */
+    }
+
+    #homebase-page .tile .bridge-side-n { top: 0; }
+    #homebase-page .tile .bridge-side-s { bottom: 0; }
+
+    #homebase-page .tile .bridge-side-w,
+    #homebase-page .tile .bridge-side-e {
+      position: absolute;
+      top: -4px; /* reduced from -6px for narrower water rail */
+      bottom: -4px; /* reduced from -6px for narrower water rail */
+      width: 4px; /* reduced from 6px for narrower water rail */
+      background: #2A3439; /* dark steel color */
+      border-radius: 0px;
+      opacity: 1.0;
+      pointer-events: none;
+      display: none;
+      z-index: 5; /* higher z-index to appear over adjacent tiles */
+    }
+
+    #homebase-page .tile .bridge-side-w { left: 0; }
+    #homebase-page .tile .bridge-side-e { right: 0; }
+
+    /* Bridge sidewalk rails - 2px rails on the outside of sidewalks */
+    #homebase-page .tile .bridge-walk-rail-n {
+      position: absolute;
+      top: 0; /* at the top edge of the tile */
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #2A3439; /* same dark steel color */
+      opacity: 1.0;
+      pointer-events: none;
+      display: none;
+      z-index: 6; /* higher than sidewalks */
+    }
+
+    #homebase-page .tile .bridge-walk-rail-s {
+      position: absolute;
+      bottom: 0; /* at the bottom edge of the tile */
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #2A3439; /* same dark steel color */
+      opacity: 1.0;
+      pointer-events: none;
+      display: none;
+      z-index: 6; /* higher than sidewalks */
+    }
+
+    #homebase-page .tile .bridge-walk-rail-w {
+      position: absolute;
+      left: 0; /* at the left edge of the tile */
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #2A3439; /* same dark steel color */
+      opacity: 1.0;
+      pointer-events: none;
+      display: none;
+      z-index: 6; /* higher than sidewalks */
+    }
+
+    #homebase-page .tile .bridge-walk-rail-e {
+      position: absolute;
+      right: 0; /* at the right edge of the tile */
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #2A3439; /* same dark steel color */
+      opacity: 1.0;
+      pointer-events: none;
+      display: none;
+      z-index: 6; /* higher than sidewalks */
+    }
+
+    /* Show bridge sidewalk rails when the tile has the matching side class */
+    #homebase-page .tile.bridge.side-n .bridge-walk-rail-n { display: block; }
+    #homebase-page .tile.bridge.side-s .bridge-walk-rail-s { display: block; }
+    #homebase-page .tile.bridge.side-w .bridge-walk-rail-w { display: block; }
+    #homebase-page .tile.bridge.side-e .bridge-walk-rail-e { display: block; }
+    #homebase-page .tile.bridge.bridge-side-n .bridge-side-n,
+    #homebase-page .tile.river.bridge-side-n .bridge-side-n { display: block; }
+    #homebase-page .tile.bridge.bridge-side-s .bridge-side-s,
+    #homebase-page .tile.river.bridge-side-s .bridge-side-s { display: block; }
+    #homebase-page .tile.bridge.bridge-side-w .bridge-side-w,
+    #homebase-page .tile.river.bridge-side-w .bridge-side-w { display: block; }
+    #homebase-page .tile.bridge.bridge-side-e .bridge-side-e,
+    #homebase-page .tile.river.bridge-side-e .bridge-side-e { display: block; }
+
+    /* Bridge surface overlay: weathered center stripe */
+    #homebase-page .bridge::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 0px;
+      pointer-events: none;
+      z-index: 1;
+      background: 
+        /* Faded center line with rust stains */
+        linear-gradient(transparent 47%, rgba(180, 170, 160, 0.02) 49%, rgba(190, 180, 170, 0.03) 50%, rgba(180, 170, 160, 0.02) 51%, transparent 53%),
+        /* Additional steel surface weathering */
+        linear-gradient(135deg, transparent 60%, rgba(255, 255, 255, 0.006) 80%, transparent 100%);
+      opacity: 0.7;
+    }
+
+    /* Riverside pathway system for grass tiles adjacent to rivers */
+    
+    /* Riverside railings - positioned at the edge touching the river */
+    #homebase-page .tile .river-side-n,
+    #homebase-page .tile .river-side-s {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #4a4a4a; /* dark metal railing */
+      border-radius: 1px;
+      pointer-events: none;
+      display: none;
+      z-index: 7; /* higher than bridge elements */
+    }
+
+    #homebase-page .tile .river-side-n { top: 0; }
+    #homebase-page .tile .river-side-s { bottom: 0; }
+
+    #homebase-page .tile .river-side-w,
+    #homebase-page .tile .river-side-e {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #4a4a4a; /* dark metal railing */
+      border-radius: 1px;
+      pointer-events: none;
+      display: none;
+      z-index: 7; /* higher than bridge elements */
+    }
+
+    #homebase-page .tile .river-side-w { left: 0; }
+    #homebase-page .tile .river-side-e { right: 0; }
+
+    /* Grass strips - 2px wide, positioned after the railing */
+    #homebase-page .tile .river-grass-n,
+    #homebase-page .tile .river-grass-s {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #4a5c42; /* grass green */
+      pointer-events: none;
+      display: none;
+      z-index: 6;
+    }
+
+    #homebase-page .tile .river-grass-n { top: 3px; }
+    #homebase-page .tile .river-grass-s { bottom: 3px; }
+
+    #homebase-page .tile .river-grass-w,
+    #homebase-page .tile .river-grass-e {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #4a5c42; /* grass green */
+      pointer-events: none;
+      display: none;
+      z-index: 6;
+    }
+
+    #homebase-page .tile .river-grass-w { left: 3px; }
+    #homebase-page .tile .river-grass-e { right: 3px; }
+
+    /* Asphalt pathways - 16px wide, positioned after the grass strip */
+    #homebase-page .tile .river-path-n,
+    #homebase-page .tile .river-path-s {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 16px;
+      background: #3a3c40; /* asphalt color matching roads */
+      pointer-events: none;
+      display: none;
+      z-index: 5;
+    }
+
+    #homebase-page .tile .river-path-n { top: 5px; }
+    #homebase-page .tile .river-path-s { bottom: 5px; }
+
+    #homebase-page .tile .river-path-w,
+    #homebase-page .tile .river-path-e {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      background: #3a3c40; /* asphalt color matching roads */
+      pointer-events: none;
+      display: none;
+      z-index: 5;
+    }
+
+    #homebase-page .tile .river-path-w { left: 5px; }
+    #homebase-page .tile .river-path-e { right: 5px; }
+
+    /* Diagonal riverside pathway system */
+    
+    /* Diagonal railings along the water-land transition line */
+    #homebase-page .tile .diagonal-rail-nw,
+    #homebase-page .tile .diagonal-rail-ne,
+    #homebase-page .tile .diagonal-rail-sw,
+    #homebase-page .tile .diagonal-rail-se {
+      position: absolute;
+      background: #4a4a4a; /* dark metal railing */
+      pointer-events: none;
+      display: none;
+      z-index: 8; /* higher than other elements */
+      width: 141.42%; /* sqrt(2) * 100% to cover diagonal */
+      height: 3px;
+    }
+
+    #homebase-page .tile .diagonal-rail-nw {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    #homebase-page .tile .diagonal-rail-ne {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    #homebase-page .tile .diagonal-rail-sw {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    #homebase-page .tile .diagonal-rail-se {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    /* Diagonal grass strips */
+    #homebase-page .tile .diagonal-grass-nw,
+    #homebase-page .tile .diagonal-grass-ne,
+    #homebase-page .tile .diagonal-grass-sw,
+    #homebase-page .tile .diagonal-grass-se {
+      position: absolute;
+      background: #4a5c42; /* grass green */
+      pointer-events: none;
+      display: none;
+      z-index: 7;
+      width: 141.42%;
+      height: 2px;
+    }
+
+    #homebase-page .tile .diagonal-grass-nw {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% + 3px)) rotate(-45deg);
+    }
+
+    #homebase-page .tile .diagonal-grass-ne {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% + 3px)) rotate(45deg);
+    }
+
+    #homebase-page .tile .diagonal-grass-sw {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% - 3px)) rotate(45deg);
+    }
+
+    #homebase-page .tile .diagonal-grass-se {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% - 3px)) rotate(-45deg);
+    }
+
+    /* Diagonal asphalt pathways */
+    #homebase-page .tile .diagonal-path-nw,
+    #homebase-page .tile .diagonal-path-ne,
+    #homebase-page .tile .diagonal-path-sw,
+    #homebase-page .tile .diagonal-path-se {
+      position: absolute;
+      background: #3a3c40; /* asphalt color matching roads */
+      pointer-events: none;
+      display: none;
+      z-index: 6;
+      width: 152.42%;
+      height: 16px;
+    }
+
+    #homebase-page .tile .diagonal-path-nw {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% + 12px)) rotate(-45deg);
+    }
+
+    #homebase-page .tile .diagonal-path-ne {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% + 12px)) rotate(45deg);
+    }
+
+    #homebase-page .tile .diagonal-path-sw {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% - 12px)) rotate(45deg);
+    }
+
+    #homebase-page .tile .diagonal-path-se {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% - 12px)) rotate(-45deg);
+    }
+
+    /* Show diagonal elements when tile has diagonal class */
+    #homebase-page .tile.diagonal-nw .diagonal-rail-nw,
+    #homebase-page .tile.diagonal-nw .diagonal-grass-nw,
+    #homebase-page .tile.diagonal-nw .diagonal-path-nw { display: block; }
+
+    #homebase-page .tile.diagonal-ne .diagonal-rail-ne,
+    #homebase-page .tile.diagonal-ne .diagonal-grass-ne,
+    #homebase-page .tile.diagonal-ne .diagonal-path-ne { display: block; }
+
+    #homebase-page .tile.diagonal-sw .diagonal-rail-sw,
+    #homebase-page .tile.diagonal-sw .diagonal-grass-sw,
+    #homebase-page .tile.diagonal-sw .diagonal-path-sw { display: block; }
+
+    #homebase-page .tile.diagonal-se .diagonal-rail-se,
+    #homebase-page .tile.diagonal-se .diagonal-grass-se,
+    #homebase-page .tile.diagonal-se .diagonal-path-se { display: block; }
+
+    /* Show riverside elements when the tile has the matching river-side class */
+    #homebase-page .tile.river-side-n .river-side-n,
+    #homebase-page .tile.river-side-n .river-grass-n,
+    #homebase-page .tile.river-side-n .river-path-n { display: block; }
+    
+    #homebase-page .tile.river-side-s .river-side-s,
+    #homebase-page .tile.river-side-s .river-grass-s,
+    #homebase-page .tile.river-side-s .river-path-s { display: block; }
+    
+    #homebase-page .tile.river-side-w .river-side-w,
+    #homebase-page .tile.river-side-w .river-grass-w,
+    #homebase-page .tile.river-side-w .river-path-w { display: block; }
+    
+    #homebase-page .tile.river-side-e .river-side-e,
+    #homebase-page .tile.river-side-e .river-grass-e,
+    #homebase-page .tile.river-side-e .river-path-e { display: block; }
+
+    /* Diagonal tiles - half water, half land */
+    #homebase-page .tile .diagonal-nw,
+    #homebase-page .tile .diagonal-ne,
+    #homebase-page .tile .diagonal-sw,
+    #homebase-page .tile .diagonal-se {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Show diagonal elements when parent has diagonal class */
+    #homebase-page .tile.diagonal-nw .diagonal-nw { display: block; }
+    #homebase-page .tile.diagonal-ne .diagonal-ne { display: block; }
+    #homebase-page .tile.diagonal-sw .diagonal-sw { display: block; }
+    #homebase-page .tile.diagonal-se .diagonal-se { display: block; }
+
+    /* Diagonal NW - water in top-left, grass in bottom-right */
+    #homebase-page .tile .diagonal-nw {
+      background: linear-gradient(135deg, 
+        #2f5e57 0%, #2f5e57 50%, 
+        #4a5c42 50%, #4a5c42 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    #homebase-page .tile .diagonal-nw::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg,
+        transparent 0%, transparent 50%,
+        transparent 50%, transparent 100%);
+      background-image: 
+        /* Water texture in top-left */
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 35% 15%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.03) 50%, transparent 55%),
+        /* Grass texture in bottom-right */
+        linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.02) 49%, rgba(0, 0, 0, 0.03) 51%, transparent 53%),
+        radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.03) 1px, transparent 2px),
+        radial-gradient(circle at 85% 65%, rgba(255, 255, 255, 0.02) 1px, transparent 2px);
+      background-size: 12px 12px, 16px 16px, 8px 8px, 3px 3px, 12px 12px, 15px 15px;
+      opacity: 0.75;
+      mask: linear-gradient(135deg, 
+        black 0%, black 48%, 
+        transparent 50%, transparent 52%,
+        black 54%, black 100%);
+    }
+
+    /* Diagonal NE - water in top-right, grass in bottom-left */
+    #homebase-page .tile .diagonal-ne {
+      background: linear-gradient(45deg, 
+        #4a5c42 0%, #4a5c42 50%, 
+        #2f5e57 50%, #2f5e57 100%);
+    }
+
+    #homebase-page .tile .diagonal-ne::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg,
+        transparent 0%, transparent 50%,
+        transparent 50%, transparent 100%);
+      background-image: 
+        /* Grass texture in bottom-left */
+        linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.02) 49%, rgba(0, 0, 0, 0.03) 51%, transparent 53%),
+        radial-gradient(circle at 30% 80%, rgba(0, 0, 0, 0.03) 1px, transparent 2px),
+        radial-gradient(circle at 15% 65%, rgba(255, 255, 255, 0.02) 1px, transparent 2px),
+        /* Water texture in top-right */
+        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 85% 35%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(-45deg, transparent 45%, rgba(255, 255, 255, 0.03) 50%, transparent 55%);
+      background-size: 3px 3px, 12px 12px, 15px 15px, 12px 12px, 16px 16px, 8px 8px;
+      opacity: 0.75;
+      mask: linear-gradient(45deg, 
+        black 0%, black 48%, 
+        transparent 50%, transparent 52%,
+        black 54%, black 100%);
+    }
+
+    /* Diagonal SW - water in bottom-left, grass in top-right */
+    #homebase-page .tile .diagonal-sw {
+      background: linear-gradient(45deg, 
+        #2f5e57 0%, #2f5e57 50%, 
+        #4a5c42 50%, #4a5c42 100%);
+    }
+
+    #homebase-page .tile .diagonal-sw::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg,
+        transparent 0%, transparent 50%,
+        transparent 50%, transparent 100%);
+      background-image: 
+        /* Water texture in bottom-left */
+        radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 35% 85%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(-45deg, transparent 45%, rgba(255, 255, 255, 0.03) 50%, transparent 55%),
+        /* Grass texture in top-right */
+        linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.02) 49%, rgba(0, 0, 0, 0.03) 51%, transparent 53%),
+        radial-gradient(circle at 70% 20%, rgba(0, 0, 0, 0.03) 1px, transparent 2px),
+        radial-gradient(circle at 85% 35%, rgba(255, 255, 255, 0.02) 1px, transparent 2px);
+      background-size: 12px 12px, 16px 16px, 8px 8px, 3px 3px, 12px 12px, 15px 15px;
+      opacity: 0.75;
+      mask: linear-gradient(45deg, 
+        black 0%, black 48%, 
+        transparent 50%, transparent 52%,
+        black 54%, black 100%);
+    }
+
+    /* Diagonal SE - water in bottom-right, grass in top-left */
+    #homebase-page .tile .diagonal-se {
+      background: linear-gradient(135deg, 
+        #4a5c42 0%, #4a5c42 50%, 
+        #2f5e57 50%, #2f5e57 100%);
+    }
+
+    #homebase-page .tile .diagonal-se::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg,
+        transparent 0%, transparent 50%,
+        transparent 50%, transparent 100%);
+      background-image: 
+        /* Grass texture in top-left */
+        linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.02) 49%, rgba(0, 0, 0, 0.03) 51%, transparent 53%),
+        radial-gradient(circle at 30% 20%, rgba(0, 0, 0, 0.03) 1px, transparent 2px),
+        radial-gradient(circle at 15% 35%, rgba(255, 255, 255, 0.02) 1px, transparent 2px),
+        /* Water texture in bottom-right */
+        radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 85% 65%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.03) 50%, transparent 55%);
+      background-size: 3px 3px, 12px 12px, 15px 15px, 12px 12px, 16px 16px, 8px 8px;
+      opacity: 0.75;
+      mask: linear-gradient(135deg, 
+        black 0%, black 48%, 
+        transparent 50%, transparent 52%,
+        black 54%, black 100%);
     }
 
     #homebase-page .placed {
@@ -2797,7 +3600,7 @@
               for (let yy = y; yy < y + h; yy++) {
                 for (let xx = x; xx < x + w; xx++) {
                   const key = xx + "," + yy;
-                  if (state.roads.has(key)) return { ok: false, reason: 'Cannot place on a road' };
+                  if (state.roads.has(key) || state.bridges.has(key)) return { ok: false, reason: 'Cannot place on a road or bridge' };
                   if (state.occupied.has(key)) return { ok: false, reason: 'Space occupied' };
                 }
               }
@@ -2805,7 +3608,7 @@
               outer: for (let yy = y; yy < y + h; yy++) {
                 for (let xx = x; xx < x + w; xx++) {
                   const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
-                  for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny)) { adjacent = true; break outer; } }
+                  for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny) || state.bridges.has(nx + "," + ny)) { adjacent = true; break outer; } }
                 }
               }
               if (!adjacent) return { ok: false, reason: 'Needs road adjacency' };
@@ -4572,7 +5375,7 @@
       gathering_skills: {
         woodcutting: {
           name: "Woodcutting", icon: "🪓", description: "Harvest wood.", category: "gathering", nodes: [
-            { id: "wood_poplar_tree", name: "Poplar Tree", level: 1, xp: 8, time: 2000, drops: [{ item: "poplar_log", rarity: "common", min: 1, max: 2 }, { item: "stick", rarity: "common" }, { item: "birds_nest", rarity: "common" }] },
+            { id: "wood_poplar_tree", name: "Poplar Tree", level: 1, xp: 8, time: 6000, drops: [{ item: "poplar_log", rarity: "common", min: 1, max: 2 }, { item: "stick", rarity: "common" }, { item: "birds_nest", rarity: "common" }] },
             { id: "wood_willow_tree", name: "Willow Tree", level: 5, xp: 10, time: 2200, drops: [{ item: "willow_log", rarity: "common", min: 1, max: 2 }, { item: "stick", rarity: "common" }, { item: "birds_nest", rarity: "common" }] },
             { id: "wood_cedar_tree", name: "Cedar Tree", level: 10, xp: 12, time: 2400, drops: [{ item: "cedar_log", rarity: "common", min: 1, max: 2 }, { item: "stick", rarity: "common" }, { item: "birds_nest", rarity: "common" }] },
             { id: "wood_spruce_tree", name: "Spruce Tree", level: 15, xp: 14, time: 2600, drops: [{ item: "spruce_log", rarity: "common", min: 1, max: 2 }, { item: "stick", rarity: "common" }, { item: "birds_nest", rarity: "common" }] },
@@ -12123,6 +12926,7 @@
         chain: false,
         lastPlaced: null,
         roads: new Set(),
+        bridges: new Set(),
         occupied: new Map(), // key "x,y" -> { id, name }
       };
 
@@ -12164,6 +12968,7 @@
       function setRiver(x, y) { state.rivers.add(riverKey(x, y)); const t = tileAt(x, y); if (t) t.classList.add('river'); }
       function clearRiver(x, y) { state.rivers.delete(riverKey(x, y)); const t = tileAt(x, y); if (t) t.classList.remove('river'); }
       function isRiver(x, y) { return state.rivers.has(riverKey(x, y)); }
+      function bridgeKey(x, y) { return x + "," + y; }
       function tileAt(x, y) { if (x < 0 || y < 0 || x >= state.cols || y >= state.rows) return null; return tiles[y * state.cols + x]; }
 
       // helper: fill a vertical river segment
@@ -12171,46 +12976,29 @@
         for (let y = Math.max(0, y0); y <= Math.min(state.rows - 1, y1); y++) { setRiver(col, y); }
       }
 
-      // Homebase tile configuration - clean coordinate-based setup
       const homebaseTileConfig = {
-        // Roads:
         road: [
-          "4,0", "4,1", "4,2", "4,3", "4,4", "4,5", "4,6", "4,7", "4,8", "4,9", "4,10", "4,11", "4,12", "4,13",
-          "8,0", "8,1", "8,2", "8,3", "8,4", "8,5", "8,6", "8,7", "8,8", "8,9", "8,10", "8,11", "8,12", "8,13", "8,14", "8,15", "8,16", "8,17", "8,18", "8,19", "8,20", "8,21", "8,22", "8,23", "8,24", "8,25", "8,26", "8,27", "8,28", "8,29", "8,30", "8,31", "8,32",
-          "12,0", "12,1", "12,2", "12,3", "12,4", "12,5", "12,6", "12,7", "12,8", "12,9", "12,10", "12,11", "12,12", "12,13", "12,18", "12,19",
-          "16,0", "16,1", "16,2", "16,3", "16,4", "16,5", "16,6", "16,7", "16,8", "16,9", "16,10", "16,11", "16,12", "16,13", "16,14", "16,15", "16,16", "16,17", "16,18", "16,19", "16,20", "16,21", "16,22", "16,23", "16,24", "16,25", "16,26", "16,27", "16,28", "16,29", "16,30", "16,31", "16,32",
-          "20,0", "20,1", "20,2", "20,3", "20,4", "20,5", "20,6", "20,7", "20,8", "20,9", "20,10", "20,11", "20,12", "20,13", "20,14", "20,15", "20,19", "20,20",
-          "24,0", "24,1", "24,2", "24,3", "24,4", "24,5", "24,6", "24,7", "24,8", "24,9", "24,10", "24,11", "24,12", "24,13", "24,14", "24,15", "24,16", "24,20", "24,21",
-          "28,0", "28,1", "28,2", "28,3", "28,4", "28,5", "28,6", "28,7", "28,8", "28,9", "28,10", "28,11", "28,12", "28,13", "28,14", "28,15", "28,16", "28,17", "28,18", "28,19", "28,20", "28,21", "28,22", "28,23", "28,24", "28,25", "28,26", "28,27", "28,28", "28,29", "28,30", "28,31", "28,32",
-          "2,4", "3,4", "5,4", "6,4", "7,4", "9,4", "10,4", "11,4", "13,4", "14,4", "15,4", "17,4", "18,4", "19,4", "21,4", "22,4", "23,4", "25,4", "26,4", "27,4", "29,4", "30,4",
-          "2,13", "3,13", "5,13", "6,13", "7,13", "9,13", "10,13", "11,13", "13,13", "14,13", "15,13",
-          "17,9", "18,9", "19,9", "21,9", "22,9", "23,9", "25,9", "26,9", "27,9", "29,9", "30,9",
-          "2,18", "3,18", "5,18", "6,18", "7,18", "9,18", "10,18", "11,18",
-          "13,19", "14,19", "15,19", "17,19", "18,19", "19,19",
-          "21,20", "22,20", "23,20",
-          "25,21", "26,21", "4,18",
-          "27,21", "29,22", "30,22",
-          "17,14", "18,14", "19,14",
-          "21,15", "22,15",
-          "23,15", "25,16", "26,16",
-          "27,16", "29,17", "30,17"
+          "2,4","3,4","4,0","4,1","4,2","4,3","4,4","4,5","4,6","4,7","4,8","4,9","4,10","4,11","4,12","4,13","4,14","4,15","4,16","5,4","6,4","7,4","8,0","8,1","8,2","8,3","8,4","8,5","8,6","8,7","8,8","8,9","8,10","8,11","8,12","8,13","8,14","8,15","8,16","8,17","8,18","8,19","8,20","8,21","8,22","8,23","8,24","8,25","8,26","8,27","8,28","8,29","8,30","8,31","8,32","9,4","9,28","9,23","10,4","10,28","10,23","11,4","11,28","11,23","12,0","12,1","12,2","12,3","12,4","12,5","12,6","12,7","12,8","12,9","12,10","12,11","12,12","12,23","13,4","13,28","13,23","14,4","14,28","14,23","15,4","15,28","15,23","16,0","16,1","16,2","16,3","16,4","16,5","16,6","16,7","16,8","16,9","16,10","16,11","16,12","16,15","16,16","16,17","16,18","16,20","16,21","16,22","16,23","16,24","16,25","16,26","16,27","16,28","16,29","16,30","16,31","16,32","17,4","17,9","17,23","17,32","17,39","17,49","18,4","18,9","18,23","18,32","18,39","18,49","19,4","19,9","19,23","19,32","19,39","19,49","20,0","20,1","20,2","20,3","20,4","20,9","20,10","20,11","20,12","20,13","20,14","20,15","20,19","20,20","21,4","21,9","21,16","21,17","21,18","21,19","22,4","22,9","22,16","22,17","22,18","22,19","23,4","23,9","23,16","23,17","23,18","23,19","24,0","24,1","24,2","24,3","24,4","24,5","24,6","24,7","24,8","24,9","24,10","24,11","24,12","24,13","24,14","25,4","25,9","25,20","26,4","26,9","26,20","27,4","27,9","28,0","28,1","28,2","28,3","28,4","28,5","28,6","28,7","28,8","28,9","28,10","28,11","28,12","28,13","28,14","28,15","28,16","28,17","28,18","28,19","28,20","28,21","28,22","28,23","28,24","28,25","28,26","28,27","28,28","28,29","28,30","28,31","28,32","29,32","30,32","29,4","29,9","30,4","30,9","4,19","4,20","4,21","4,22","5,22","6,22","7,22","4,23","4,24","4,25","4,26","4,27","4,28","5,28","6,28","7,28","4,29","4,30","4,31","4,32","4,33","4,34","4,35","5,35","6,35","7,35","8,35","9,35","10,35","11,35","12,35","13,35","14,35","15,35","16,35","4,36","4,37","4,38","4,39","4,40","4,41","4,42","4,43","4,44","5,44","6,44","7,44","8,44","9,44","10,44","11,44","12,44","13,44","14,44","15,44","16,44","4,45","4,46","4,47","4,48","4,49","4,50","4,51","4,52","4,53","2,53","3,53","5,53","6,53","7,53","9,53","10,53","11,53","13,53","14,53","15,53","17,53","18,53","19,53","4,54","4,55","4,56","4,57","4,58","4,59","4,60","4,61","2,61","3,61","5,61","6,61","7,61","9,61","10,61","11,61","13,61","14,61","15,61","17,61","18,61","19,61","21,61","22,61","23,61","25,61","26,61","27,61","29,61","30,61","4,62","4,63","4,64","4,65","8,33","8,34","8,35","8,36","8,37","8,38","8,39","8,40","8,41","8,42","8,43","8,44","8,45","8,46","8,47","8,48","8,49","8,50","8,51","8,52","8,53","8,54","8,55","8,56","8,57","8,58","8,59","8,60","8,61","8,62","8,63","8,64","8,65","12,20","12,21","12,22","12,23","12,24","12,25","12,26","12,27","12,28","12,29","12,30","12,31","12,32","12,33","12,34","12,35","12,36","12,37","12,38","12,39","12,40","12,41","12,42","12,43","12,44","12,45","12,46","12,47","12,48","12,49","12,50","12,51","12,52","12,53","12,54","12,55","12,56","12,57","12,58","12,59","12,60","12,61","12,62","12,63","12,64","12,65","16,33","16,34","16,35","16,36","16,37","16,38","16,39","16,40","16,41","16,42","16,43","16,44","16,45","16,46","16,47","16,48","16,49","16,50","16,51","16,52","16,53","16,54","16,55","16,56","16,57","16,58","16,59","16,60","16,61","16,62","16,63","16,64","16,65","20,21","20,22","20,23","20,24","20,25","21,25","22,25","23,25","25,25","26,25","27,25","20,26","20,27","20,28","20,29","20,30","20,31","20,32","21,32","22,32","23,32","25,32","26,32","27,32","20,33","20,34","20,35","20,36","20,37","20,38","20,39","21,39","22,39","23,39","25,39","26,39","27,39","20,40","20,41","20,42","20,43","20,44","20,45","20,46","20,47","20,48","20,49","21,49","22,49","23,49","25,49","26,49","27,49","20,50","20,51","20,52","20,53","20,54","20,55","20,56","20,57","21,57","22,57","23,57","25,57","26,57","27,57","20,58","20,59","20,60","20,61","20,62","20,63","20,64","20,65","24,22","24,23","24,24","24,25","24,26","24,27","24,28","24,29","24,30","24,31","24,32","24,39","24,40","24,41","24,42","24,43","24,44","24,45","24,46","24,47","24,48","24,49","24,50","24,51","24,52","24,53","24,54","24,55","24,56","24,57","24,58","24,59","24,60","24,61","24,62","24,63","24,64","24,65","28,33","28,34","28,35","28,36","28,37","28,38","28,39","28,40","28,41","28,42","28,43","28,44","28,45","28,46","28,47","28,48","28,49","28,50","28,51","28,52","28,53","8,54","8,55","8,56","8,57","8,58","8,59","8,60","8,61","8,62","8,63","8,64","8,65","12,20","12,21","12,22","12,23","12,24","12,25","12,26","12,27","12,28","12,29","12,30","12,31","12,32","12,33","12,34","12,35","12,36","12,37","12,38","12,39","12,40","12,41","12,42","12,43","12,44","12,45","12,46","12,47","12,48","12,49","12,50","12,51","12,52","12,53","12,54","12,55","12,56","12,57","12,58","12,59","12,60","12,61","12,62","12,63","12,64","12,65","16,33","16,34","16,35","16,36","16,37","16,38","16,39","16,40","16,41","16,42","16,43","16,44","16,45","16,46","16,47","16,48","16,49","16,50","16,51","16,52","16,53","16,54","16,55","16,56","16,57","16,58","16,59","16,60","16,61","16,62","16,63","16,64","16,65","20,21","20,22","20,23","20,24","20,25","21,25","22,25","23,25","25,25","26,25","27,25","20,26","20,27","20,28","20,29","20,30","20,31","20,32","20,33","20,34","20,35","20,36","20,37","20,38","20,39","20,40","20,41","20,42","20,43","20,44","20,45","20,46","20,47","20,48","20,49","20,50","20,51","20,52","20,53","20,54","20,55","20,56","20,57","20,58","20,59","20,60","20,61","20,62","20,63","20,64","20,65","24,22","24,23","24,24","24,25","24,26","24,27","24,28","24,29","24,30","24,31","24,32","24,39","24,40","24,41","24,42","24,43","24,44","24,45","24,46","24,47","24,48","24,49","24,50","24,51","24,52","24,53","24,54","24,55","24,56","24,57","24,58","24,59","24,60","24,61","24,62","24,63","24,64","24,65","28,33","28,34","28,35","28,36","28,37","28,38","28,39","29,39","30,39","28,40","28,41","28,42","28,43","28,44","28,45","28,46","28,47","28,48","28,49","29,49","30,49","28,50","28,51","28,52","28,53","28,54","28,55","28,56","28,57","29,57","30,57","28,58","28,59","28,60","28,61","28,62","28,63","28,64","28,65"
         ],
-        
-        // Water:
         water: [
-          "0,14", "1,14", "2,14", "3,14", "4,14", "5,14", "6,14", "7,14",
-          "0,15", "1,15", "2,15", "3,15", "4,15", "5,15", "6,15", "7,15",
-          "0,16", "1,16", "2,16", "3,16", "4,16", "5,16", "6,16", "7,16",
-          "0,17", "1,17", "2,17", "3,17", "4,17", "5,17", "6,17", "7,17",
-          "9,14", "10,14", "11,14", "12,14", "13,14", "14,14", "15,14",
-          "9,15", "10,15", "11,15", "12,15", "13,15", "14,15", "15,15",
-          "9,16", "10,16", "11,16", "12,16", "13,16", "14,16", "15,16",
-          "9,17", "10,17", "11,17", "12,17", "13,17", "14,17", "15,17",
-          "29,18", "30,18", "31,18", "32,18",
-          "29,19", "30,19", "31,19", "32,19",
-          "29,20", "30,20", "31,20", "32,20",
-          "29,21", "30,21", "31,21", "32,21",
-          "13,18", "14,18", "15,18"
+          "0,14","0,15","0,16","0,17","1,14","1,15","1,16","1,17","2,14","2,15","2,16","2,17","3,14","3,15","3,16","3,17","4,14","4,15","4,16","4,17","5,14","5,15","5,16","5,17","6,14","6,15","6,16","6,17","7,14","7,15","7,16","7,17","9,14","9,15","9,16","9,17","10,14","10,15","10,16","10,17","11,14","11,15","11,16","11,17","12,14","12,15","12,16","12,17","13,14","13,15","13,16","13,17","13,18","14,14","14,15","14,16","14,17","14,18","15,14","15,15","15,16","15,17","15,18","16,15","16,16","16,17","16,18","17,15","17,16","17,17","17,18","18,15","18,16","18,17","18,18","19,15","19,16","19,17","19,18","20,16","20,17","20,18","21,16","21,17","21,18","21,19","22,16","22,17","22,18","22,19","23,16","23,17","23,18","23,19","24,17","24,18","24,19","25,17","25,18","25,19","25,20","26,17","26,18","26,19","26,20","27,17","27,18","27,19","27,20","29,18","29,19","29,20","29,21","30,18","30,19","30,20","30,21","31,18","31,19","31,20","31,21","32,18","32,19","32,20","32,21"
+        ],
+        bridge: [
+          "20,16","20,17","20,18","8,14","8,15","8,16","8,17","28,18","28,19","28,20"
+        ],
+        grass: [
+          "0,0","0,1","1,0","1,1"
+        ],
+        "diagonal-nw": [
+          "12,18"
+        ],
+        "diagonal-ne": [
+          "19,15","23,16","21,19","25,20","29,21","27,17"
+        ],
+        "diagonal-sw": [
+        ],
+        "diagonal-se": [
+          "15,14"
         ]
       };
 
@@ -12230,7 +13018,7 @@
         if (!t) return;
         
         // Clear existing type classes
-        t.classList.remove('road', 'river');
+        t.classList.remove('road', 'river', 'bridge', 'grass', 'diagonal-nw', 'diagonal-ne', 'diagonal-sw', 'diagonal-se');
         
         // Apply new type
         switch (type) {
@@ -12245,8 +13033,25 @@
             const rk = roadKey(x, y);
             if (state.roads.has(rk)) state.roads.delete(rk);
             break;
+          case 'bridge':
+            state.bridges.add(bridgeKey(x, y));
+            t.classList.add('bridge');
+            // Bridges can cross water, so don't remove from rivers
+            break;
           case 'grass':
-            // Default tile, no special class needed
+            t.classList.add('grass');
+            break;
+          case 'diagonal-nw':
+            t.classList.add('diagonal-nw');
+            break;
+          case 'diagonal-ne':
+            t.classList.add('diagonal-ne');
+            break;
+          case 'diagonal-sw':
+            t.classList.add('diagonal-sw');
+            break;
+          case 'diagonal-se':
+            t.classList.add('diagonal-se');
             break;
         }
       }
@@ -12256,12 +13061,13 @@
         // Clear existing state
         state.roads = new Set();
         if (!state.rivers) state.rivers = new Set();
+        if (!state.bridges) state.bridges = new Set();
         
         // Clear all tile classes
         for (let y = 0; y < state.rows; y++) {
           for (let x = 0; x < state.cols; x++) {
             const t = tileAt(x, y);
-            if (t) t.classList.remove('road', 'river', 'adj');
+            if (t) t.classList.remove('road', 'river', 'bridge', 'adj', 'diagonal-nw', 'diagonal-ne', 'diagonal-sw', 'diagonal-se');
           }
         }
         
@@ -12309,19 +13115,20 @@
       window.removeCoordinates = removeCoordinates;
       window.showConfig = showConfig;
 
-      // Update road sprite classes to show connected center-lines
+      // Update road and bridge sprite classes to show connected center-lines
       function updateRoadSprites() {
-        // First pass: compute neighbor connectivity for all road tiles
-        const conn = new Map(); // key -> { north, south, west, east }
+        // First pass: compute neighbor connectivity for all road and bridge tiles
+        const conn = new Map(); // key -> { north, south, west, east, isBridge }
         for (let y = 0; y < state.rows; y++) {
           for (let x = 0; x < state.cols; x++) {
-            const t = tileAt(x, y); if (!t || !t.classList.contains('road')) continue;
+            const t = tileAt(x, y); if (!t || (!t.classList.contains('road') && !t.classList.contains('bridge'))) continue;
             const tn = tileAt(x, y - 1); const ts = tileAt(x, y + 1); const tw = tileAt(x - 1, y); const te = tileAt(x + 1, y);
-            const north = !!(tn && tn.classList.contains('road'));
-            const south = !!(ts && ts.classList.contains('road'));
-            const west = !!(tw && tw.classList.contains('road'));
-            const east = !!(te && te.classList.contains('road'));
-            conn.set(x + ',' + y, { north, south, west, east });
+            const north = !!(tn && (tn.classList.contains('road') || tn.classList.contains('bridge')));
+            const south = !!(ts && (ts.classList.contains('road') || ts.classList.contains('bridge')));
+            const west = !!(tw && (tw.classList.contains('road') || tw.classList.contains('bridge')));
+            const east = !!(te && (te.classList.contains('road') || te.classList.contains('bridge')));
+            const isBridge = t.classList.contains('bridge');
+            conn.set(x + ',' + y, { north, south, west, east, isBridge });
           }
         }
 
@@ -12332,65 +13139,383 @@
             const key = x + ',' + y;
             const c = conn.get(key);
             if (!c) {
-              // not a road: remove caps and side classes/elements
-              t.classList.remove('cap-n', 'cap-s', 'cap-w', 'cap-e', 'side-n', 'side-s', 'side-w', 'side-e');
-              ['cap-n', 'cap-s', 'cap-w', 'cap-e', 'side-n', 'side-s', 'side-w', 'side-e'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+              // not a road or bridge: remove all cap and side classes/elements (including bridge center lines)
+              t.classList.remove('cap-n', 'cap-s', 'cap-w', 'cap-e', 'side-n', 'side-s', 'side-w', 'side-e', 'bridge-cap-n', 'bridge-cap-s', 'bridge-cap-w', 'bridge-cap-e', 'bridge-side-n', 'bridge-side-s', 'bridge-side-w', 'bridge-side-e', 'bridge-line-n', 'bridge-line-s', 'bridge-line-w', 'bridge-line-e');
+              ['cap-n', 'cap-s', 'cap-w', 'cap-e', 'side-n', 'side-s', 'side-w', 'side-e', 'bridge-cap-n', 'bridge-cap-s', 'bridge-cap-w', 'bridge-cap-e', 'bridge-side-n', 'bridge-side-s', 'bridge-side-w', 'bridge-side-e', 'bridge-line-n', 'bridge-line-s', 'bridge-line-w', 'bridge-line-e'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
               continue;
             }
 
-            const { north, south, west, east } = c;
-            // caps
-            if (north) { t.classList.add('cap-n'); if (!t.querySelector('.cap-n')) { const el = document.createElement('div'); el.className = 'cap-n'; t.appendChild(el); } } else { t.classList.remove('cap-n'); const el = t.querySelector('.cap-n'); if (el) el.remove(); }
-            if (south) { t.classList.add('cap-s'); if (!t.querySelector('.cap-s')) { const el = document.createElement('div'); el.className = 'cap-s'; t.appendChild(el); } } else { t.classList.remove('cap-s'); const el = t.querySelector('.cap-s'); if (el) el.remove(); }
-            if (west) { t.classList.add('cap-w'); if (!t.querySelector('.cap-w')) { const el = document.createElement('div'); el.className = 'cap-w'; t.appendChild(el); } } else { t.classList.remove('cap-w'); const el = t.querySelector('.cap-w'); if (el) el.remove(); }
-            if (east) { t.classList.add('cap-e'); if (!t.querySelector('.cap-e')) { const el = document.createElement('div'); el.className = 'cap-e'; t.appendChild(el); } } else { t.classList.remove('cap-e'); const el = t.querySelector('.cap-e'); if (el) el.remove(); }
+            const { north, south, west, east, isBridge } = c;
 
-            // sidewalks: show side if this tile is road and neighbor is NOT a road
-            if (!north) { t.classList.add('side-n'); if (!t.querySelector('.side-n')) { const s = document.createElement('div'); s.className = 'side-n'; t.appendChild(s); } } else { t.classList.remove('side-n'); const s = t.querySelector('.side-n'); if (s) s.remove(); }
-            if (!south) { t.classList.add('side-s'); if (!t.querySelector('.side-s')) { const s = document.createElement('div'); s.className = 'side-s'; t.appendChild(s); } } else { t.classList.remove('side-s'); const s = t.querySelector('.side-s'); if (s) s.remove(); }
-            if (!west) { t.classList.add('side-w'); if (!t.querySelector('.side-w')) { const s = document.createElement('div'); s.className = 'side-w'; t.appendChild(s); } } else { t.classList.remove('side-w'); const s = t.querySelector('.side-w'); if (s) s.remove(); }
-            if (!east) { t.classList.add('side-e'); if (!t.querySelector('.side-e')) { const s = document.createElement('div'); s.className = 'side-e'; t.appendChild(s); } } else { t.classList.remove('side-e'); const s = t.querySelector('.side-e'); if (s) s.remove(); }
+            if (isBridge) {
+              // Remove any bridge caps so adjacent bridges join with no center lines
+              t.classList.remove('bridge-cap-n', 'bridge-cap-s', 'bridge-cap-w', 'bridge-cap-e');
+              ['bridge-cap-n','bridge-cap-s','bridge-cap-w','bridge-cap-e'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
 
-            // Create corner fills on road tiles when they form T or 4-way intersections
-            const neighborCount = (north?1:0) + (south?1:0) + (west?1:0) + (east?1:0);
-            // place corner elements for T / 4-way (3 or 4 neighbors) or perpendicular elbows (2 neighbors that are perpendicular)
-            const isElbowNW = north && west && !south && !east;
-            const isElbowNE = north && east && !south && !west;
-            const isElbowSW = south && west && !north && !east;
-            const isElbowSE = south && east && !north && !west;
-            if (neighborCount >= 3 || isElbowNW || isElbowNE || isElbowSW || isElbowSE) {
-              if (!t.querySelector('.corner-nw')) { const c = document.createElement('div'); c.className = 'corner-nw'; t.appendChild(c); }
-              if (!t.querySelector('.corner-ne')) { const c = document.createElement('div'); c.className = 'corner-ne'; t.appendChild(c); }
-              if (!t.querySelector('.corner-sw')) { const c = document.createElement('div'); c.className = 'corner-sw'; t.appendChild(c); }
-              if (!t.querySelector('.corner-se')) { const c = document.createElement('div'); c.className = 'corner-se'; t.appendChild(c); }
+              // Remove bridge railings from bridge tiles themselves
+              t.classList.remove('bridge-side-n', 'bridge-side-s', 'bridge-side-w', 'bridge-side-e');
+              ['bridge-side-n', 'bridge-side-s', 'bridge-side-w', 'bridge-side-e'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+
+              // Add sidewalks to bridge tiles where they don't connect to roads/bridges
+              if (!north) { 
+                t.classList.add('side-n'); 
+                if (!t.querySelector('.side-n')) { const s = document.createElement('div'); s.className = 'side-n'; t.appendChild(s); }
+                if (!t.querySelector('.bridge-walk-rail-n')) { const r = document.createElement('div'); r.className = 'bridge-walk-rail-n'; t.appendChild(r); }
+              } else { 
+                t.classList.remove('side-n'); 
+                const s = t.querySelector('.side-n'); if (s) s.remove();
+                const r = t.querySelector('.bridge-walk-rail-n'); if (r) r.remove();
+              }
+              if (!south) { 
+                t.classList.add('side-s'); 
+                if (!t.querySelector('.side-s')) { const s = document.createElement('div'); s.className = 'side-s'; t.appendChild(s); }
+                if (!t.querySelector('.bridge-walk-rail-s')) { const r = document.createElement('div'); r.className = 'bridge-walk-rail-s'; t.appendChild(r); }
+              } else { 
+                t.classList.remove('side-s'); 
+                const s = t.querySelector('.side-s'); if (s) s.remove();
+                const r = t.querySelector('.bridge-walk-rail-s'); if (r) r.remove();
+              }
+              if (!west) { 
+                t.classList.add('side-w'); 
+                if (!t.querySelector('.side-w')) { const s = document.createElement('div'); s.className = 'side-w'; t.appendChild(s); }
+                if (!t.querySelector('.bridge-walk-rail-w')) { const r = document.createElement('div'); r.className = 'bridge-walk-rail-w'; t.appendChild(r); }
+              } else { 
+                t.classList.remove('side-w'); 
+                const s = t.querySelector('.side-w'); if (s) s.remove();
+                const r = t.querySelector('.bridge-walk-rail-w'); if (r) r.remove();
+              }
+              if (!east) { 
+                t.classList.add('side-e'); 
+                if (!t.querySelector('.side-e')) { const s = document.createElement('div'); s.className = 'side-e'; t.appendChild(s); }
+                if (!t.querySelector('.bridge-walk-rail-e')) { const r = document.createElement('div'); r.className = 'bridge-walk-rail-e'; t.appendChild(r); }
+              } else { 
+                t.classList.remove('side-e'); 
+                const s = t.querySelector('.side-e'); if (s) s.remove();
+                const r = t.querySelector('.bridge-walk-rail-e'); if (r) r.remove();
+              }
+
+              // Bridge center white lines: show center-line segments where bridge connects to other roads/bridges
+              if (north) { if (!t.querySelector('.bridge-line-n')) { const ln = document.createElement('div'); ln.className = 'bridge-line-n'; t.appendChild(ln); } } else { const ln = t.querySelector('.bridge-line-n'); if (ln) ln.remove(); }
+              if (south) { if (!t.querySelector('.bridge-line-s')) { const ls = document.createElement('div'); ls.className = 'bridge-line-s'; t.appendChild(ls); } } else { const ls = t.querySelector('.bridge-line-s'); if (ls) ls.remove(); }
+              if (west) { if (!t.querySelector('.bridge-line-w')) { const lw = document.createElement('div'); lw.className = 'bridge-line-w'; t.appendChild(lw); } } else { const lw = t.querySelector('.bridge-line-w'); if (lw) lw.remove(); }
+              if (east) { if (!t.querySelector('.bridge-line-e')) { const le = document.createElement('div'); le.className = 'bridge-line-e'; t.appendChild(le); } } else { const le = t.querySelector('.bridge-line-e'); if (le) le.remove(); }
             } else {
-              ['corner-nw','corner-ne','corner-sw','corner-se'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+              // Handle regular road connections
+              // caps
+              if (north) { t.classList.add('cap-n'); if (!t.querySelector('.cap-n')) { const el = document.createElement('div'); el.className = 'cap-n'; t.appendChild(el); } } else { t.classList.remove('cap-n'); const el = t.querySelector('.cap-n'); if (el) el.remove(); }
+              if (south) { t.classList.add('cap-s'); if (!t.querySelector('.cap-s')) { const el = document.createElement('div'); el.className = 'cap-s'; t.appendChild(el); } } else { t.classList.remove('cap-s'); const el = t.querySelector('.cap-s'); if (el) el.remove(); }
+              if (west) { t.classList.add('cap-w'); if (!t.querySelector('.cap-w')) { const el = document.createElement('div'); el.className = 'cap-w'; t.appendChild(el); } } else { t.classList.remove('cap-w'); const el = t.querySelector('.cap-w'); if (el) el.remove(); }
+              if (east) { t.classList.add('cap-e'); if (!t.querySelector('.cap-e')) { const el = document.createElement('div'); el.className = 'cap-e'; t.appendChild(el); } } else { t.classList.remove('cap-e'); const el = t.querySelector('.cap-e'); if (el) el.remove(); }
+
+              // sidewalks: show side if this tile is road and neighbor is NOT a road/bridge
+              if (!north) { t.classList.add('side-n'); if (!t.querySelector('.side-n')) { const s = document.createElement('div'); s.className = 'side-n'; t.appendChild(s); } } else { t.classList.remove('side-n'); const s = t.querySelector('.side-n'); if (s) s.remove(); }
+              if (!south) { t.classList.add('side-s'); if (!t.querySelector('.side-s')) { const s = document.createElement('div'); s.className = 'side-s'; t.appendChild(s); } } else { t.classList.remove('side-s'); const s = t.querySelector('.side-s'); if (s) s.remove(); }
+              if (!west) { t.classList.add('side-w'); if (!t.querySelector('.side-w')) { const s = document.createElement('div'); s.className = 'side-w'; t.appendChild(s); } } else { t.classList.remove('side-w'); const s = t.querySelector('.side-w'); if (s) s.remove(); }
+              if (!east) { t.classList.add('side-e'); if (!t.querySelector('.side-e')) { const s = document.createElement('div'); s.className = 'side-e'; t.appendChild(s); } } else { t.classList.remove('side-e'); const s = t.querySelector('.side-e'); if (s) s.remove(); }
+
+              // Create corner fills on road tiles when they form T or 4-way intersections
+              const neighborCount = (north?1:0) + (south?1:0) + (west?1:0) + (east?1:0);
+              // place corner elements for T / 4-way (3 or 4 neighbors) or perpendicular elbows (2 neighbors that are perpendicular)
+              const isElbowNW = north && west && !south && !east;
+              const isElbowNE = north && east && !south && !west;
+              const isElbowSW = south && west && !north && !east;
+              const isElbowSE = south && east && !north && !west;
+              if (neighborCount >= 3 || isElbowNW || isElbowNE || isElbowSW || isElbowSE) {
+                if (!t.querySelector('.corner-nw')) { const c = document.createElement('div'); c.className = 'corner-nw'; t.appendChild(c); }
+                if (!t.querySelector('.corner-ne')) { const c = document.createElement('div'); c.className = 'corner-ne'; t.appendChild(c); }
+                if (!t.querySelector('.corner-sw')) { const c = document.createElement('div'); c.className = 'corner-sw'; t.appendChild(c); }
+                if (!t.querySelector('.corner-se')) { const c = document.createElement('div'); c.className = 'corner-se'; t.appendChild(c); }
+
+                // Intersection: remove center line caps so there is no center-line visual
+                ['cap-n','cap-s','cap-w','cap-e'].forEach(nm => { t.classList.remove(nm); const el = t.querySelector('.' + nm); if (el) el.remove(); });
+              } else {
+                ['corner-nw','corner-ne','corner-sw','corner-se'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
+                // not an intersection: nothing to do regarding crosswalks
+              }
+            }
+          }
+        }
+
+        // Third pass: add bridge railings to adjacent water tiles
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            if (!t || !t.classList.contains('river')) continue; // Only process water tiles
+
+            // Check adjacent tiles for bridges
+            const northTile = tileAt(x, y - 1);
+            const southTile = tileAt(x, y + 1);
+            const westTile = tileAt(x - 1, y);
+            const eastTile = tileAt(x + 1, y);
+
+            const hasNorthBridge = northTile && northTile.classList.contains('bridge');
+            const hasSouthBridge = southTile && southTile.classList.contains('bridge');
+            const hasWestBridge = westTile && westTile.classList.contains('bridge');
+            const hasEastBridge = eastTile && eastTile.classList.contains('bridge');
+
+            // Remove existing bridge railings from water tiles
+            t.classList.remove('bridge-side-n', 'bridge-side-s', 'bridge-side-w', 'bridge-side-e');
+            ['bridge-side-n', 'bridge-side-s', 'bridge-side-w', 'bridge-side-e'].forEach(nm => {
+              const el = t.querySelector('.' + nm);
+              if (el) el.remove();
+            });
+
+            // Add bridge railings on the side facing the bridge
+            if (hasNorthBridge) {
+              t.classList.add('bridge-side-n');
+              if (!t.querySelector('.bridge-side-n')) {
+                const s = document.createElement('div');
+                s.className = 'bridge-side-n';
+                t.appendChild(s);
+              }
+            }
+            if (hasSouthBridge) {
+              t.classList.add('bridge-side-s');
+              if (!t.querySelector('.bridge-side-s')) {
+                const s = document.createElement('div');
+                s.className = 'bridge-side-s';
+                t.appendChild(s);
+              }
+            }
+            if (hasWestBridge) {
+              t.classList.add('bridge-side-w');
+              if (!t.querySelector('.bridge-side-w')) {
+                const s = document.createElement('div');
+                s.className = 'bridge-side-w';
+                t.appendChild(s);
+              }
+            }
+            if (hasEastBridge) {
+              t.classList.add('bridge-side-e');
+              if (!t.querySelector('.bridge-side-e')) {
+                const s = document.createElement('div');
+                s.className = 'bridge-side-e';
+                t.appendChild(s);
+              }
+            }
+          }
+        }
+
+        // Fourth pass: add riverside pathways to grass tiles adjacent to rivers
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            // Process tiles that are grass or default tiles (not roads, bridges, rivers, or diagonal tiles)
+            if (!t || t.classList.contains('road') || t.classList.contains('bridge') || t.classList.contains('river') || 
+                t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || 
+                t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) continue;
+
+            // Check adjacent tiles for rivers
+            const northTile = tileAt(x, y - 1);
+            const southTile = tileAt(x, y + 1);
+            const westTile = tileAt(x - 1, y);
+            const eastTile = tileAt(x + 1, y);
+
+            const hasNorthRiver = northTile && northTile.classList.contains('river');
+            const hasSouthRiver = southTile && southTile.classList.contains('river');
+            const hasWestRiver = westTile && westTile.classList.contains('river');
+            const hasEastRiver = eastTile && eastTile.classList.contains('river');
+
+            // Remove existing riverside elements
+            t.classList.remove('river-side-n', 'river-side-s', 'river-side-w', 'river-side-e');
+            ['river-side-n', 'river-side-s', 'river-side-w', 'river-side-e', 'river-path-n', 'river-path-s', 'river-path-w', 'river-path-e', 'river-grass-n', 'river-grass-s', 'river-grass-w', 'river-grass-e'].forEach(nm => {
+              const el = t.querySelector('.' + nm);
+              if (el) el.remove();
+            });
+
+            // Add riverside pathways on the side facing the river
+            if (hasNorthRiver) {
+              t.classList.add('river-side-n');
+              // Add railing
+              if (!t.querySelector('.river-side-n')) {
+                const railing = document.createElement('div');
+                railing.className = 'river-side-n';
+                t.appendChild(railing);
+              }
+              // Add grass strip
+              if (!t.querySelector('.river-grass-n')) {
+                const grass = document.createElement('div');
+                grass.className = 'river-grass-n';
+                t.appendChild(grass);
+              }
+              // pathway removed: grass tiles should not receive asphalt paths
+            }
+            if (hasSouthRiver) {
+              t.classList.add('river-side-s');
+              if (!t.querySelector('.river-side-s')) {
+                const railing = document.createElement('div');
+                railing.className = 'river-side-s';
+                t.appendChild(railing);
+              }
+              if (!t.querySelector('.river-grass-s')) {
+                const grass = document.createElement('div');
+                grass.className = 'river-grass-s';
+                t.appendChild(grass);
+              }
+              // pathway removed: grass tiles should not receive asphalt paths
+            }
+            if (hasWestRiver) {
+              t.classList.add('river-side-w');
+              if (!t.querySelector('.river-side-w')) {
+                const railing = document.createElement('div');
+                railing.className = 'river-side-w';
+                t.appendChild(railing);
+              }
+              if (!t.querySelector('.river-grass-w')) {
+                const grass = document.createElement('div');
+                grass.className = 'river-grass-w';
+                t.appendChild(grass);
+              }
+              // pathway removed: grass tiles should not receive asphalt paths
+            }
+            if (hasEastRiver) {
+              t.classList.add('river-side-e');
+              if (!t.querySelector('.river-side-e')) {
+                const railing = document.createElement('div');
+                railing.className = 'river-side-e';
+                t.appendChild(railing);
+              }
+              if (!t.querySelector('.river-grass-e')) {
+                const grass = document.createElement('div');
+                grass.className = 'river-grass-e';
+                t.appendChild(grass);
+              }
+              // pathway removed: grass tiles should not receive asphalt paths
+            }
+          }
+        }
+
+        // Handle diagonal tiles - automatically detect water adjacency and create appropriate diagonal
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            if (!t) continue;
+
+            // Clear any existing diagonal classes and elements
+            const diagonalClasses = ['diagonal-nw', 'diagonal-ne', 'diagonal-sw', 'diagonal-se'];
+            const diagonalElements = ['diagonal-rail-nw', 'diagonal-rail-ne', 'diagonal-rail-sw', 'diagonal-rail-se',
+                                    'diagonal-grass-nw', 'diagonal-grass-ne', 'diagonal-grass-sw', 'diagonal-grass-se',
+                                    'diagonal-path-nw', 'diagonal-path-ne', 'diagonal-path-sw', 'diagonal-path-se'];
+            
+            diagonalClasses.forEach(cls => {
+              t.classList.remove(cls);
+              const el = t.querySelector('.' + cls);
+              if (el) el.remove();
+            });
+
+            diagonalElements.forEach(elClass => {
+              const el = t.querySelector('.' + elClass);
+              if (el) el.remove();
+            });
+
+            // Check if this tile is marked for diagonal treatment in config
+            let shouldBeDiagonal = false;
+            let configDiagonalType = null;
+            
+            for (const [tileType, coordinates] of Object.entries(homebaseTileConfig)) {
+              if (tileType.startsWith('diagonal-')) {
+                for (const coord of coordinates) {
+                  const [configX, configY] = coord.split(',').map(Number);
+                  if (configX === x && configY === y) {
+                    shouldBeDiagonal = true;
+                    configDiagonalType = tileType;
+                    break;
+                  }
+                }
+              }
+              if (shouldBeDiagonal) break;
+            }
+
+            if (shouldBeDiagonal) {
+              // Check adjacent tiles for water
+              const northTile = tileAt(x, y - 1);
+              const southTile = tileAt(x, y + 1);
+              const westTile = tileAt(x - 1, y);
+              const eastTile = tileAt(x + 1, y);
+
+              const hasNorthWater = northTile && northTile.classList.contains('river');
+              const hasSouthWater = southTile && southTile.classList.contains('river');
+              const hasWestWater = westTile && westTile.classList.contains('river');
+              const hasEastWater = eastTile && eastTile.classList.contains('river');
+
+              // Determine diagonal orientation based on water adjacency
+              let diagonalType = null;
+              
+              if (hasNorthWater && hasWestWater) {
+                diagonalType = 'diagonal-nw'; // Water in northwest
+              } else if (hasNorthWater && hasEastWater) {
+                diagonalType = 'diagonal-ne'; // Water in northeast
+              } else if (hasSouthWater && hasWestWater) {
+                diagonalType = 'diagonal-sw'; // Water in southwest
+              } else if (hasSouthWater && hasEastWater) {
+                diagonalType = 'diagonal-se'; // Water in southeast
+              } else if (hasNorthWater) {
+                diagonalType = 'diagonal-nw'; // Default to northwest if only north water
+              } else if (hasSouthWater) {
+                diagonalType = 'diagonal-sw'; // Default to southwest if only south water
+              } else if (hasWestWater) {
+                diagonalType = 'diagonal-nw'; // Default to northwest if only west water
+              } else if (hasEastWater) {
+                diagonalType = 'diagonal-ne'; // Default to northeast if only east water
+              } else {
+                // Fallback to config type if no water detected
+                diagonalType = configDiagonalType;
+              }
+
+              if (diagonalType) {
+                t.classList.add(diagonalType);
+                // Create diagonal element if it doesn't exist
+                if (!t.querySelector('.' + diagonalType)) {
+                  const diagonalElement = document.createElement('div');
+                  diagonalElement.className = diagonalType;
+                  t.appendChild(diagonalElement);
+                }
+
+                // Create diagonal rail, grass, and path elements
+                const railClass = 'diagonal-rail-' + diagonalType.split('-')[1];
+                const grassClass = 'diagonal-grass-' + diagonalType.split('-')[1];
+                const pathClass = 'diagonal-path-' + diagonalType.split('-')[1];
+
+                if (!t.querySelector('.' + railClass)) {
+                  const railElement = document.createElement('div');
+                  railElement.className = railClass;
+                  t.appendChild(railElement);
+                }
+
+                if (!t.querySelector('.' + grassClass)) {
+                  const grassElement = document.createElement('div');
+                  grassElement.className = grassClass;
+                  t.appendChild(grassElement);
+                }
+
+                // Do not create diagonal asphalt path elements for diagonal tiles
+              }
             }
           }
         }
       }
 
-      // Precompute adjacency (non-road tiles touching a road)
+      // Precompute adjacency (non-road/bridge tiles touching a road or bridge)
       function markAdjacency() {
         for (let y = 0; y < state.rows; y++) {
           for (let x = 0; x < state.cols; x++) {
-            const t = tileAt(x, y); if (!t || t.classList.contains('road')) continue;
+            const t = tileAt(x, y); if (!t || t.classList.contains('road') || t.classList.contains('bridge')) continue;
             // clear previous adj state
             t.classList.remove('adj', 'adj-n', 'adj-s', 'adj-w', 'adj-e');
             ['corner-nw','corner-ne','corner-sw','corner-se'].forEach(nm => { const el = t.querySelector('.' + nm); if (el) el.remove(); });
 
-            const northIsRoad = state.roads.has(roadKey(x, y - 1));
-            const southIsRoad = state.roads.has(roadKey(x, y + 1));
-            const westIsRoad = state.roads.has(roadKey(x - 1, y));
-            const eastIsRoad = state.roads.has(roadKey(x + 1, y));
+            const northIsRoadOrBridge = state.roads.has(roadKey(x, y - 1)) || state.bridges.has(bridgeKey(x, y - 1));
+            const southIsRoadOrBridge = state.roads.has(roadKey(x, y + 1)) || state.bridges.has(bridgeKey(x, y + 1));
+            const westIsRoadOrBridge = state.roads.has(roadKey(x - 1, y)) || state.bridges.has(bridgeKey(x - 1, y));
+            const eastIsRoadOrBridge = state.roads.has(roadKey(x + 1, y)) || state.bridges.has(bridgeKey(x + 1, y));
 
-            if (northIsRoad || southIsRoad || westIsRoad || eastIsRoad) {
+            if (northIsRoadOrBridge || southIsRoadOrBridge || westIsRoadOrBridge || eastIsRoadOrBridge) {
               t.classList.add('adj');
             }
-            if (northIsRoad) t.classList.add('adj-n');
-            if (southIsRoad) t.classList.add('adj-s');
-            if (westIsRoad) t.classList.add('adj-w');
-            if (eastIsRoad) t.classList.add('adj-e');
+            if (northIsRoadOrBridge) t.classList.add('adj-n');
+            if (southIsRoadOrBridge) t.classList.add('adj-s');
+            if (westIsRoadOrBridge) t.classList.add('adj-w');
+            if (eastIsRoadOrBridge) t.classList.add('adj-e');
 
             // corners for non-road tiles are no longer created here (they're handled on road tiles)
           }
@@ -12583,7 +13708,7 @@
         for (let yy = y; yy < y + h; yy++) {
           for (let xx = x; xx < x + w; xx++) {
             const key = xx + "," + yy;
-            if (state.roads.has(key)) return { ok: false, reason: 'Cannot place on a road' };
+            if (state.roads.has(key) || state.bridges.has(key)) return { ok: false, reason: 'Cannot place on a road or bridge' };
             if (state.occupied.has(key)) return { ok: false, reason: 'Space occupied' };
           }
         }
@@ -12591,7 +13716,7 @@
         outer: for (let yy = y; yy < y + h; yy++) {
           for (let xx = x; xx < x + w; xx++) {
             const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
-            for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny)) { adjacent = true; break outer; } }
+            for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny) || state.bridges.has(nx + "," + ny)) { adjacent = true; break outer; } }
           }
         }
         if (!adjacent) return { ok: false, reason: 'Needs road adjacency' };
