@@ -2748,6 +2748,58 @@
     #homebase-page .tile .river-grass-s { bottom: 3px; }
 
     #homebase-page .tile .river-grass-w,
+    
+    /* Fog of War system - covers areas outside region walls */
+    #homebase-page .tile.fog-of-war::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1000; /* below walls (1002) */
+      background: 
+        /* Large-scale noise patterns that span multiple tiles */
+        radial-gradient(ellipse 200px 150px at 0% 0%, rgba(110, 110, 110, 0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 180px 200px at 100% 0%, rgba(90, 90, 90, 0.35) 0%, transparent 75%),
+        radial-gradient(ellipse 220px 180px at 0% 100%, rgba(100, 100, 100, 0.38) 0%, transparent 65%),
+        radial-gradient(ellipse 190px 220px at 100% 100%, rgba(105, 105, 105, 0.42) 0%, transparent 80%),
+        /* Medium-scale swirling patterns */
+        radial-gradient(ellipse 120px 90px at 25% 25%, rgba(95, 95, 95, 0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 100px 130px at 75% 75%, rgba(85, 85, 85, 0.28) 0%, transparent 65%),
+        radial-gradient(ellipse 110px 140px at 50% 80%, rgba(115, 115, 115, 0.32) 0%, transparent 70%),
+        /* Fine detail fog wisps */
+        radial-gradient(ellipse 60px 45px at 15% 35%, rgba(98, 98, 98, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse 45px 70px at 85% 15%, rgba(102, 102, 102, 0.22) 0%, transparent 55%),
+        radial-gradient(ellipse 55px 80px at 35% 85%, rgba(108, 108, 108, 0.24) 0%, transparent 45%),
+        /* Seamless base layer with very subtle variation */
+        linear-gradient(127deg, rgba(98, 98, 98, 0.85) 0%, rgba(102, 102, 102, 0.88) 20%, rgba(94, 94, 94, 0.86) 40%, rgba(106, 106, 106, 0.89) 60%, rgba(96, 96, 96, 0.87) 80%, rgba(100, 100, 100, 0.88) 100%);
+      background-size: 
+        400px 300px,
+        360px 400px,
+        440px 360px,
+        380px 440px,
+        240px 180px,
+        200px 260px,
+        220px 280px,
+        120px 90px,
+        90px 140px,
+        110px 160px,
+        100% 100%;
+      background-position:
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0;
+      pointer-events: none;
+      opacity: 0.92;
+      /* Smooth edge blending */
+      filter: blur(0.5px);
+    }
     #homebase-page .tile .river-grass-e {
       position: absolute;
       top: 0;
@@ -3114,6 +3166,14 @@
         black 54%, black 100%);
     }
 
+    /* Remove ripple texture overlays on diagonal shore tiles */
+    #homebase-page .tile .diagonal-nw::before,
+    #homebase-page .tile .diagonal-ne::before,
+    #homebase-page .tile .diagonal-sw::before,
+    #homebase-page .tile .diagonal-se::before {
+      display: none !important;
+    }
+
     #homebase-page .placed {
       background: #7b6d53;
       border: 1px solid rgba(0, 0, 0, .2);
@@ -3391,8 +3451,268 @@
       border-right: 5px solid red !important;
       box-sizing: border-box !important;
     }
+  /* Diagonal borders in debug mode */
+  #homebase-page.debug-borders .tile.region-border-diagonal-se {
+      /* 135deg creates a diagonal from top-left to bottom-right */
+      background: linear-gradient(135deg, transparent calc(50% - 2.5px), red calc(50% - 2.5px), red calc(50% + 2.5px), transparent calc(50% + 2.5px)) !important;
+      box-sizing: border-box !important;
+      z-index: 10;
+    }
+    
+  /* Forced fog for specific diagonal coordinates - only bottom-left half */
+  #homebase-page .tile .forced-fog {
+      position: absolute;
+      inset: 0;
+      background: rgba(100, 100, 100, 0.85);
+      z-index: 1000; /* Reduced from 2000 to place below walls (1002) */
+      pointer-events: none;
+      opacity: 0.95;
+      /* Clip the fog diagonally - only show bottom-left half */
+      clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+  }
 
   /* legacy .wall tile-wide styling removed; walls are now drawn via per-edge 1/3 overlays only */
+
+  /* === Buoy styles for water region boundaries === */
+  /* Similar to walls, use CSS custom properties to control buoy visibility */
+  #homebase-page .tile.river { --b-top: 0; --b-bottom: 0; --b-left: 0; --b-right: 0; --b-diagonal: 0; }
+  #homebase-page .tile.river.b-top { --b-top: 1; }
+  #homebase-page .tile.river.b-bottom { --b-bottom: 1; }
+  #homebase-page .tile.river.b-left { --b-left: 1; }
+  #homebase-page .tile.river.b-right { --b-right: 1; }
+  #homebase-page .tile.river.b-diagonal { --b-diagonal: 1; }
+  
+  /* Buoys on river tiles - orange and white alternating circles */
+  #homebase-page .tile.river::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1002; /* above walls to ensure proper layering */
+    pointer-events: none;
+
+    /* Orange and white alternating buoys only */
+    background-image:
+      /* Top buoys - perfectly evenly spaced */
+      radial-gradient(circle at 12.5% 5%, #ff6b35 calc(var(--b-top) * 2px), transparent calc(var(--b-top) * 3px)),
+      radial-gradient(circle at 37.5% 5%, #ffffff calc(var(--b-top) * 1.5px), transparent calc(var(--b-top) * 2.5px)),
+      radial-gradient(circle at 62.5% 5%, #ff6b35 calc(var(--b-top) * 2px), transparent calc(var(--b-top) * 3px)),
+      radial-gradient(circle at 87.5% 5%, #ffffff calc(var(--b-top) * 1.5px), transparent calc(var(--b-top) * 2.5px)),
+
+      /* Bottom buoys - perfectly evenly spaced */
+      radial-gradient(circle at 12.5% 95%, #ff6b35 calc(var(--b-bottom) * 2px), transparent calc(var(--b-bottom) * 3px)),
+      radial-gradient(circle at 37.5% 95%, #ffffff calc(var(--b-bottom) * 1.5px), transparent calc(var(--b-bottom) * 2.5px)),
+      radial-gradient(circle at 62.5% 95%, #ff6b35 calc(var(--b-bottom) * 2px), transparent calc(var(--b-bottom) * 3px)),
+      radial-gradient(circle at 87.5% 95%, #ffffff calc(var(--b-bottom) * 1.5px), transparent calc(var(--b-bottom) * 2.5px)),
+
+      /* Left buoys - perfectly evenly spaced */
+      radial-gradient(circle at 5% 12.5%, #ff6b35 calc(var(--b-left) * 2px), transparent calc(var(--b-left) * 3px)),
+      radial-gradient(circle at 5% 37.5%, #ffffff calc(var(--b-left) * 1.5px), transparent calc(var(--b-left) * 2.5px)),
+      radial-gradient(circle at 5% 62.5%, #ff6b35 calc(var(--b-left) * 2px), transparent calc(var(--b-left) * 3px)),
+      radial-gradient(circle at 5% 87.5%, #ffffff calc(var(--b-left) * 1.5px), transparent calc(var(--b-left) * 2.5px)),
+
+      /* Right buoys - perfectly evenly spaced */
+      radial-gradient(circle at 95% 12.5%, #ff6b35 calc(var(--b-right) * 2px), transparent calc(var(--b-right) * 3px)),
+      radial-gradient(circle at 95% 37.5%, #ffffff calc(var(--b-right) * 1.5px), transparent calc(var(--b-right) * 2.5px)),
+      radial-gradient(circle at 95% 62.5%, #ff6b35 calc(var(--b-right) * 2px), transparent calc(var(--b-right) * 3px)),
+      radial-gradient(circle at 95% 87.5%, #ffffff calc(var(--b-right) * 1.5px), transparent calc(var(--b-right) * 2.5px));
+
+    /* Set up the linear gradient positions */
+    background-position:
+      /* Top buoys positioning */
+      0 0, 0 0, 0 0, 0 0,
+
+      /* Bottom buoys positioning */
+      0 0, 0 0, 0 0, 0 0,
+
+      /* Left buoys positioning */
+      0 0, 0 0, 0 0, 0 0,
+
+      /* Right buoys positioning */
+      0 0, 0 0, 0 0, 0 0;
+
+    /* Set the sizes for each part */
+    background-size:
+      /* Top buoys sizes */
+      auto auto, auto auto, auto auto, auto auto,
+
+      /* Bottom buoys sizes */
+      auto auto, auto auto, auto auto, auto auto,
+
+      /* Left buoys sizes */
+      auto auto, auto auto, auto auto, auto auto,
+
+      /* Right buoys sizes */
+      auto auto, auto auto, auto auto, auto auto;    background-repeat: no-repeat;
+
+    /* Add a slight animation to simulate floating on water */
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Special single-tile buoy used for manual override coordinates (e.g. 15,14) */
+  #homebase-page .tile .special-buoy {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999; /* below fog (1000) to prevent appearing through it */
+    /* Match the left-edge buoys exactly: orange and white alternating */
+    background-image:
+      radial-gradient(circle at 5% 12.5%, #ff6b35 2px, transparent 3px),
+      radial-gradient(circle at 5% 37.5%, #ffffff 1.5px, transparent 2.5px),
+      radial-gradient(circle at 5% 62.5%, #ff6b35 2px, transparent 3px),
+      radial-gradient(circle at 5% 87.5%, #ffffff 1.5px, transparent 2.5px);
+    background-repeat: no-repeat;
+    /* Match the floating animation used by the other buoys */
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.3));
+    transform: translateZ(0);
+  }
+  
+  /* Diagonal buoys for corner water tiles */
+  #homebase-page .tile.river.b-diagonal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1003; /* above regular buoys */
+    pointer-events: none;
+    
+    /* Orange and white diagonal buoys only */
+    background-image:
+      radial-gradient(circle at 12.5% 12.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 37.5% 12.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 62.5% 12.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 87.5% 12.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 12.5% 37.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 37.5% 37.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 62.5% 37.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 87.5% 37.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 12.5% 62.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 37.5% 62.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 62.5% 62.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 87.5% 62.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 12.5% 87.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 37.5% 87.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px)),
+      radial-gradient(circle at 62.5% 87.5%, #ffffff calc(var(--b-diagonal) * 1.5px), transparent calc(var(--b-diagonal) * 2.5px)),
+      radial-gradient(circle at 87.5% 87.5%, #ff6b35 calc(var(--b-diagonal) * 2px), transparent calc(var(--b-diagonal) * 3px));
+    
+    background-repeat: no-repeat;
+    
+    /* Add a slight animation to simulate floating on water */
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Animation for buoys */
+  @keyframes float {
+    0% { transform: translateY(0px); filter: drop-shadow(0 0 3px rgba(0,0,0,0.5)); }
+    50% { transform: translateY(-2px); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.7)); }
+    100% { transform: translateY(0px); filter: drop-shadow(0 0 3px rgba(0,0,0,0.5)); }
+  }
+  
+  /* Special handling for diagonal river tiles */
+  #homebase-page .tile.river.diagonal-nw::before,
+  #homebase-page .tile.river.diagonal-ne::before,
+  #homebase-page .tile.river.diagonal-sw::before,
+  #homebase-page .tile.river.diagonal-se::before {
+    content: "";
+    position: absolute;
+    z-index: 1002;
+    pointer-events: none;
+  }
+  
+  /* Diagonal NW buoys - wooden style */
+  #homebase-page .tile.river.diagonal-nw.b-diagonal::before {
+    content: "";
+    top: calc(var(--cell) * 0.1);
+    left: calc(var(--cell) * 0.1);
+    width: calc(var(--cell) * 0.8);
+    height: calc(var(--cell) * 0.8);
+    background-image:
+      /* Wooden logs */
+      radial-gradient(circle at 20% 20%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 35% 35%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 50% 50%, #4a3c29 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 65% 65%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 80% 80%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      /* Connecting wooden beam */
+      linear-gradient(to bottom right, transparent 10%, #3b2f21 10%, #4a3c29 90%, transparent 90%);
+    background-repeat: no-repeat;
+    background-size: auto, auto, auto, auto, auto, 100% calc(var(--cell)/10);
+    transform: rotate(45deg);
+    transform-origin: top left;
+    animation: float 3s ease-in-out infinite;
+    position: absolute;
+  }
+  
+  /* Diagonal NE buoys - wooden style */
+  #homebase-page .tile.river.diagonal-ne.b-diagonal::before {
+    content: "";
+    top: calc(var(--cell) * 0.1);
+    right: calc(var(--cell) * 0.1);
+    width: calc(var(--cell) * 0.8);
+    height: calc(var(--cell) * 0.8);
+    background-image:
+      /* Wooden logs */
+      radial-gradient(circle at 20% 20%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 35% 35%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 50% 50%, #4a3c29 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 65% 65%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 80% 80%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      /* Connecting wooden beam */
+      linear-gradient(to bottom left, transparent 10%, #3b2f21 10%, #4a3c29 90%, transparent 90%);
+    background-repeat: no-repeat;
+    background-size: auto, auto, auto, auto, auto, 100% calc(var(--cell)/10);
+    transform: rotate(-45deg);
+    transform-origin: top right;
+    animation: float 3s ease-in-out infinite;
+    position: absolute;
+  }
+  
+  /* Diagonal SW buoys - wooden style */
+  #homebase-page .tile.river.diagonal-sw.b-diagonal::before {
+    content: "";
+    bottom: calc(var(--cell) * 0.1);
+    left: calc(var(--cell) * 0.1);
+    width: calc(var(--cell) * 0.8);
+    height: calc(var(--cell) * 0.8);
+    background-image:
+      /* Wooden logs */
+      radial-gradient(circle at 20% 20%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 35% 35%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 50% 50%, #4a3c29 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 65% 65%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 80% 80%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      /* Connecting wooden beam */
+      linear-gradient(to top right, transparent 10%, #3b2f21 10%, #4a3c29 90%, transparent 90%);
+    background-repeat: no-repeat;
+    background-size: auto, auto, auto, auto, auto, 100% calc(var(--cell)/10);
+    transform: rotate(-45deg);
+    transform-origin: bottom left;
+    animation: float 3s ease-in-out infinite;
+    position: absolute;
+  }
+  
+  /* Diagonal SE buoys - wooden style */
+  #homebase-page .tile.river.diagonal-se.b-diagonal::before {
+    content: "";
+    bottom: calc(var(--cell) * 0.1);
+    right: calc(var(--cell) * 0.1);
+    width: calc(var(--cell) * 0.8);
+    height: calc(var(--cell) * 0.8);
+    background-image:
+      /* Wooden logs */
+      radial-gradient(circle at 20% 20%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 35% 35%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 50% 50%, #4a3c29 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 65% 65%, #6b5b45 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      radial-gradient(circle at 80% 80%, #5d4e37 calc(var(--cell)/10), transparent calc(var(--cell)/10 + 1px)),
+      /* Connecting wooden beam */
+      linear-gradient(to top left, transparent 10%, #3b2f21 10%, #4a3c29 90%, transparent 90%);
+    background-repeat: no-repeat;
+    background-size: auto, auto, auto, auto, auto, 100% calc(var(--cell)/10);
+    transform: rotate(45deg);
+    transform-origin: bottom right;
+    animation: float 3s ease-in-out infinite;
+    position: absolute;
+  }
   </style>
 </head>
 
@@ -13223,12 +13543,28 @@
       // Shared region config helper
       function getRegionConfig() {
         return {
-          1: { x: [0, 14], y: [0, 15] },
-          2: { x: [15, 32], y: [0, 17] },
-          3: { x: [15, 32], y: [18, 42] },
-          4: { x: [0, 14], y: [16, 42] },
-          5: { x: [0, 14], y: [43, 65] },
-          6: { x: [15, 32], y: [43, 65] }
+          1: [{ x: [0, 14], y: [0, 13] }],
+          2: [
+            { x: [15, 18], y: [0, 14] },
+            { x: [19, 19], y: [0, 15] },
+            { x: [20, 22], y: [0, 15] },
+            { x: [23, 23], y: [0, 16] },
+            { x: [24, 26], y: [0, 16] },
+            { x: [27, 32], y: [0, 17] }
+          ],
+          3: [
+            { x: [15, 18], y: [15, 32] },
+            { x: [19, 19], y: [16, 32] },
+            { x: [20, 22], y: [16, 32] },
+            { x: [23, 23], y: [17, 32] },
+            { x: [24, 26], y: [17, 32] },
+            { x: [27, 32], y: [18, 32] }
+          ],
+          4: [{ x: [0, 14], y: [14, 32] }],
+          5: [{ x: [0, 14], y: [33, 49] }],
+          6: [{ x: [15, 32], y: [33, 49] }],
+          7: [{ x: [15, 56], y: [50, 65] }],
+          8: [{ x: [0, 14], y: [50, 65] }, { x: [57, 57], y: [50, 65] }]
         };
       }
 
@@ -13236,19 +13572,57 @@
       function drawRegionBoundaries() {
         const regionConfig = getRegionConfig();
         for (const regionId in regionConfig) {
-          const region = regionConfig[regionId];
-          const [x_start, x_end] = region.x;
-          const [y_start, y_end] = region.y;
-          for (let x = x_start; x <= x_end; x++) {
-            for (let y = y_start; y <= y_end; y++) {
-              const tile = tileAt(x, y);
-              if (!tile) continue;
-              if (x === x_start) tile.classList.add('region-border-left');
-              if (x === x_end) tile.classList.add('region-border-right');
-              if (y === y_start) tile.classList.add('region-border-top');
-              if (y === y_end) tile.classList.add('region-border-bottom');
+          const rectangles = regionConfig[regionId];
+          
+          // For each tile in the region, check if it's on the external boundary
+          for (const region of rectangles) {
+            const [x_start, x_end] = region.x;
+            const [y_start, y_end] = region.y;
+            for (let x = x_start; x <= x_end; x++) {
+              for (let y = y_start; y <= y_end; y++) {
+                const tile = tileAt(x, y);
+                if (!tile) continue;
+                
+                // Check if this tile is on the external boundary of the combined region
+                const isLeftBoundary = !isInSameRegion(x - 1, y, regionId);
+                const isRightBoundary = !isInSameRegion(x + 1, y, regionId);
+                const isTopBoundary = !isInSameRegion(x, y - 1, regionId);
+                const isBottomBoundary = !isInSameRegion(x, y + 1, regionId);
+                
+                // Special handling for diagonal boundary coordinates
+                const isDiagonalBoundary = (
+                  (x === 15 && y === 14) || 
+                  (x === 19 && y === 15) || 
+                  (x === 23 && y === 16) || 
+                  (x === 27 && y === 17)
+                );
+                
+                if (isDiagonalBoundary) {
+                  // These are southeast-facing diagonals (diagonal-se)
+                  tile.classList.add('region-border-diagonal', 'region-border-diagonal-se');
+                } else {
+                  if (isLeftBoundary) tile.classList.add('region-border-left');
+                  if (isRightBoundary) tile.classList.add('region-border-right');
+                  if (isTopBoundary) tile.classList.add('region-border-top');
+                  if (isBottomBoundary) tile.classList.add('region-border-bottom');
+                }
+              }
             }
           }
+        }
+        
+        // Helper function to check if a coordinate is in the same region
+        function isInSameRegion(x, y, regionId) {
+          if (x < 0 || x >= state.cols || y < 0 || y >= state.rows) return false;
+          const rectangles = regionConfig[regionId];
+          for (const rect of rectangles) {
+            const [xs, xe] = rect.x;
+            const [ys, ye] = rect.y;
+            if (x >= xs && x <= xe && y >= ys && y <= ye) {
+              return true;
+            }
+          }
+          return false;
         }
       }
 
@@ -13257,18 +13631,19 @@
         const regionConfig = getRegionConfig();
         const unlocked = state.unlockedRegions || new Set([1]);
 
-        // Clear previous wall classes
+        // Clear previous wall and buoy classes
         for (let y = 0; y < state.rows; y++) {
           for (let x = 0; x < state.cols; x++) {
             const t = tileAt(x, y);
             if (!t) continue;
-            t.classList.remove('wall', 'w-top', 'w-right', 'w-bottom', 'w-left');
+            t.classList.remove('wall', 'w-top', 'w-right', 'w-bottom', 'w-left', 'b-top', 'b-right', 'b-bottom', 'b-left', 'b-diagonal');
           }
         }
 
         // Helper to mark a continuous edge, with fallback positioning for water/bridges
         function markEdge(x0, x1, y0, y1, sideClass, regionBounds) {
           const [regionXs, regionXe, regionYs, regionYe] = regionBounds;
+          const buoyClass = 'b-' + sideClass.substring(2); // Convert w-top to b-top, etc.
           
           if (x0 === x1) {
             // vertical edge along constant x
@@ -13277,13 +13652,23 @@
               const t = tileAt(x, y); if (!t) continue;
               // If tile is a diagonal half-land/half-water, mark as wall but avoid straight band
               if (t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) {
-                t.classList.add('wall');
+                if (t.classList.contains('river')) {
+                  // For river tiles on diagonal borders, add diagonal buoy marker
+                  t.classList.add('b-diagonal');
+                } else {
+                  t.classList.add('wall');
+                }
                 continue;
               }
-              // If water/bridge, walk back to find first available land tile within region
+              // If water/bridge, add buoy class
               if (t.classList.contains('river') || t.classList.contains('bridge') || (typeof isRiver === 'function' && isRiver(x, y))) {
-                // For vertical walls, walk inward to find land but stay within region bounds
+                // For vertical edges, add buoys to water tiles and walls to land tiles
                 if (sideClass === 'w-left') {
+                  // For water tiles, add buoy class
+                  if (t.classList.contains('river')) {
+                    t.classList.add(buoyClass);
+                  }
+                  
                   // Walk right from the boundary until we find land, but stay within region
                   for (let fallbackX = x + 1; fallbackX <= regionXe; fallbackX++) {
                     const fallbackTile = tileAt(fallbackX, y);
@@ -13293,6 +13678,11 @@
                     }
                   }
                 } else if (sideClass === 'w-right') {
+                  // For water tiles, add buoy class
+                  if (t.classList.contains('river')) {
+                    t.classList.add(buoyClass);
+                  }
+                  
                   // Walk left from the boundary until we find land, but stay within region
                   for (let fallbackX = x - 1; fallbackX >= regionXs; fallbackX--) {
                     const fallbackTile = tileAt(fallbackX, y);
@@ -13313,13 +13703,23 @@
               const t = tileAt(x, y); if (!t) continue;
               // If tile is a diagonal half-land/half-water, mark as wall but avoid straight band
               if (t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) {
-                t.classList.add('wall');
+                if (t.classList.contains('river')) {
+                  // For river tiles on diagonal borders, add a diagonal buoy marker
+                  t.classList.add('b-diagonal');
+                } else {
+                  t.classList.add('wall');
+                }
                 continue;
               }
-              // If water/bridge, walk back to find first available land tile within region
+              // If water/bridge, add buoy class
               if (t.classList.contains('river') || t.classList.contains('bridge') || (typeof isRiver === 'function' && isRiver(x, y))) {
-                // For horizontal walls, walk inward to find land but stay within region bounds
+                // For horizontal edges, add buoys to water tiles and walls to land tiles
                 if (sideClass === 'w-top') {
+                  // For water tiles, add buoy class
+                  if (t.classList.contains('river')) {
+                    t.classList.add(buoyClass);
+                  }
+                  
                   // Walk down from the boundary until we find land, but stay within region
                   for (let fallbackY = y + 1; fallbackY <= regionYe; fallbackY++) {
                     const fallbackTile = tileAt(x, fallbackY);
@@ -13329,6 +13729,11 @@
                     }
                   }
                 } else if (sideClass === 'w-bottom') {
+                  // For water tiles, add buoy class
+                  if (t.classList.contains('river')) {
+                    t.classList.add(buoyClass);
+                  }
+                  
                   // Walk up from the boundary until we find land, but stay within region
                   for (let fallbackY = y - 1; fallbackY >= regionYs; fallbackY--) {
                     const fallbackTile = tileAt(x, fallbackY);
@@ -13347,33 +13752,140 @@
 
         // For each unlocked region, paint external edges only
         for (const id of unlocked) {
-          const cfg = regionConfig[id];
-          if (!cfg) continue;
-          const [xs, xe] = cfg.x; const [ys, ye] = cfg.y;
+          const rectangles = regionConfig[id];
+          if (!rectangles) continue;
+          for (const cfg of rectangles) {
+            const [xs, xe] = cfg.x; const [ys, ye] = cfg.y;
 
-          // Find neighbors by layout
-          const neighborLeft = (id === 2 || id === 3 || id === 6) ? id - 1 : null; // 2->1, 3->2? (we arranged 4/3 in middle row), 6->5
-          const neighborRight = (id === 1 || id === 4 || id === 5) ? id + (id === 1 ? 1 : id === 4 ? -1 + 3 : 1) : null; // keep simple: we'll use explicit map instead
+            // Helper to check if edge is adjacent to another rectangle in same region
+            const hasAdjacentRect = (direction, start, end) => {
+              for (const otherCfg of rectangles) {
+                if (otherCfg === cfg) continue;
+                const [oxs, oxe] = otherCfg.x; const [oys, oye] = otherCfg.y;
+                if (direction === 'top' && oye === ys - 1 && oxs <= xe && oxe >= xs) return true;
+                if (direction === 'bottom' && oys === ye + 1 && oxs <= xe && oxe >= xs) return true;
+                if (direction === 'left' && oxe === xs - 1 && oys <= ye && oye >= ys) return true;
+                if (direction === 'right' && oxs === xe + 1 && oys <= ye && oye >= ys) return true;
+              }
+              return false;
+            };
 
-          // Use explicit map to avoid mistakes
-          const adjacency = {
-            1: { left: null, right: 2, top: null, bottom: 4 },
-            2: { left: 1, right: null, top: null, bottom: 3 },
-            3: { left: 4, right: null, top: 2, bottom: 6 },
-            4: { left: null, right: 3, top: 1, bottom: 5 },
-            5: { left: null, right: 6, top: 4, bottom: null },
-            6: { left: 5, right: null, top: 3, bottom: null },
-          };
-          const nbr = adjacency[id];
+            // Find neighbors by layout
+            const neighborLeft = (id === 2 || id === 3 || id === 6) ? id - 1 : null; // 2->1, 3->2? (we arranged 4/3 in middle row), 6->5
+            const neighborRight = (id === 1 || id === 4 || id === 5) ? id + (id === 1 ? 1 : id === 4 ? -1 + 3 : 1) : null; // keep simple: we'll use explicit map instead
 
-          // Top edge if neighbor top not unlocked
-          if (id !== 3 && (!nbr.top || !unlocked.has(nbr.top))) markEdge(xs, xe, ys, ys, 'w-top', [xs, xe, ys, ye]);
-          // Bottom edge if neighbor bottom not unlocked
-          if (!nbr.bottom || !unlocked.has(nbr.bottom)) markEdge(xs, xe, ye, ye, 'w-bottom', [xs, xe, ys, ye]);
-          // Left edge if neighbor left not unlocked
-          if (!nbr.left || !unlocked.has(nbr.left)) markEdge(xs, xs, ys, ye, 'w-left', [xs, xe, ys, ye]);
-          // Right edge if neighbor right not unlocked
-          if (!nbr.right || !unlocked.has(nbr.right)) markEdge(xe, xe, ys, ye, 'w-right', [xs, xe, ys, ye]);
+            // Use explicit map to avoid mistakes
+            const adjacency = {
+              1: { left: null, right: 2, top: null, bottom: 4 },
+              2: { left: 1, right: null, top: null, bottom: 3 },
+              3: { left: 4, right: null, top: 2, bottom: 6 },
+              4: { left: null, right: 3, top: 1, bottom: 5 },
+              5: { left: null, right: 6, top: 4, bottom: 8 },
+              6: { left: 5, right: null, top: 3, bottom: 7 },
+              7: { left: 8, right: null, top: 6, bottom: null },
+              8: { left: null, right: 7, top: 5, bottom: null },
+            };
+            const nbr = adjacency[id];
+
+            // Top edge if neighbor top not unlocked and not adjacent to same region
+            if ((!nbr.top || !unlocked.has(nbr.top)) && !hasAdjacentRect('top', xs, xe)) markEdge(xs, xe, ys, ys, 'w-top', [xs, xe, ys, ye]);
+            // Bottom edge if neighbor bottom not unlocked and not adjacent to same region
+            if ((!nbr.bottom || !unlocked.has(nbr.bottom)) && !hasAdjacentRect('bottom', xs, xe)) markEdge(xs, xe, ye, ye, 'w-bottom', [xs, xe, ys, ye]);
+            // Left edge if neighbor left not unlocked and not adjacent to same region
+            if ((!nbr.left || !unlocked.has(nbr.left)) && !hasAdjacentRect('left', ys, ye)) markEdge(xs, xs, ys, ye, 'w-left', [xs, xe, ys, ye]);
+            // Right edge if neighbor right not unlocked and not adjacent to same region
+            if ((!nbr.right || !unlocked.has(nbr.right)) && !hasAdjacentRect('right', ys, ye)) markEdge(xe, xe, ys, ye, 'w-right', [xs, xe, ys, ye]);
+          }
+        }
+
+        // Special-case: add/remove a dedicated `.special-buoy` element at grid (15,14) when region 4 is locked
+        (function manageSpecialBuoy(){
+          // Remove any previous special-buoys
+          document.querySelectorAll('#homebase-page .tile .special-buoy').forEach(e => e.remove());
+
+          const specialTile = tileAt(15, 14);
+          if (!specialTile) return;
+
+          if (unlocked.has(3) && !unlocked.has(4)) {
+            // Ensure tile has water class when map data says it's water
+            if (!(specialTile.classList.contains('river')) && (typeof isRiver === 'function' && isRiver(15, 14))) {
+              specialTile.classList.add('river');
+            }
+
+            // Create a special buoy element and append it to the tile so it renders regardless of background layering
+            const buoyEl = document.createElement('div');
+            buoyEl.className = 'special-buoy';
+            specialTile.appendChild(buoyEl);
+          } else {
+            // Region unlocked: ensure no special buoy remains
+            const existing = specialTile.querySelectorAll('.special-buoy');
+            existing.forEach(e => e.remove());
+          }
+        })();
+
+        // Apply fog of war to tiles outside unlocked regions
+        applyFogOfWar(unlocked, regionConfig);
+      }
+
+      // Function to apply fog of war to areas outside unlocked regions
+      function applyFogOfWar(unlocked, regionConfig) {
+        // Clear existing fog
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            if (!t) continue;
+            t.classList.remove('fog-of-war');
+            
+            // Also remove any existing forced-fog elements
+            const existingFogs = t.querySelectorAll('.forced-fog');
+            existingFogs.forEach(fog => t.removeChild(fog));
+          }
+        }
+        
+        // Apply fog to tiles outside unlocked regions
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            if (!t) continue;
+            
+            // These coordinates get fog only if region 3 is not unlocked
+            const isSpecialCoord = (x === 15 && y === 14) || (x === 19 && y === 15) || 
+                                   (x === 23 && y === 16) || (x === 27 && y === 17);
+            
+            if (isSpecialCoord && !unlocked.has(3) && !unlocked.has(4)) {
+              // Force explicit fog styling on these specific coordinates
+              
+              // Add new fog element
+              const fogElement = document.createElement('div');
+              fogElement.className = 'forced-fog';
+              t.appendChild(fogElement);
+              
+              // Add normal fog class too
+              t.classList.add('fog-of-war');
+              
+              continue; // Skip the region check for these tiles
+            }
+            
+            // Check if the tile is in an unlocked region
+            let isInUnlockedRegion = false;
+            for (const id of unlocked) {
+              const rectangles = regionConfig[id];
+              if (!rectangles) continue;
+              for (const cfg of rectangles) {
+                const [xs, xe] = cfg.x; const [ys, ye] = cfg.y;
+                if (x >= xs && x <= xe && y >= ys && y <= ye) {
+                  isInUnlockedRegion = true;
+                  break;
+                }
+              }
+              if (isInUnlockedRegion) break;
+            }
+            
+            // Apply fog to all tiles outside unlocked regions
+            if (!isInUnlockedRegion) {
+              t.classList.add('fog-of-war');
+            }
+          }
         }
       }
 
@@ -13426,12 +13938,14 @@
       function assignRegionClasses() {
         const cfg = getRegionConfig();
         for (const id in cfg) {
-          const r = cfg[id];
-          const [xs, xe] = r.x; const [ys, ye] = r.y;
-          for (let y = ys; y <= ye; y++) {
-            for (let x = xs; x <= xe; x++) {
-              const t = tileAt(x, y); if (!t) continue;
-              t.classList.add(`region-${id}`);
+          const rectangles = cfg[id];
+          for (const r of rectangles) {
+            const [xs, xe] = r.x; const [ys, ye] = r.y;
+            for (let y = ys; y <= ye; y++) {
+              for (let x = xs; x <= xe; x++) {
+                const t = tileAt(x, y); if (!t) continue;
+                t.classList.add(`region-${id}`);
+              }
             }
           }
         }
