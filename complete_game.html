@@ -467,6 +467,129 @@
     .area-content.active {
       display: block;
     }
+    /* When a tile is a wall and has a diagonal shoreline, replace the shore edge with a diagonal log wall */
+    #homebase-page .tile.wall .diagonal-rail-nw,
+    #homebase-page .tile.wall .diagonal-rail-ne,
+    #homebase-page .tile.wall .diagonal-rail-sw,
+    #homebase-page .tile.wall .diagonal-rail-se {
+      height: calc(var(--cell) / 5) !important; /* exact straight wall thickness */
+      z-index: 1002 !important; /* above everything, including wall ::before */
+      border-radius: 0;
+      background-image:
+        /* Match TOP straight wall: 5 log ends + backing bar */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29);
+      background-repeat: no-repeat;
+      background-size:
+        /* five circles as squares + full-length backing bar */
+        calc(var(--cell) / 5) calc(var(--cell) / 5),
+        calc(var(--cell) / 5) calc(var(--cell) / 5),
+        calc(var(--cell) / 5) calc(var(--cell) / 5),
+        calc(var(--cell) / 5) calc(var(--cell) / 5),
+        calc(var(--cell) / 5) calc(var(--cell) / 5),
+        100% calc(var(--cell) / 5);
+      background-position:
+        0 0,
+        20% 0,
+        40% 0,
+        60% 0,
+        80% 0,
+        left top;
+    }
+
+    /* Prevent wall background on no-wall tiles */
+    #homebase-page .tile.no-wall .diagonal-rail-nw,
+    #homebase-page .tile.no-wall .diagonal-rail-ne,
+    #homebase-page .tile.no-wall .diagonal-rail-sw,
+    #homebase-page .tile.no-wall .diagonal-rail-se {
+      background-image: none !important;
+      height: 3px !important;
+      background: #4a4a4a !important;
+      border-radius: 0;
+    }
+
+    /* Hide the decorative shoreline grass/path when a wall occupies the diagonal */
+    #homebase-page .tile.wall .diagonal-grass-nw,
+    #homebase-page .tile.wall .diagonal-grass-ne,
+    #homebase-page .tile.wall .diagonal-grass-sw,
+    #homebase-page .tile.wall .diagonal-grass-se,
+    #homebase-page .tile.wall .diagonal-path-nw,
+    #homebase-page .tile.wall .diagonal-path-ne,
+    #homebase-page .tile.wall .diagonal-path-sw,
+    #homebase-page .tile.wall .diagonal-path-se { display: none !important; }
+
+    /* On diagonal wall tiles, hide straight wall bands so only the diagonal shows */
+    #homebase-page .tile.wall.diagonal-nw,
+    #homebase-page .tile.wall.diagonal-ne,
+    #homebase-page .tile.wall.diagonal-sw,
+    #homebase-page .tile.wall.diagonal-se {
+      --w-top: 0 !important;
+      --w-bottom: 0 !important;
+      --w-left: 0 !important;
+      --w-right: 0 !important;
+    }
+
+    /* Also remove straight wall pseudo background entirely on diagonal wall tiles */
+    #homebase-page .tile.wall.diagonal-nw::before,
+    #homebase-page .tile.wall.diagonal-ne::before,
+    #homebase-page .tile.wall.diagonal-sw::before,
+    #homebase-page .tile.wall.diagonal-se::before {
+      background-image: none !important;
+    }
+
+  /* On diagonal wall tiles, hide any straight shoreline elements */
+  #homebase-page .tile.wall.diagonal-nw .river-side-n,
+  #homebase-page .tile.wall.diagonal-nw .river-side-s,
+  #homebase-page .tile.wall.diagonal-nw .river-side-w,
+  #homebase-page .tile.wall.diagonal-nw .river-side-e,
+  #homebase-page .tile.wall.diagonal-ne .river-side-n,
+  #homebase-page .tile.wall.diagonal-ne .river-side-s,
+  #homebase-page .tile.wall.diagonal-ne .river-side-w,
+  #homebase-page .tile.wall.diagonal-ne .river-side-e,
+  #homebase-page .tile.wall.diagonal-sw .river-side-n,
+  #homebase-page .tile.wall.diagonal-sw .river-side-s,
+  #homebase-page .tile.wall.diagonal-sw .river-side-w,
+  #homebase-page .tile.wall.diagonal-sw .river-side-e,
+  #homebase-page .tile.wall.diagonal-se .river-side-n,
+  #homebase-page .tile.wall.diagonal-se .river-side-s,
+  #homebase-page .tile.wall.diagonal-se .river-side-w,
+  #homebase-page .tile.wall.diagonal-se .river-side-e,
+  #homebase-page .tile.wall.diagonal-nw .river-grass-n,
+  #homebase-page .tile.wall.diagonal-nw .river-grass-s,
+  #homebase-page .tile.wall.diagonal-nw .river-grass-w,
+  #homebase-page .tile.wall.diagonal-nw .river-grass-e,
+  #homebase-page .tile.wall.diagonal-ne .river-grass-n,
+  #homebase-page .tile.wall.diagonal-ne .river-grass-s,
+  #homebase-page .tile.wall.diagonal-ne .river-grass-w,
+  #homebase-page .tile.wall.diagonal-ne .river-grass-e,
+  #homebase-page .tile.wall.diagonal-sw .river-grass-n,
+  #homebase-page .tile.wall.diagonal-sw .river-grass-s,
+  #homebase-page .tile.wall.diagonal-sw .river-grass-w,
+  #homebase-page .tile.wall.diagonal-sw .river-grass-e,
+  #homebase-page .tile.wall.diagonal-se .river-grass-n,
+  #homebase-page .tile.wall.diagonal-se .river-grass-s,
+  #homebase-page .tile.wall.diagonal-se .river-grass-w,
+  #homebase-page .tile.wall.diagonal-se .river-grass-e,
+  #homebase-page .tile.wall.diagonal-nw .river-path-n,
+  #homebase-page .tile.wall.diagonal-nw .river-path-s,
+  #homebase-page .tile.wall.diagonal-nw .river-path-w,
+  #homebase-page .tile.wall.diagonal-nw .river-path-e,
+  #homebase-page .tile.wall.diagonal-ne .river-path-n,
+  #homebase-page .tile.wall.diagonal-ne .river-path-s,
+  #homebase-page .tile.wall.diagonal-ne .river-path-w,
+  #homebase-page .tile.wall.diagonal-ne .river-path-e,
+  #homebase-page .tile.wall.diagonal-sw .river-path-n,
+  #homebase-page .tile.wall.diagonal-sw .river-path-s,
+  #homebase-page .tile.wall.diagonal-sw .river-path-w,
+  #homebase-page .tile.wall.diagonal-sw .river-path-e,
+  #homebase-page .tile.wall.diagonal-se .river-path-n,
+  #homebase-page .tile.wall.diagonal-se .river-path-s,
+  #homebase-page .tile.wall.diagonal-se .river-path-w,
+  #homebase-page .tile.wall.diagonal-se .river-path-e { display: none !important; }
 
     .gathering-grid {
       display: grid;
@@ -1639,6 +1762,16 @@
       gap: 8px
     }
 
+    /* Regions badge layout */
+    #homebase-page #regionUnlock {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #homebase-page #regionUnlock .k { margin-right: 6px; }
+    #homebase-page #regionsStatus { font-weight: 600; }
+    #homebase-page #unlockRegionBtn { padding: 6px 10px; }
+
     #homebase-page .btn {
       background: linear-gradient(180deg, var(--panel2), var(--panel));
       border: 1px solid var(--border);
@@ -1860,6 +1993,83 @@
       z-index: 1;
     }
 
+  /* Remove grass overlay on tiles that have walls so nothing can show through */
+  #homebase-page .tile.wall::after { content: none !important; }
+
+    /* Wall overlay: use per-edge bands sized to 1/3 of the tile. L-corners are formed by enabling multiple bands. */
+    #homebase-page .tile.wall { --w-top: 0; --w-bottom: 0; --w-left: 0; --w-right: 0; }
+    #homebase-page .tile.wall.w-top { --w-top: 1; }
+    #homebase-page .tile.wall.w-bottom { --w-bottom: 1; }
+    #homebase-page .tile.wall.w-left { --w-left: 1; }
+    #homebase-page .tile.wall.w-right { --w-right: 1; }
+
+    #homebase-page .tile.wall::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      /* ensure walls sit above all tile overlays (roads, sidewalks, bridges, buildings) */
+      z-index: 1000;
+  opacity: 1;
+  mix-blend-mode: normal;
+  background-blend-mode: normal, normal, normal, normal;
+      pointer-events: none;
+      /* Spiked log wall texture with varying circle sizes */
+      /* Order: top, bottom, left, right */
+      background-image:
+        /* Top log wall - horizontal logs with varying sizes */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Bottom log wall */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Left log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29),
+        /* Right log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29);
+      background-repeat: no-repeat;
+      background-size:
+        /* Top log wall */
+        calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5),
+        100% calc(var(--w-top) * var(--cell) / 5),
+        /* Bottom log wall */
+        calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5),
+        100% calc(var(--w-bottom) * var(--cell) / 5),
+        /* Left log wall */
+        calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5),
+        calc(var(--w-left) * var(--cell) / 5) 100%,
+        /* Right log wall */
+        calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5),
+        calc(var(--w-right) * var(--cell) / 5) 100%;
+      background-position:
+        /* Top log wall */
+        0 0, 20% 0, 40% 0, 60% 0, 80% 0, left top,
+        /* Bottom log wall */
+        0 100%, 20% 100%, 40% 100%, 60% 100%, 80% 100%, left bottom,
+        /* Left log wall */
+        0 0, 0 20%, 0 40%, 0 60%, 0 80%, left top,
+        /* Right log wall */
+        100% 0, 100% 20%, 100% 40%, 100% 60%, 100% 80%, right top;
+      /* avoid global inset shadows that make bands look thicker than 1/3 */
+    }
+
     #homebase-page .road {
       background: #3a3c40; /* dirtier, darker base color */
       /* make road tiles visually square and flush so textures connect */
@@ -1886,6 +2096,67 @@
       opacity: 0.5;
       pointer-events: none;
       z-index: 0; /* below the road surface overlay */
+    }
+
+    /* Force walls to be fully opaque and override any road/bridge ::before on the same tile */
+    #homebase-page .tile.wall.road::before,
+    #homebase-page .tile.wall.bridge::before {
+      z-index: 1000 !important;
+      opacity: 1 !important;
+      mix-blend-mode: normal !important;
+      background-blend-mode: normal, normal, normal, normal !important;
+      background-repeat: no-repeat !important;
+      background-image:
+        /* Top log wall - horizontal logs with varying sizes */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Bottom log wall */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Left log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29),
+        /* Right log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29) !important;
+      background-size:
+        /* Top log wall */
+        calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5),
+        100% calc(var(--w-top) * var(--cell) / 5),
+        /* Bottom log wall */
+        calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5),
+        100% calc(var(--w-bottom) * var(--cell) / 5),
+        /* Left log wall */
+        calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5),
+        calc(var(--w-left) * var(--cell) / 5) 100%,
+        /* Right log wall */
+        calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5),
+        calc(var(--w-right) * var(--cell) / 5) 100% !important;
+      background-position:
+        /* Top log wall */
+        0 0, 20% 0, 40% 0, 60% 0, 80% 0, left top,
+        /* Bottom log wall */
+        0 100%, 20% 100%, 40% 100%, 60% 100%, 80% 100%, left bottom,
+        /* Left log wall */
+        0 0, 0 20%, 0 40%, 0 60%, 0 80%, left top,
+        /* Right log wall */
+        100% 0, 100% 20%, 100% 40%, 100% 60%, 100% 80%, right top !important;
     }
 
     /* road caps: draw two halves per axis so we can hide the unconnected side */
@@ -2562,6 +2833,19 @@
       transform: translate(-50%, -50%) rotate(-45deg);
     }
 
+    /* Region 2 diagonal walls: nudge up and left slightly for better fit; only affects diagonals on walls in region 2 */
+    #homebase-page .tile.region-2.wall .diagonal-rail-nw,
+    #homebase-page .tile.region-2.wall .diagonal-rail-ne,
+    #homebase-page .tile.region-2.wall .diagonal-rail-sw,
+    #homebase-page .tile.region-2.wall .diagonal-rail-se {
+      transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(var(--d-rot, 0deg));
+    }
+    /* Preserve rotation per direction using CSS variables */
+    #homebase-page .tile .diagonal-rail-nw { --d-rot: -45deg; }
+    #homebase-page .tile .diagonal-rail-ne { --d-rot: 45deg; }
+    #homebase-page .tile .diagonal-rail-sw { --d-rot: 45deg; }
+    #homebase-page .tile .diagonal-rail-se { --d-rot: -45deg; }
+
     /* Diagonal grass strips */
     #homebase-page .tile .diagonal-grass-nw,
     #homebase-page .tile .diagonal-grass-ne,
@@ -2831,10 +3115,92 @@
     }
 
     #homebase-page .placed {
-      background: linear-gradient(180deg, rgba(34, 40, 54, 0.6), rgba(20, 26, 36, 0.6));
-      border: 1px solid rgba(52, 68, 95, 0.4);
-      box-shadow: 0 10px 18px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .02)
+      background: #7b6d53;
+      border: 1px solid rgba(0, 0, 0, .2);
+      box-shadow: 0 1px 3px rgba(0,0,0,.3);
+      z-index: 10;
+      pointer-events: none;
     }
+
+    /* Roof styles using pseudo-elements */
+    #homebase-page .placed::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-width: calc(var(--cell) / 2);
+    }
+
+    /* Gabled roof styles */
+    #homebase-page .placed[data-roof="gabled"]::before { 
+      border-top-color: #9a8a6a; 
+      border-bottom-color: #5c4e3a; 
+    }
+    #homebase-page .placed[data-roof="gabled"][data-w="2"]::before { 
+      border-left-width: calc(var(--cell) * .2); 
+      border-right-width: calc(var(--cell) * .2); 
+    }
+    #homebase-page .placed[data-roof="gabled"][data-h="2"]::before { 
+      border-top-width: calc(var(--cell) * .2); 
+      border-bottom-width: calc(var(--cell) * .2); 
+    }
+    #homebase-page .placed[data-roof="gabled"][data-w="3"]::before { 
+      border-left-width: calc(var(--cell) * .15); 
+      border-right-width: calc(var(--cell) * .15); 
+    }
+
+    /* Flat roof styles */
+    #homebase-page .placed[data-roof="flat"]::before {
+      border-width: 4px;
+      border-color: #555;
+      background: #777;
+    }
+
+    /* Fortified roof styles */
+    #homebase-page .placed[data-roof="fortified"]::before {
+      border-width: 6px;
+      border-color: #444;
+      background: #666;
+    }
+
+    /* Roof textures using ::after */
+    #homebase-page .placed::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: .6;
+      pointer-events: none;
+    }
+
+    /* Gabled roof texture */
+    #homebase-page .placed[data-roof="gabled"]::after {
+      background: repeating-linear-gradient(90deg, 
+        rgba(0,0,0,.1) 0 1px, 
+        transparent 1px 4px
+      );
+    }
+
+    /* Flat roof texture */
+    #homebase-page .placed[data-roof="flat"]::after {
+      background:
+        repeating-linear-gradient(45deg, #666, #666 1px, #777 1px, #777 5px),
+        repeating-linear-gradient(-45deg, #666, #666 1px, #777 1px, #777 5px);
+    }
+
+    /* Fortified roof texture */
+    #homebase-page .placed[data-roof="fortified"]::after {
+      background-image:
+        linear-gradient(rgba(0,0,0,.2) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(0,0,0,.2) 2px, transparent 2px);
+      background-size: calc(var(--cell) / 3) calc(var(--cell) / 3);
+    }
+
+    /* Building category colors */
+    #homebase-page .placed[data-cat="res"] { background-color: #7b6d53; }
+    #homebase-page .placed[data-cat="ind"] { background-color: #6c757d; }
+    #homebase-page .placed[data-cat="def"] { background-color: #5a624c; }
+    #homebase-page .placed[data-cat="spe"] { background-color: #8a7963; }
 
     #homebase-page .placed .name {
       position: absolute;
@@ -2886,6 +3252,11 @@
       display: flex;
       gap: 6px;
       pointer-events: none
+    }
+
+    #homebase-page .tile.selectable {
+      outline: 1px dotted rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.1);
     }
 
     #homebase-page .gchip {
@@ -3002,6 +3373,26 @@
     #homebase-page .muted {
       color: var(--muted)
     }
+
+  /* Region borders - toggled via #homebase-page.debug-borders */
+  #homebase-page.debug-borders .tile.region-border-top {
+      border-top: 5px solid red !important;
+      box-sizing: border-box !important;
+    }
+  #homebase-page.debug-borders .tile.region-border-bottom {
+      border-bottom: 5px solid red !important;
+      box-sizing: border-box !important;
+    }
+  #homebase-page.debug-borders .tile.region-border-left {
+      border-left: 5px solid red !important;
+      box-sizing: border-box !important;
+    }
+  #homebase-page.debug-borders .tile.region-border-right {
+      border-right: 5px solid red !important;
+      box-sizing: border-box !important;
+    }
+
+  /* legacy .wall tile-wide styling removed; walls are now drawn via per-edge 1/3 overlays only */
   </style>
 </head>
 
@@ -3354,8 +3745,15 @@
               id="woodDelta"></span></div>
           <div class="badge"><span class="k">🪨 Stone</span> <span class="v" id="stone">120</span> <span class="delta"
               id="stoneDelta"></span></div>
-          <div class="badge"><span class="k">Mode</span> <span class="v">Build</span></div>
+          <div class="badge" id="regionUnlock">
+            <span class="k">Regions</span>
+            <span class="v" id="regionsStatus">1/6</span>
+            <button class="btn mini" id="unlockRegionBtn" title="Unlock next region">Unlock</button>
+          </div>
           <div class="mode">
+            <button class="btn mini" id="toggleBorders" title="Toggle region debug borders">Borders</button>
+            <button class="btn mini" id="rotateLeft">↺</button>
+            <button class="btn mini" id="rotateRight">↻</button>
             <button class="btn" disabled="" id="undoBtn">Undo (Z)</button>
           </div>
         </div>
@@ -3373,335 +3771,35 @@
             <div class="map" id="map"></div>
             <div class="overlay">
               <div class="corner">
+                <div id="hint">Pick a building to start placing.</div>
               </div>
           </main>
         </div>
         <div class="toasts" id="toasts"></div>
         <script>
-          (function () {
-            // ======= DATA =======
-            const CATS = [
-              { id: 'res', name: 'Residential' },
-              { id: 'ind', name: 'Industrial' },
-              { id: 'def', name: 'Defensive' },
-              { id: 'spe', name: 'Special' },
-            ];
-
-            const BUILDINGS = [
-              // Residential
-              { id: 'shack', cat: 'res', name: 'Shack', cost: { wood: 15, stone: 5 }, slots: { F: 1, W: 1, S: 0, D: 0 }, durability: 50, footprint: [1, 1], tags: ['Road-adjacent'] },
-              { id: 'shelter', cat: 'res', name: 'Shelter', cost: { wood: 30, stone: 10 }, slots: { F: 2, W: 1, S: 0, D: 0 }, durability: 100, footprint: [2, 1], tags: ['Road-adjacent'] },
-              { id: 'apt', cat: 'res', name: 'Apartment Block', cost: { wood: 60, stone: 25 }, slots: { F: 3, W: 1, S: 0, D: 1 }, durability: 150, footprint: [2, 2], tags: ['Road-adjacent'] },
-              // Industrial
-              { id: 'workshop', cat: 'ind', name: 'Workshop', cost: { wood: 20, stone: 20 }, slots: { F: 0, W: 2, S: 1, D: 0 }, durability: 120, footprint: [2, 1], tags: ['Road-adjacent'] },
-              { id: 'factory', cat: 'ind', name: 'Factory Floor', cost: { wood: 35, stone: 40 }, slots: { F: 0, W: 3, S: 2, D: 0 }, durability: 160, footprint: [3, 2], tags: ['Road-adjacent'] },
-              // Defensive
-              { id: 'guard', cat: 'def', name: 'Guard Post', cost: { wood: 15, stone: 10 }, slots: { F: 0, W: 0, S: 0, D: 2 }, durability: 100, footprint: [1, 1], tags: ['Road-adjacent', 'Defense +2'] },
-              { id: 'watch', cat: 'def', name: 'Watchtower', cost: { wood: 25, stone: 25 }, slots: { F: 0, W: 0, S: 0, D: 3 }, durability: 200, footprint: [1, 1], tags: ['Road-adjacent', 'Vision +'] },
-              // Special
-              { id: 'expo', cat: 'spe', name: 'Expedition Center', cost: { wood: 50, stone: 30 }, slots: { F: 0, W: 0, S: 0, D: 0 }, durability: 120, footprint: [2, 2], tags: ['Road-adjacent', 'Unlocks exploration'] },
-            ];
-
-            // ======= STATE =======
-            const state = {
-              cols: 33,
-              rows: 33,
-              wood: 150,
-              stone: 120,
-              rotation: 0, // 0 or 90
-              selection: null, // building object
-              chain: false,
-              lastPlaced: null,
-              roads: new Set(),
-              rivers: new Set(),
-              occupied: new Map(), // key "x,y" -> { id, name }
-            };
-
-            // ======= DOM REFS =======
-            const mapEl = document.getElementById('map');
-            const tabsEl = document.getElementById('tabs');
-            const cardsEl = document.getElementById('cards');
-            const favRow = document.getElementById('favRow');
-            const woodEl = document.getElementById('wood');
-            const stoneEl = document.getElementById('stone');
-            const woodDeltaEl = document.getElementById('woodDelta');
-            const stoneDeltaEl = document.getElementById('stoneDelta');
-            const rotateL = document.getElementById('rotateLeft');
-            const rotateR = document.getElementById('rotateRight');
-            const undoBtn = document.getElementById('undoBtn');
-            const toasts = document.getElementById('toasts');
-            const hint = document.getElementById('hint');
-            const corner = document.querySelector('.overlay .corner');
+          /* Old homebase system removed to avoid conflicts */
 
 
 
-            // ======= INIT GRID & ROADS =======
-            // NOTE: Grid and road initialization moved to the later, canonical homebase script block
-            // to avoid duplicate tile grids. The remaining initialization (tiles array, tileAt,
-            // road helpers, generateRoadNetwork and markAdjacency) lives in the later section
-            // of this file and will run once when the homebase page is initialized.
 
-            // ======= PALETTE TABS & CARDS =======
-            let activeCat = 'res';
-            // Defensive: don't initialize tabs more than once if this script runs twice
-            if (!tabsEl.dataset._homebaseInited) {
-              CATS.forEach((c, i) => {
-                const el = document.createElement('div');
-                el.className = 'tab' + (i === 0 ? ' active' : '');
-                el.textContent = c.name;
-                el.onclick = () => { activeCat = c.id; renderCards();[...tabsEl.children].forEach(n => n.classList.remove('active')); el.classList.add('active'); };
-                tabsEl.appendChild(el);
-              });
-              tabsEl.dataset._homebaseInited = '1';
-            }
 
-            function renderCards() {
-              cardsEl.innerHTML = '';
-              const list = BUILDINGS.filter(b => b.cat === activeCat);
-              for (const b of list) {
-                const card = document.createElement('div'); card.className = 'card';
-                const afford = canAfford(b);
-                if (state.selection && state.selection.id === b.id) card.classList.add('selected');
-                card.innerHTML = `
-        <h4>${b.name}</h4>
-        <div class="row">
-          <span class="chip ${afford ? '' : 'red'}">🪵 ${b.cost.wood}</span>
-          <span class="chip ${afford ? '' : 'red'}">🪨 ${b.cost.stone}</span>
-          <span class="chip">🛡 ${b.durability} dur</span>
-          <span class="chip">📐 ${b.footprint[0]}×${b.footprint[1]}</span>
-        </div>
-        <div class="slots">
-          ${b.slots.F ? `<span class='slot'>🪑 ×${b.slots.F}</span>` : ''}
-          ${b.slots.W ? `<span class='slot'>🛠️ ×${b.slots.W}</span>` : ''}
-          ${b.slots.S ? `<span class='slot'>📦 ×${b.slots.S}</span>` : ''}
-          ${b.slots.D ? `<span class='slot'>🛡️ ×${b.slots.D}</span>` : ''}
-        </div>
-        <div class="desc">${b.tags.join(' • ')}</div>
-        <div class="choose"><button class="btn primary" ${state.selection && state.selection.id === b.id ? 'disabled' : ''}>${state.selection && state.selection.id === b.id ? 'Selected' : 'Select'}</button></div>
-      `;
-                card.querySelector('button').onclick = () => selectBuilding(b);
-                cardsEl.appendChild(card);
-              }
-            }
-            renderCards();
 
-            // Favorites row (recent 3)
-            const fav = [];
-            function pushFav(b) {
-              const idx = fav.findIndex(x => x.id === b.id);
-              if (idx !== -1) fav.splice(idx, 1);
-              fav.unshift(b);
-              if (fav.length > 3) fav.pop();
-              favRow.innerHTML = '';
-              fav.forEach(f => {
-                const el = document.createElement('div'); el.className = 'pill'; el.textContent = f.name; el.onclick = () => selectBuilding(f); favRow.appendChild(el);
-              })
-            }
 
-            // ======= SELECTION & GHOST =======
-            let ghostEl = null; let ghostTip = null; let ghostMeta = null;
-            let hoverCell = { x: null, y: null };
 
-            function selectBuilding(b) {
-              state.selection = b;
-              document.body.classList.add('show-adj');
-              pushFav(b);
-              hint.textContent = `Placing: ${b.name} — Rotate Q/E · Hold Shift to stamp`;
-              updateDeltas();
-              renderCards();
-              ensureGhost();
-              updateAffordChip();
-            }
 
-            function ensureGhost() {
-              removeGhost();
-              if (!state.selection) return;
-              ghostEl = document.createElement('div');
-              ghostEl.className = 'ghost-cell';
-              ghostMeta = document.createElement('div'); ghostMeta.className = 'ghost-meta'; ghostEl.appendChild(ghostMeta);
-              ghostTip = document.createElement('div'); ghostTip.className = 'tip'; ghostTip.style.display = 'none'; ghostEl.appendChild(ghostTip);
-              mapEl.appendChild(ghostEl);
-              updateGhostMeta();
-              positionGhost();
-            }
-            function removeGhost() { if (ghostEl) { ghostEl.remove(); ghostEl = null; ghostMeta = null; ghostTip = null; } }
 
-            function footprintSize() {
-              const [w, h] = state.selection ? state.selection.footprint : [1, 1];
-              return state.rotation === 0 ? { w, h } : { w: h, h: w };
-            }
 
-            function updateGhostMeta() {
-              if (!state.selection || !ghostMeta) return;
-              const s = state.selection.slots; ghostMeta.innerHTML = '';
-              if (s.D) ghostMeta.appendChild(chip(`🛡️ +${s.D}`));
-              if (s.W) ghostMeta.appendChild(chip(`🛠️ +${s.W}`));
-              if (s.S) ghostMeta.appendChild(chip(`📦 +${s.S}`));
-              if (s.F) ghostMeta.appendChild(chip(`🪑 +${s.F}`));
-              function chip(text) { const el = document.createElement('div'); el.className = 'gchip'; el.textContent = text; return el; }
-            }
 
-            function positionGhost() {
-              if (!ghostEl || hoverCell.x == null) return;
-              const { w, h } = footprintSize();
-              const x = Math.min(hoverCell.x, state.cols - w);
-              const y = Math.min(hoverCell.y, state.rows - h);
-              const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
-              const left = x * (cellSize + 3);
-              const top = y * (cellSize + 3);
-              ghostEl.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
-              ghostEl.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
-              ghostEl.style.left = left + "px";
-              ghostEl.style.top = top + "px";
 
-              const validity = validatePlacement(x, y, w, h);
-              ghostEl.classList.toggle('valid', validity.ok);
-              ghostEl.classList.toggle('invalid', !validity.ok);
-              if (ghostTip) {
-                if (validity.ok) { ghostTip.style.display = 'none'; }
-                else { ghostTip.style.display = 'block'; ghostTip.textContent = validity.reason; }
-              }
-              showProjectedDeltas(validity);
-            }
 
-            // Hover tracking
-            mapEl.addEventListener('mousemove', e => {
-              const t = e.target.closest('.tile');
-              if (!t) return;
-              hoverCell = { x: +t.dataset.x, y: +t.dataset.y };
-              positionGhost();
-            });
-            mapEl.addEventListener('mouseleave', () => { hoverCell = { x: null, y: null }; removeGhost(); updateDeltas(true); });
 
-            // ======= ROTATE / KEYS =======
-            function rotate(dir) {
-              if (!state.selection) return;
-              state.rotation = (state.rotation + (dir === 'L' ? -90 : 90) + 360) % 180; // only 0/90 needed
-              positionGhost();
-              updateGhostMeta();
-            }
-            rotateL.onclick = () => rotate('L');
-            rotateR.onclick = () => rotate('R');
 
-            document.addEventListener('keydown', (e) => {
-              if (e.key === 'q' || e.key === 'Q') { rotate('L'); }
-              if (e.key === 'e' || e.key === 'E') { rotate('R'); }
-              if (e.key === 'Shift') state.chain = true;
-              if (e.key === 'z' || e.key === 'Z') { undo(); }
-            });
-            document.addEventListener('keyup', (e) => { if (e.key === 'Shift') state.chain = false; });
 
-            // ======= VALIDATION =======
-            function canAfford(b) { return state.wood >= b.cost.wood && state.stone >= b.cost.stone; }
 
-            function validatePlacement(x, y, w, h) {
-              const b = state.selection; if (!b) return { ok: false, reason: 'No selection' };
-              if (x < 0 || y < 0 || x + w > state.cols || y + h > state.rows) return { ok: false, reason: 'Out of bounds' };
-              for (let yy = y; yy < y + h; yy++) {
-                for (let xx = x; xx < x + w; xx++) {
-                  const key = xx + "," + yy;
-                  if (state.roads.has(key) || state.bridges.has(key)) return { ok: false, reason: 'Cannot place on a road or bridge' };
-                  if (state.occupied.has(key)) return { ok: false, reason: 'Space occupied' };
-                }
-              }
-              let adjacent = false;
-              outer: for (let yy = y; yy < y + h; yy++) {
-                for (let xx = x; xx < x + w; xx++) {
-                  const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
-                  for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny) || state.bridges.has(nx + "," + ny)) { adjacent = true; break outer; } }
-                }
-              }
-              if (!adjacent) return { ok: false, reason: 'Needs road adjacency' };
-              if (!canAfford(b)) return { ok: false, reason: 'Insufficient resources' };
-              return { ok: true, reason: 'OK' };
-            }
 
-            // ======= PLACE / UNDO =======
-            mapEl.addEventListener('click', (e) => {
-              if (!state.selection) return;
-              const t = e.target.closest('.tile'); if (!t) return;
-              const baseX = +t.dataset.x; const baseY = +t.dataset.y;
-              const { w, h } = footprintSize();
-              const x = Math.min(baseX, state.cols - w);
-              const y = Math.min(baseY, state.rows - h);
-              const val = validatePlacement(x, y, w, h);
-              if (!val.ok) { toast(val.reason, 'warn'); return; }
-              doPlace(x, y, w, h);
-              if (!state.chain) { state.selection = null; removeGhost(); document.body.classList.remove('show-adj'); hint.textContent = 'Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
-              else { positionGhost(); updateAffordChip(); }
-            });
 
-            function doPlace(x, y, w, h) {
-              const b = state.selection;
-              tickResources(-b.cost.wood, -b.cost.stone);
 
-              const cover = document.createElement('div');
-              cover.className = 'placed';
-              cover.style.position = 'absolute';
-              cover.style.left = `calc(${x} * var(--cell) + ${(x) * 3}px)`;
-              cover.style.top = `calc(${y} * var(--cell) + ${(y) * 3}px)`;
-              cover.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
-              cover.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
-              cover.style.borderRadius = '12px';
-              const label = document.createElement('div'); label.className = 'name'; label.textContent = b.name; cover.appendChild(label);
-              mapEl.appendChild(cover);
-              cover.animate([{ transform: 'scale(.96)', opacity: .0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 220, easing: 'ease-out' });
 
-              const cells = [];
-              for (let yy = y; yy < y + h; yy++) {
-                for (let xx = x; xx < x + w; xx++) {
-                  const key = xx + "," + yy; state.occupied.set(key, { id: b.id, name: b.name }); cells.push(key);
-                }
-              }
-              state.lastPlaced = { b, x, y, w, h, el: cover, cells };
-              undoBtn.disabled = false;
-              toast(`Placed ${b.name}`, 'info', true);
-            }
-
-            function undo() {
-              const lp = state.lastPlaced; if (!lp) return;
-              tickResources(lp.b.cost.wood, lp.b.cost.stone);
-              lp.cells.forEach(k => state.occupied.delete(k));
-              lp.el.remove();
-              state.lastPlaced = null;
-              undoBtn.disabled = true;
-              toast('Undo placement');
-              updateAffordChip();
-            }
-            undoBtn.onclick = undo;
-
-            function tickResources(dw, ds) {
-              state.wood += dw; state.stone += ds; woodEl.textContent = state.wood; stoneEl.textContent = state.stone;
-              woodEl.animate([{ transform: 'scale(1.0)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1.0)' }], { duration: 240 });
-              stoneEl.animate([{ transform: 'scale(1.0)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1.0)' }], { duration: 240 });
-            }
-
-            function updateDeltas(clear) {
-              if (clear || !state.selection) { woodDeltaEl.textContent = ''; stoneDeltaEl.textContent = ''; return; }
-              woodDeltaEl.textContent = '−' + state.selection.cost.wood; woodDeltaEl.className = 'delta minus';
-              stoneDeltaEl.textContent = '−' + state.selection.cost.stone; stoneDeltaEl.className = 'delta minus';
-            }
-
-            function updateAffordChip() {
-              const b = state.selection; if (!b) { affordChip.textContent = ''; affordChip.disabled = true; return; }
-              const w = Math.floor(state.wood / b.cost.wood);
-              const s = Math.floor(state.stone / b.cost.stone);
-              const count = Math.max(0, Math.min(w, s));
-              affordChip.textContent = `${count}× affordable`;
-              affordChip.disabled = false;
-            }
-
-            // ======= TOASTS =======
-            function toast(msg, type = 'info', withUndo = false) {
-              const t = document.createElement('div'); t.className = 'toast';
-              t.style.borderLeftColor = type === 'warn' ? 'var(--warn)' : type === 'error' ? 'var(--danger)' : 'var(--accent)';
-              t.textContent = msg;
-              if (withUndo) { const a = document.createElement('span'); a.className = 'link'; a.textContent = 'Undo'; a.onclick = undo; t.appendChild(a); }
-              toasts.appendChild(t);
-              setTimeout(() => { t.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }); setTimeout(() => t.remove(), 360); }, 2200);
-            }
-
-          })();
         </script>
       </div>
       <div class="page-content" id="bank-page" style="display: none">
@@ -12901,18 +12999,41 @@
       ];
 
       const BUILDINGS = [
-        // Residential
-        { id: 'shack', cat: 'res', name: 'Shack', cost: { wood: 15, stone: 5 }, slots: { F: 1, W: 1, S: 0, D: 0 }, durability: 50, footprint: [1, 1], tags: ['Road-adjacent'] },
-        { id: 'shelter', cat: 'res', name: 'Shelter', cost: { wood: 30, stone: 10 }, slots: { F: 2, W: 1, S: 0, D: 0 }, durability: 100, footprint: [2, 1], tags: ['Road-adjacent'] },
-        { id: 'apt', cat: 'res', name: 'Apartment Block', cost: { wood: 60, stone: 25 }, slots: { F: 3, W: 1, S: 0, D: 1 }, durability: 150, footprint: [2, 2], tags: ['Road-adjacent'] },
-        // Industrial
-        { id: 'workshop', cat: 'ind', name: 'Workshop', cost: { wood: 20, stone: 20 }, slots: { F: 0, W: 2, S: 1, D: 0 }, durability: 120, footprint: [2, 1], tags: ['Road-adjacent'] },
-        { id: 'factory', cat: 'ind', name: 'Factory Floor', cost: { wood: 35, stone: 40 }, slots: { F: 0, W: 3, S: 2, D: 0 }, durability: 160, footprint: [3, 2], tags: ['Road-adjacent'] },
-        // Defensive
-        { id: 'guard', cat: 'def', name: 'Guard Post', cost: { wood: 15, stone: 10 }, slots: { F: 0, W: 0, S: 0, D: 2 }, durability: 100, footprint: [1, 1], tags: ['Road-adjacent', 'Defense +2'] },
-        { id: 'watch', cat: 'def', name: 'Watchtower', cost: { wood: 25, stone: 25 }, slots: { F: 0, W: 0, S: 0, D: 3 }, durability: 200, footprint: [1, 1], tags: ['Road-adjacent', 'Vision +'] },
-        // Special
-        { id: 'expo', cat: 'spe', name: 'Expedition Center', cost: { wood: 50, stone: 30 }, slots: { F: 0, W: 0, S: 0, D: 0 }, durability: 120, footprint: [2, 2], tags: ['Road-adjacent', 'Unlocks exploration'] },
+        // Residential - Realistic Housing Sizes
+        { id: 'res_1', cat: 'res', name: 'Studio Apartment', cost: { wood: 15, stone: 10 }, slots: { F: 1, W: 0, S: 0, D: 0 }, durability: 120, footprint: [1, 1], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'res_2', cat: 'res', name: 'Small House', cost: { wood: 25, stone: 15 }, slots: { F: 1, W: 0, S: 0, D: 0 }, durability: 180, footprint: [1, 2], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'res_3', cat: 'res', name: 'Family Home', cost: { wood: 40, stone: 25 }, slots: { F: 1, W: 0, S: 0, D: 0 }, durability: 220, footprint: [2, 2], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'res_4', cat: 'res', name: 'Duplex', cost: { wood: 50, stone: 30 }, slots: { F: 2, W: 0, S: 0, D: 0 }, durability: 250, footprint: [2, 3], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'res_5', cat: 'res', name: 'Townhouse', cost: { wood: 60, stone: 35 }, slots: { F: 1, W: 0, S: 0, D: 0 }, durability: 280, footprint: [1, 3], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'res_6', cat: 'res', name: 'Apartment Building', cost: { wood: 80, stone: 60 }, slots: { F: 6, W: 0, S: 0, D: 1 }, durability: 350, footprint: [3, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'res_7', cat: 'res', name: 'Luxury Estate', cost: { wood: 120, stone: 80 }, slots: { F: 1, W: 1, S: 0, D: 1 }, durability: 400, footprint: [3, 2], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'res_8', cat: 'res', name: 'Condo Complex', cost: { wood: 150, stone: 100 }, slots: { F: 12, W: 2, S: 0, D: 2 }, durability: 450, footprint: [4, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+
+        // Commercial/Industrial - Right-sized Businesses
+        { id: 'ind_1', cat: 'ind', name: 'Newsstand', cost: { wood: 8, stone: 5 }, slots: { F: 0, W: 1, S: 0, D: 0 }, durability: 100, footprint: [1, 1], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_2', cat: 'ind', name: 'Coffee Shop', cost: { wood: 20, stone: 15 }, slots: { F: 1, W: 2, S: 0, D: 0 }, durability: 160, footprint: [1, 2], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_3', cat: 'ind', name: 'Corner Store', cost: { wood: 30, stone: 20 }, slots: { F: 2, W: 3, S: 0, D: 0 }, durability: 200, footprint: [2, 2], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_4', cat: 'ind', name: 'Auto Shop', cost: { wood: 45, stone: 35 }, slots: { F: 1, W: 4, S: 0, D: 0 }, durability: 250, footprint: [3, 2], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_5', cat: 'ind', name: 'Small Office', cost: { wood: 35, stone: 40 }, slots: { F: 0, W: 6, S: 1, D: 0 }, durability: 220, footprint: [2, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_6', cat: 'ind', name: 'Shopping Plaza', cost: { wood: 80, stone: 60 }, slots: { F: 8, W: 12, S: 0, D: 1 }, durability: 320, footprint: [4, 2], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_7', cat: 'ind', name: 'Office Building', cost: { wood: 60, stone: 80 }, slots: { F: 0, W: 15, S: 3, D: 1 }, durability: 380, footprint: [3, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'ind_8', cat: 'ind', name: 'Warehouse', cost: { wood: 70, stone: 50 }, slots: { F: 0, W: 8, S: 0, D: 0 }, durability: 300, footprint: [4, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+
+        // Public Safety & Services - Compact but Functional
+        { id: 'def_1', cat: 'def', name: 'Security Booth', cost: { wood: 10, stone: 8 }, slots: { F: 0, W: 0, S: 0, D: 1 }, durability: 120, footprint: [1, 1], tags: ['Road-adjacent'], roofType: 'fortified' },
+        { id: 'def_2', cat: 'def', name: 'Guard House', cost: { wood: 20, stone: 25 }, slots: { F: 0, W: 1, S: 0, D: 2 }, durability: 180, footprint: [1, 2], tags: ['Road-adjacent'], roofType: 'fortified' },
+        { id: 'def_3', cat: 'def', name: 'Police Station', cost: { wood: 50, stone: 70 }, slots: { F: 0, W: 4, S: 1, D: 6 }, durability: 350, footprint: [3, 2], tags: ['Road-adjacent'], roofType: 'fortified' },
+        { id: 'def_4', cat: 'def', name: 'Fire Station', cost: { wood: 60, stone: 50 }, slots: { F: 0, W: 6, S: 1, D: 4 }, durability: 320, footprint: [2, 3], tags: ['Road-adjacent'], roofType: 'fortified' },
+        { id: 'def_5', cat: 'def', name: 'Emergency Center', cost: { wood: 80, stone: 90 }, slots: { F: 0, W: 8, S: 2, D: 8 }, durability: 400, footprint: [3, 3], tags: ['Road-adjacent'], roofType: 'fortified' },
+
+        // Special/Public - Community Buildings
+        { id: 'spe_1', cat: 'spe', name: 'Bus Stop', cost: { wood: 5, stone: 8 }, slots: { F: 2, W: 0, S: 0, D: 0 }, durability: 100, footprint: [1, 1], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'spe_2', cat: 'spe', name: 'Community Center', cost: { wood: 40, stone: 30 }, slots: { F: 6, W: 2, S: 1, D: 0 }, durability: 250, footprint: [2, 3], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'spe_3', cat: 'spe', name: 'Library', cost: { wood: 50, stone: 60 }, slots: { F: 4, W: 3, S: 6 }, durability: 300, footprint: [3, 2], tags: ['Road-adjacent'], roofType: 'gabled' },
+        { id: 'spe_4', cat: 'spe', name: 'Elementary School', cost: { wood: 80, stone: 70 }, slots: { F: 10, W: 6, S: 4, D: 1 }, durability: 350, footprint: [3, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'spe_5', cat: 'spe', name: 'High School', cost: { wood: 120, stone: 100 }, slots: { F: 20, W: 10, S: 8, D: 2 }, durability: 450, footprint: [4, 3], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'spe_6', cat: 'spe', name: 'Hospital', cost: { wood: 100, stone: 120 }, slots: { F: 15, W: 20, S: 12, D: 3 }, durability: 500, footprint: [4, 4], tags: ['Road-adjacent'], roofType: 'flat' },
+        { id: 'expo', cat: 'spe', name: 'City Hall', cost: { wood: 150, stone: 180 }, slots: { F: 8, W: 25, S: 15, D: 8 }, durability: 600, footprint: [4, 3], tags: ['Road-adjacent'], roofType: 'gabled' },
       ];
 
       // ======= STATE =======
@@ -12921,13 +13042,15 @@
         rows: 66,
         wood: 150,
         stone: 120,
-        rotation: 0, // 0 or 90
         selection: null, // building object
         chain: false,
         lastPlaced: null,
         roads: new Set(),
+        rivers: new Set(),
         bridges: new Set(),
-        occupied: new Map(), // key "x,y" -> { id, name }
+  occupied: new Map(), // key "x,y" -> { id, name }
+  // Regions unlocked for homebase; start with Region 1. Add others (2..6) as the player unlocks.
+  unlockedRegions: new Set([1]),
       };
 
       // ======= DOM REFS =======
@@ -12939,16 +13062,21 @@
       const stoneEl = document.querySelector('#homebase-page #stone');
       const woodDeltaEl = document.querySelector('#homebase-page #woodDelta');
       const stoneDeltaEl = document.querySelector('#homebase-page #stoneDelta');
-      const rotateL = document.querySelector('#homebase-page #rotateLeft');
+  const rotateL = document.querySelector('#homebase-page #rotateLeft');
       const rotateR = document.querySelector('#homebase-page #rotateRight');
       const undoBtn = document.querySelector('#homebase-page #undoBtn');
+  const toggleBordersBtn = document.querySelector('#homebase-page #toggleBorders');
       const toasts = document.querySelector('#homebase-page #toasts');
       const hint = document.querySelector('#homebase-page #hint');
       const corner = document.querySelector('#homebase-page .overlay .corner');
+  const affordChip = document.querySelector('#homebase-page #affordChip');
 
       // ======= INIT GRID & ROADS =======
       mapEl.style.setProperty('--cols', state.cols);
       mapEl.style.setProperty('--rows', state.rows);
+
+      // Clear any existing tiles
+      mapEl.innerHTML = '';
 
       // Build tiles
       const tiles = [];
@@ -12978,7 +13106,7 @@
 
       const homebaseTileConfig = {
         road: [
-          "2,4","3,4","4,0","4,1","4,2","4,3","4,4","4,5","4,6","4,7","4,8","4,9","4,10","4,11","4,12","4,13","4,14","4,15","4,16","5,4","6,4","7,4","8,0","8,1","8,2","8,3","8,4","8,5","8,6","8,7","8,8","8,9","8,10","8,11","8,12","8,13","8,14","8,15","8,16","8,17","8,18","8,19","8,20","8,21","8,22","8,23","8,24","8,25","8,26","8,27","8,28","8,29","8,30","8,31","8,32","9,4","9,28","9,23","10,4","10,28","10,23","11,4","11,28","11,23","12,0","12,1","12,2","12,3","12,4","12,5","12,6","12,7","12,8","12,9","12,10","12,11","12,12","12,23","13,4","13,28","13,23","14,4","14,28","14,23","15,4","15,28","15,23","16,0","16,1","16,2","16,3","16,4","16,5","16,6","16,7","16,8","16,9","16,10","16,11","16,12","16,15","16,16","16,17","16,18","16,20","16,21","16,22","16,23","16,24","16,25","16,26","16,27","16,28","16,29","16,30","16,31","16,32","17,4","17,9","17,23","17,32","17,39","17,49","18,4","18,9","18,23","18,32","18,39","18,49","19,4","19,9","19,23","19,32","19,39","19,49","20,0","20,1","20,2","20,3","20,4","20,9","20,10","20,11","20,12","20,13","20,14","20,15","20,19","20,20","21,4","21,9","21,16","21,17","21,18","21,19","22,4","22,9","22,16","22,17","22,18","22,19","23,4","23,9","23,16","23,17","23,18","23,19","24,0","24,1","24,2","24,3","24,4","24,5","24,6","24,7","24,8","24,9","24,10","24,11","24,12","24,13","24,14","25,4","25,9","25,20","26,4","26,9","26,20","27,4","27,9","28,0","28,1","28,2","28,3","28,4","28,5","28,6","28,7","28,8","28,9","28,10","28,11","28,12","28,13","28,14","28,15","28,16","28,17","28,18","28,19","28,20","28,21","28,22","28,23","28,24","28,25","28,26","28,27","28,28","28,29","28,30","28,31","28,32","29,32","30,32","29,4","29,9","30,4","30,9","4,19","4,20","4,21","4,22","5,22","6,22","7,22","4,23","4,24","4,25","4,26","4,27","4,28","5,28","6,28","7,28","4,29","4,30","4,31","4,32","4,33","4,34","4,35","5,35","6,35","7,35","8,35","9,35","10,35","11,35","12,35","13,35","14,35","15,35","16,35","4,36","4,37","4,38","4,39","4,40","4,41","4,42","4,43","4,44","5,44","6,44","7,44","8,44","9,44","10,44","11,44","12,44","13,44","14,44","15,44","16,44","4,45","4,46","4,47","4,48","4,49","4,50","4,51","4,52","4,53","2,53","3,53","5,53","6,53","7,53","9,53","10,53","11,53","13,53","14,53","15,53","17,53","18,53","19,53","4,54","4,55","4,56","4,57","4,58","4,59","4,60","4,61","2,61","3,61","5,61","6,61","7,61","9,61","10,61","11,61","13,61","14,61","15,61","17,61","18,61","19,61","21,61","22,61","23,61","25,61","26,61","27,61","29,61","30,61","4,62","4,63","4,64","4,65","8,33","8,34","8,35","8,36","8,37","8,38","8,39","8,40","8,41","8,42","8,43","8,44","8,45","8,46","8,47","8,48","8,49","8,50","8,51","8,52","8,53","8,54","8,55","8,56","8,57","8,58","8,59","8,60","8,61","8,62","8,63","8,64","8,65","12,20","12,21","12,22","12,23","12,24","12,25","12,26","12,27","12,28","12,29","12,30","12,31","12,32","12,33","12,34","12,35","12,36","12,37","12,38","12,39","12,40","12,41","12,42","12,43","12,44","12,45","12,46","12,47","12,48","12,49","12,50","12,51","12,52","12,53","12,54","12,55","12,56","12,57","12,58","12,59","12,60","12,61","12,62","12,63","12,64","12,65","16,33","16,34","16,35","16,36","16,37","16,38","16,39","16,40","16,41","16,42","16,43","16,44","16,45","16,46","16,47","16,48","16,49","16,50","16,51","16,52","16,53","16,54","16,55","16,56","16,57","16,58","16,59","16,60","16,61","16,62","16,63","16,64","16,65","20,21","20,22","20,23","20,24","20,25","21,25","22,25","23,25","25,25","26,25","27,25","20,26","20,27","20,28","20,29","20,30","20,31","20,32","21,32","22,32","23,32","25,32","26,32","27,32","20,33","20,34","20,35","20,36","20,37","20,38","20,39","21,39","22,39","23,39","25,39","26,39","27,39","20,40","20,41","20,42","20,43","20,44","20,45","20,46","20,47","20,48","20,49","21,49","22,49","23,49","25,49","26,49","27,49","20,50","20,51","20,52","20,53","20,54","20,55","20,56","20,57","21,57","22,57","23,57","25,57","26,57","27,57","20,58","20,59","20,60","20,61","20,62","20,63","20,64","20,65","24,22","24,23","24,24","24,25","24,26","24,27","24,28","24,29","24,30","24,31","24,32","24,39","24,40","24,41","24,42","24,43","24,44","24,45","24,46","24,47","24,48","24,49","24,50","24,51","24,52","24,53","24,54","24,55","24,56","24,57","24,58","24,59","24,60","24,61","24,62","24,63","24,64","24,65","28,33","28,34","28,35","28,36","28,37","28,38","28,39","28,40","28,41","28,42","28,43","28,44","28,45","28,46","28,47","28,48","28,49","28,50","28,51","28,52","28,53","8,54","8,55","8,56","8,57","8,58","8,59","8,60","8,61","8,62","8,63","8,64","8,65","12,20","12,21","12,22","12,23","12,24","12,25","12,26","12,27","12,28","12,29","12,30","12,31","12,32","12,33","12,34","12,35","12,36","12,37","12,38","12,39","12,40","12,41","12,42","12,43","12,44","12,45","12,46","12,47","12,48","12,49","12,50","12,51","12,52","12,53","12,54","12,55","12,56","12,57","12,58","12,59","12,60","12,61","12,62","12,63","12,64","12,65","16,33","16,34","16,35","16,36","16,37","16,38","16,39","16,40","16,41","16,42","16,43","16,44","16,45","16,46","16,47","16,48","16,49","16,50","16,51","16,52","16,53","16,54","16,55","16,56","16,57","16,58","16,59","16,60","16,61","16,62","16,63","16,64","16,65","20,21","20,22","20,23","20,24","20,25","21,25","22,25","23,25","25,25","26,25","27,25","20,26","20,27","20,28","20,29","20,30","20,31","20,32","20,33","20,34","20,35","20,36","20,37","20,38","20,39","20,40","20,41","20,42","20,43","20,44","20,45","20,46","20,47","20,48","20,49","20,50","20,51","20,52","20,53","20,54","20,55","20,56","20,57","20,58","20,59","20,60","20,61","20,62","20,63","20,64","20,65","24,22","24,23","24,24","24,25","24,26","24,27","24,28","24,29","24,30","24,31","24,32","24,39","24,40","24,41","24,42","24,43","24,44","24,45","24,46","24,47","24,48","24,49","24,50","24,51","24,52","24,53","24,54","24,55","24,56","24,57","24,58","24,59","24,60","24,61","24,62","24,63","24,64","24,65","28,33","28,34","28,35","28,36","28,37","28,38","28,39","29,39","30,39","28,40","28,41","28,42","28,43","28,44","28,45","28,46","28,47","28,48","28,49","29,49","30,49","28,50","28,51","28,52","28,53","28,54","28,55","28,56","28,57","29,57","30,57","28,58","28,59","28,60","28,61","28,62","28,63","28,64","28,65"
+          "2,4","2,53","2,61","3,4","3,53","3,61","4,0","4,1","4,2","4,3","4,4","4,5","4,6","4,7","4,8","4,9","4,10","4,11","4,12","4,14","4,15","4,16","4,19","4,20","4,21","4,22","4,23","4,24","4,25","4,26","4,27","4,28","4,29","4,30","4,31","4,32","4,33","4,34","4,35","4,36","4,37","4,38","4,39","4,40","4,41","4,42","4,43","4,44","4,45","4,46","4,47","4,48","4,49","4,50","4,51","4,52","4,53","4,54","4,55","4,56","4,57","4,58","4,59","4,60","4,61","4,62","4,63","4,64","4,65","5,4","5,22","5,28","5,35","5,44","5,53","5,61","6,4","6,22","6,28","6,35","6,44","6,53","6,61","7,4","7,22","7,28","7,35","7,44","7,53","7,61","8,0","8,1","8,2","8,3","8,4","8,5","8,6","8,7","8,8","8,9","8,10","8,11","8,12","8,13","8,14","8,15","8,16","8,17","8,18","8,19","8,20","8,21","8,22","8,23","8,24","8,25","8,26","8,27","8,28","8,29","8,30","8,31","8,32","8,33","8,34","8,35","8,36","8,37","8,38","8,39","8,40","8,41","8,42","8,43","8,44","8,45","8,46","8,47","8,48","8,49","8,50","8,51","8,52","8,53","8,54","8,55","8,56","8,57","8,58","8,59","8,60","8,61","8,62","8,63","8,64","8,65","9,4","9,23","9,28","9,35","9,44","9,53","9,61","10,4","10,23","10,28","10,35","10,44","10,53","10,61","11,4","11,23","11,28","11,35","11,44","11,53","11,61","12,0","12,1","12,2","12,3","12,4","12,5","12,6","12,7","12,8","12,9","12,10","12,11","12,12","12,20","12,21","12,22","12,23","12,24","12,25","12,26","12,27","12,28","12,29","12,30","12,31","12,32","12,33","12,34","12,35","12,36","12,37","12,38","12,39","12,40","12,41","12,42","12,43","12,44","12,45","12,46","12,47","12,48","12,49","12,50","12,51","12,52","12,53","12,54","12,55","12,56","12,57","12,58","12,59","12,60","12,61","12,62","12,63","12,64","12,65","13,4","13,23","13,28","13,35","13,44","13,53","13,61","14,4","14,23","14,28","14,35","14,44","14,53","14,61","15,4","15,23","15,28","15,35","15,44","15,53","15,61","16,0","16,1","16,2","16,3","16,4","16,5","16,6","16,7","16,8","16,9","16,10","16,11","16,12","16,15","16,16","16,17","16,18","16,20","16,21","16,22","16,23","16,24","16,25","16,26","16,27","16,28","16,29","16,30","16,31","16,32","16,33","16,34","16,35","16,36","16,37","16,38","16,39","16,40","16,41","16,42","16,43","16,44","16,45","16,46","16,47","16,48","16,49","16,50","16,51","16,52","16,53","16,54","16,55","16,56","16,57","16,58","16,59","16,60","16,61","16,62","16,63","16,64","16,65","17,4","17,9","5,9","6,9","7,9","9,9","10,9","11,9","17,23","17,32","17,39","17,49","17,53","17,61","18,4","18,9","18,23","18,32","18,39","18,49","18,53","18,61","19,4","19,9","19,23","19,32","19,39","19,49","19,53","19,61","20,0","20,1","20,2","20,3","20,4","20,9","20,10","20,11","20,12","20,13","20,14","20,15","20,19","20,20","20,21","20,22","20,23","20,24","20,25","20,26","20,27","20,28","20,29","20,30","20,31","20,32","20,39","20,40","20,41","20,42","20,43","20,44","20,45","20,46","20,47","20,48","20,49","20,50","20,51","20,52","20,53","20,54","20,55","20,56","20,57","20,58","20,59","20,60","20,61","20,62","20,63","20,64","20,65","21,4","21,9","21,16","21,17","21,18","21,19","21,25","21,32","21,39","21,49","21,57","22,4","22,9","22,16","22,17","22,18","22,19","22,25","22,32","22,39","22,49","22,57","23,4","23,9","23,16","23,17","23,18","23,19","23,25","23,32","23,39","23,49","23,57","24,0","24,1","24,2","24,3","24,4","24,5","24,6","24,7","24,8","24,9","24,10","24,11","24,12","24,13","24,14","24,22","24,23","24,24","24,25","24,26","24,27","24,28","24,29","24,30","24,31","24,32","24,33","24,34","24,35","24,36","24,37","24,38","24,39","24,40","24,41","24,42","24,43","24,44","24,45","24,46","24,47","24,48","24,49","24,50","24,51","24,52","24,53","24,54","24,55","24,56","24,57","24,58","24,59","24,60","24,61","24,62","24,63","24,64","24,65","25,4","25,9","25,20","25,25","25,32","25,39","25,49","25,57","26,4","26,9","26,20","26,25","26,32","26,39","26,49","26,57","27,4","27,9","27,25","27,32","27,39","27,49","27,57","28,0","28,1","28,2","28,3","28,4","28,5","28,6","28,7","28,8","28,9","28,10","28,11","28,12","28,13","28,14","28,15","28,16","28,17","28,18","28,19","28,20","28,21","28,22","28,23","28,24","28,25","28,26","28,27","28,28","28,29","28,30","28,31","28,32","28,33","28,34","28,35","28,36","28,37","28,38","28,39","28,40","28,41","28,42","28,43","28,44","28,45","28,46","28,47","28,48","28,49","28,50","28,51","28,52","28,53","28,54","28,55","28,56","28,57","28,58","28,59","28,60","28,61","28,62","28,63","28,64","28,65","2,9","3,9","29,4","30,4","29,9","30,9","29,14","30,14","2,44","3,44","2,35","3,35","2,28","3,28","2,22","3,22","29,25","30,25","29,32","30,32","29,39","30,39","29,44","30,44","29,49","30,49","29,57","30,57",
         ],
         water: [
           "0,14","0,15","0,16","0,17","1,14","1,15","1,16","1,17","2,14","2,15","2,16","2,17","3,14","3,15","3,16","3,17","4,14","4,15","4,16","4,17","5,14","5,15","5,16","5,17","6,14","6,15","6,16","6,17","7,14","7,15","7,16","7,17","9,14","9,15","9,16","9,17","10,14","10,15","10,16","10,17","11,14","11,15","11,16","11,17","12,14","12,15","12,16","12,17","13,14","13,15","13,16","13,17","13,18","14,14","14,15","14,16","14,17","14,18","15,14","15,15","15,16","15,17","15,18","16,15","16,16","16,17","16,18","17,15","17,16","17,17","17,18","18,15","18,16","18,17","18,18","19,15","19,16","19,17","19,18","20,16","20,17","20,18","21,16","21,17","21,18","21,19","22,16","22,17","22,18","22,19","23,16","23,17","23,18","23,19","24,17","24,18","24,19","25,17","25,18","25,19","25,20","26,17","26,18","26,19","26,20","27,17","27,18","27,19","27,20","29,18","29,19","29,20","29,21","30,18","30,19","30,20","30,21","31,18","31,19","31,20","31,21","32,18","32,19","32,20","32,21"
@@ -13000,6 +13128,15 @@
         "diagonal-se": [
           "15,14"
         ]
+      };
+
+      const regionConfig = {
+        1: { x: [0, 15], y: [0, 13] },
+        2: { x: [16, 32], y: [0, 13] },
+        3: { x: [16, 32], y: [22, 43] },
+        4: { x: [0, 15], y: [22, 43] },
+        5: { x: [0, 15], y: [44, 65] },
+        6: { x: [16, 32], y: [44, 65] }
       };
 
       // Parse coordinates from config and apply tile types
@@ -13046,6 +13183,9 @@
             break;
           case 'diagonal-ne':
             t.classList.add('diagonal-ne');
+            if ((x === 21 && y === 19) || (x === 25 && y === 20) || (x === 29 && y === 21)) {
+              t.classList.add('no-wall');
+            }
             break;
           case 'diagonal-sw':
             t.classList.add('diagonal-sw');
@@ -13080,8 +13220,175 @@
         }
       }
 
+      // Shared region config helper
+      function getRegionConfig() {
+        return {
+          1: { x: [0, 14], y: [0, 15] },
+          2: { x: [15, 32], y: [0, 17] },
+          3: { x: [15, 32], y: [18, 42] },
+          4: { x: [0, 14], y: [16, 42] },
+          5: { x: [0, 14], y: [43, 65] },
+          6: { x: [15, 32], y: [43, 65] }
+        };
+      }
+
+      // Function to draw region red guide borders (debug/visual aid)
+      function drawRegionBoundaries() {
+        const regionConfig = getRegionConfig();
+        for (const regionId in regionConfig) {
+          const region = regionConfig[regionId];
+          const [x_start, x_end] = region.x;
+          const [y_start, y_end] = region.y;
+          for (let x = x_start; x <= x_end; x++) {
+            for (let y = y_start; y <= y_end; y++) {
+              const tile = tileAt(x, y);
+              if (!tile) continue;
+              if (x === x_start) tile.classList.add('region-border-left');
+              if (x === x_end) tile.classList.add('region-border-right');
+              if (y === y_start) tile.classList.add('region-border-top');
+              if (y === y_end) tile.classList.add('region-border-bottom');
+            }
+          }
+        }
+      }
+
+      // Draw walls on the outer edge of unlocked regions; remove inner walls between two unlocked neighbors
+      function drawWalls() {
+        const regionConfig = getRegionConfig();
+        const unlocked = state.unlockedRegions || new Set([1]);
+
+        // Clear previous wall classes
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.cols; x++) {
+            const t = tileAt(x, y);
+            if (!t) continue;
+            t.classList.remove('wall', 'w-top', 'w-right', 'w-bottom', 'w-left');
+          }
+        }
+
+        // Helper to mark a continuous edge, with fallback positioning for water/bridges
+        function markEdge(x0, x1, y0, y1, sideClass, regionBounds) {
+          const [regionXs, regionXe, regionYs, regionYe] = regionBounds;
+          
+          if (x0 === x1) {
+            // vertical edge along constant x
+            const x = x0;
+            for (let y = y0; y <= y1; y++) {
+              const t = tileAt(x, y); if (!t) continue;
+              // If tile is a diagonal half-land/half-water, mark as wall but avoid straight band
+              if (t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) {
+                t.classList.add('wall');
+                continue;
+              }
+              // If water/bridge, walk back to find first available land tile within region
+              if (t.classList.contains('river') || t.classList.contains('bridge') || (typeof isRiver === 'function' && isRiver(x, y))) {
+                // For vertical walls, walk inward to find land but stay within region bounds
+                if (sideClass === 'w-left') {
+                  // Walk right from the boundary until we find land, but stay within region
+                  for (let fallbackX = x + 1; fallbackX <= regionXe; fallbackX++) {
+                    const fallbackTile = tileAt(fallbackX, y);
+                    if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                      fallbackTile.classList.add('wall', sideClass);
+                      break;
+                    }
+                  }
+                } else if (sideClass === 'w-right') {
+                  // Walk left from the boundary until we find land, but stay within region
+                  for (let fallbackX = x - 1; fallbackX >= regionXs; fallbackX--) {
+                    const fallbackTile = tileAt(fallbackX, y);
+                    if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                      fallbackTile.classList.add('wall', sideClass);
+                      break;
+                    }
+                  }
+                }
+                continue;
+              }
+              t.classList.add('wall', sideClass);
+            }
+          } else if (y0 === y1) {
+            // horizontal edge along constant y
+            const y = y0;
+            for (let x = x0; x <= x1; x++) {
+              const t = tileAt(x, y); if (!t) continue;
+              // If tile is a diagonal half-land/half-water, mark as wall but avoid straight band
+              if (t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) {
+                t.classList.add('wall');
+                continue;
+              }
+              // If water/bridge, walk back to find first available land tile within region
+              if (t.classList.contains('river') || t.classList.contains('bridge') || (typeof isRiver === 'function' && isRiver(x, y))) {
+                // For horizontal walls, walk inward to find land but stay within region bounds
+                if (sideClass === 'w-top') {
+                  // Walk down from the boundary until we find land, but stay within region
+                  for (let fallbackY = y + 1; fallbackY <= regionYe; fallbackY++) {
+                    const fallbackTile = tileAt(x, fallbackY);
+                    if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                      fallbackTile.classList.add('wall', sideClass);
+                      break;
+                    }
+                  }
+                } else if (sideClass === 'w-bottom') {
+                  // Walk up from the boundary until we find land, but stay within region
+                  for (let fallbackY = y - 1; fallbackY >= regionYs; fallbackY--) {
+                    const fallbackTile = tileAt(x, fallbackY);
+                    if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                      fallbackTile.classList.add('wall', sideClass);
+                      break;
+                    }
+                  }
+                }
+                continue;
+              }
+              t.classList.add('wall', sideClass);
+            }
+          }
+        }
+
+        // For each unlocked region, paint external edges only
+        for (const id of unlocked) {
+          const cfg = regionConfig[id];
+          if (!cfg) continue;
+          const [xs, xe] = cfg.x; const [ys, ye] = cfg.y;
+
+          // Find neighbors by layout
+          const neighborLeft = (id === 2 || id === 3 || id === 6) ? id - 1 : null; // 2->1, 3->2? (we arranged 4/3 in middle row), 6->5
+          const neighborRight = (id === 1 || id === 4 || id === 5) ? id + (id === 1 ? 1 : id === 4 ? -1 + 3 : 1) : null; // keep simple: we'll use explicit map instead
+
+          // Use explicit map to avoid mistakes
+          const adjacency = {
+            1: { left: null, right: 2, top: null, bottom: 4 },
+            2: { left: 1, right: null, top: null, bottom: 3 },
+            3: { left: 4, right: null, top: 2, bottom: 6 },
+            4: { left: null, right: 3, top: 1, bottom: 5 },
+            5: { left: null, right: 6, top: 4, bottom: null },
+            6: { left: 5, right: null, top: 3, bottom: null },
+          };
+          const nbr = adjacency[id];
+
+          // Top edge if neighbor top not unlocked
+          if (id !== 3 && (!nbr.top || !unlocked.has(nbr.top))) markEdge(xs, xe, ys, ys, 'w-top', [xs, xe, ys, ye]);
+          // Bottom edge if neighbor bottom not unlocked
+          if (!nbr.bottom || !unlocked.has(nbr.bottom)) markEdge(xs, xe, ye, ye, 'w-bottom', [xs, xe, ys, ye]);
+          // Left edge if neighbor left not unlocked
+          if (!nbr.left || !unlocked.has(nbr.left)) markEdge(xs, xs, ys, ye, 'w-left', [xs, xe, ys, ye]);
+          // Right edge if neighbor right not unlocked
+          if (!nbr.right || !unlocked.has(nbr.right)) markEdge(xe, xe, ys, ye, 'w-right', [xs, xe, ys, ye]);
+        }
+      }
+
       // Run road generation using new config-based approach
-      generateRoadNetwork();
+  generateRoadNetwork();
+  assignRegionClasses();
+  drawRegionBoundaries();
+  drawWalls();
+  // Cleanup: strip straight bands from diagonal wall tiles just in case
+  (function cleanupDiagonalWallBands(){
+    const sel = '#homebase-page .tile.wall.diagonal-nw, #homebase-page .tile.wall.diagonal-ne, #homebase-page .tile.wall.diagonal-sw, #homebase-page .tile.wall.diagonal-se';
+    document.querySelectorAll(sel).forEach(t => {
+      t.classList.remove('w-top','w-right','w-bottom','w-left');
+    });
+  })();
 
       // Helper functions for easy coordinate management
       function addCoordinates(tileType, coordString) {
@@ -13114,6 +13421,21 @@
       window.addCoordinates = addCoordinates;
       window.removeCoordinates = removeCoordinates;
       window.showConfig = showConfig;
+
+      // Tag each tile with its region class (region-1..region-6)
+      function assignRegionClasses() {
+        const cfg = getRegionConfig();
+        for (const id in cfg) {
+          const r = cfg[id];
+          const [xs, xe] = r.x; const [ys, ye] = r.y;
+          for (let y = ys; y <= ye; y++) {
+            for (let x = xs; x <= xe; x++) {
+              const t = tileAt(x, y); if (!t) continue;
+              t.classList.add(`region-${id}`);
+            }
+          }
+        }
+      }
 
       // Update road and bridge sprite classes to show connected center-lines
       function updateRoadSprites() {
@@ -13495,6 +13817,15 @@
         }
       }
 
+      // ======= Debug Borders Toggle =======
+      if (toggleBordersBtn) {
+        toggleBordersBtn.addEventListener('click', () => {
+          const page = document.querySelector('#homebase-page');
+          if (!page) return;
+          page.classList.toggle('debug-borders');
+        });
+      }
+
       // Precompute adjacency (non-road/bridge tiles touching a road or bridge)
       function markAdjacency() {
         for (let y = 0; y < state.rows; y++) {
@@ -13598,8 +13929,26 @@
         hint.textContent = `Placing: ${b.name} — Rotate Q/E · Hold Shift to stamp`;
         updateDeltas();
         renderCards();
-        ensureGhost();
+        highlightValidTiles();
         updateAffordChip();
+      }
+
+      function clearSelectable() {
+        document.querySelectorAll('#homebase-page .tile.selectable').forEach(t => t.classList.remove('selectable'));
+      }
+
+      function highlightValidTiles() {
+        clearSelectable();
+        if (!state.selection) return;
+        const { w, h } = footprintSize();
+        for (let y = 0; y <= state.rows - h; y++) {
+          for (let x = 0; x <= state.cols - w; x++) {
+            if (validatePlacement(x, y, w, h).ok) {
+              const t = tileAt(x, y);
+              if (t) t.classList.add('selectable');
+            }
+          }
+        }
       }
 
       function ensureGhost() {
@@ -13617,7 +13966,7 @@
 
       function footprintSize() {
         const [w, h] = state.selection ? state.selection.footprint : [1, 1];
-        return state.rotation === 0 ? { w, h } : { w: h, h: w };
+        return { w, h };
       }
 
       function updateGhostMeta() {
@@ -13653,6 +14002,18 @@
         showProjectedDeltas(validity);
       }
 
+      function showProjectedDeltas(validity) {
+        if (!validity.ok || !state.selection) { 
+          updateDeltas(true); 
+          return; 
+        }
+        const b = state.selection;
+        woodDeltaEl.textContent = '−' + b.cost.wood; 
+        woodDeltaEl.className = 'delta minus';
+        stoneDeltaEl.textContent = '−' + b.cost.stone; 
+        stoneDeltaEl.className = 'delta minus';
+      }
+
       // Hover tracking and coordinate HUD
       // create coord hud if missing
       let coordHud = document.querySelector('#homebase-coord-hud');
@@ -13668,7 +14029,6 @@
         if (!t) { coordHud.style.display = 'none'; return; }
         const tx = +t.dataset.x, ty = +t.dataset.y;
         hoverCell = { x: tx, y: ty };
-        positionGhost();
 
         // show coord HUD near cursor
         coordHud.style.display = 'block';
@@ -13679,21 +14039,39 @@
         coordHud.style.transform = 'translate(0,0)';
       });
 
-      mapEl.addEventListener('mouseleave', () => { hoverCell = { x: null, y: null }; removeGhost(); updateDeltas(true); coordHud.style.display = 'none'; });
+      mapEl.addEventListener('mouseleave', () => { hoverCell = { x: null, y: null }; coordHud.style.display = 'none'; });
 
-      // ======= ROTATE / KEYS =======
-      function rotate(dir) {
-        if (!state.selection) return;
-        state.rotation = (state.rotation + (dir === 'L' ? -90 : 90) + 360) % 180; // only 0/90 needed
-        positionGhost();
-        updateGhostMeta();
+      // ======= AUTO-FIT PLACEMENT SYSTEM =======
+      // Removed rotation system - replaced with auto-fit that prioritizes left then down
+      function findBestFit(clickX, clickY, w, h) {
+        // Priority order: left first, then down
+        const offsets = [
+          [0, 0],     // clicked position
+          [-1, 0],    // left
+          [-2, 0],    // further left
+          [0, -1],    // up
+          [-1, -1],   // up-left
+          [0, 1],     // down
+          [-1, 1],    // down-left
+          [-2, 1],    // down further left
+          [1, 0],     // right (lower priority)
+          [1, -1],    // up-right
+          [1, 1],     // down-right
+        ];
+
+        for (const [dx, dy] of offsets) {
+          const testX = clickX + dx;
+          const testY = clickY + dy;
+          
+          if (validatePlacement(testX, testY, w, h).ok) {
+            return { x: testX, y: testY };
+          }
+        }
+        
+        return null; // No valid placement found
       }
-      rotateL.onclick = () => rotate('L');
-      rotateR.onclick = () => rotate('R');
 
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'q' || e.key === 'Q') { rotate('L'); }
-        if (e.key === 'e' || e.key === 'E') { rotate('R'); }
         if (e.key === 'Shift') state.chain = true;
         if (e.key === 'z' || e.key === 'Z') { undo(); }
       });
@@ -13708,15 +14086,45 @@
         for (let yy = y; yy < y + h; yy++) {
           for (let xx = x; xx < x + w; xx++) {
             const key = xx + "," + yy;
-            if (state.roads.has(key) || state.bridges.has(key)) return { ok: false, reason: 'Cannot place on a road or bridge' };
+            if (state.roads.has(key) || state.rivers.has(key) || state.bridges.has(key)) return { ok: false, reason: 'Cannot place on a road, river, or bridge' };
             if (state.occupied.has(key)) return { ok: false, reason: 'Space occupied' };
+            
+            // Check if tile has a wall - buildings cannot be placed on walls
+            const tile = tileAt(xx, yy);
+            if (tile && tile.classList.contains('wall')) return { ok: false, reason: 'Cannot place on walls' };
+            
+            // For road-adjacent buildings, also check if tile is directly touching rivers or bridges
+            if (b.tags.includes('Road-adjacent')) {
+              const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
+              for (const [nx, ny] of n) {
+                if (state.rivers.has(nx + "," + ny) || state.bridges.has(nx + "," + ny)) {
+                  return { ok: false, reason: 'Road-adjacent buildings cannot touch rivers or bridges' };
+                }
+              }
+            }
           }
         }
         let adjacent = false;
         outer: for (let yy = y; yy < y + h; yy++) {
           for (let xx = x; xx < x + w; xx++) {
             const n = [[xx + 1, yy], [xx - 1, yy], [xx, yy + 1], [xx, yy - 1]];
-            for (const [nx, ny] of n) { if (state.roads.has(nx + "," + ny) || state.bridges.has(nx + "," + ny)) { adjacent = true; break outer; } }
+            for (const [nx, ny] of n) { 
+              // Check building requirements based on tags
+              const hasRoadAdjacency = b.tags.includes('Road-adjacent');
+              if (hasRoadAdjacency) {
+                // Only roads count for adjacency, not rivers or bridges
+                if (state.roads.has(nx + "," + ny)) { 
+                  adjacent = true; 
+                  break outer; 
+                }
+              } else {
+                // For buildings without road requirement, allow any infrastructure
+                if (state.roads.has(nx + "," + ny) || state.rivers.has(nx + "," + ny) || state.bridges.has(nx + "," + ny)) { 
+                  adjacent = true; 
+                  break outer; 
+                }
+              }
+            }
           }
         }
         if (!adjacent) return { ok: false, reason: 'Needs road adjacency' };
@@ -13728,29 +14136,44 @@
       mapEl.addEventListener('click', (e) => {
         if (!state.selection) return;
         const t = e.target.closest('.tile'); if (!t) return;
-        const baseX = +t.dataset.x; const baseY = +t.dataset.y;
+        const clickX = +t.dataset.x; 
+        const clickY = +t.dataset.y;
         const { w, h } = footprintSize();
-        const x = Math.min(baseX, state.cols - w);
-        const y = Math.min(baseY, state.rows - h);
-        const val = validatePlacement(x, y, w, h);
-        if (!val.ok) { toast(val.reason, 'warn'); return; }
-        doPlace(x, y, w, h);
-        if (!state.chain) { state.selection = null; removeGhost(); document.body.classList.remove('show-adj'); hint.textContent = 'Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
-        else { positionGhost(); updateAffordChip(); }
+        
+        // Use auto-fit system to find best placement position
+        const bestFit = findBestFit(clickX, clickY, w, h);
+        if (!bestFit) {
+          toast('Cannot place building in this area', 'warn');
+          return;
+        }
+        
+        doPlace(bestFit.x, bestFit.y, w, h);
+        if (!state.chain) { state.selection = null; clearSelectable(); document.body.classList.remove('show-adj'); hint.textContent = 'Pick another building or select again to continue.'; updateDeltas(true); renderCards(); updateAffordChip(); }
+        else { updateAffordChip(); }
       });
 
       function doPlace(x, y, w, h) {
         const b = state.selection;
+        
+        // Check if player can afford the building
+        if (!canAfford(b)) {
+          toast(`Not enough resources! Need ${b.cost.wood} wood and ${b.cost.stone} stone`, 'warn');
+          return;
+        }
+        
         tickResources(-b.cost.wood, -b.cost.stone);
 
         const cover = document.createElement('div');
         cover.className = 'placed';
+        cover.dataset.cat = b.cat;
+        cover.dataset.w = w;
+        cover.dataset.h = h;
+        cover.dataset.roof = b.roofType;
         cover.style.position = 'absolute';
-        cover.style.left = `calc(${x} * var(--cell) + ${(x) * 3}px)`;
-        cover.style.top = `calc(${y} * var(--cell) + ${(y) * 3}px)`;
-        cover.style.width = `calc(${w} * var(--cell) + ${(w - 1) * 3}px)`;
-        cover.style.height = `calc(${h} * var(--cell) + ${(h - 1) * 3}px)`;
-        cover.style.borderRadius = '12px';
+        cover.style.left = `calc(${x} * var(--cell))`;
+        cover.style.top = `calc(${y} * var(--cell))`;
+        cover.style.width = `calc(${w} * var(--cell))`;
+        cover.style.height = `calc(${h} * var(--cell))`;
         const label = document.createElement('div'); label.className = 'name'; label.textContent = b.name; cover.appendChild(label);
         mapEl.appendChild(cover);
         cover.animate([{ transform: 'scale(.96)', opacity: .0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 220, easing: 'ease-out' });
@@ -13775,6 +14198,7 @@
         undoBtn.disabled = true;
         toast('Undo placement');
         updateAffordChip();
+        highlightValidTiles();
       }
       undoBtn.onclick = undo;
 
@@ -13791,7 +14215,8 @@
       }
 
       function updateAffordChip() {
-        const b = state.selection; if (!b) { affordChip.textContent = ''; affordChip.disabled = true; return; }
+  if (!affordChip) return; // afford chip UI removed; no-op
+  const b = state.selection; if (!b) { affordChip.textContent = ''; affordChip.disabled = true; return; }
         const w = Math.floor(state.wood / b.cost.wood);
         const s = Math.floor(state.stone / b.cost.stone);
         const count = Math.max(0, Math.min(w, s));
@@ -13810,6 +14235,41 @@
       }
 
       window.initializeHomeBase = window.initializeHomeBase || function () { };
+
+      // ======= REGIONS HUD =======
+      (function initRegionsHud() {
+        const statusEl = document.querySelector('#homebase-page #regionsStatus');
+        const btnEl = document.querySelector('#homebase-page #unlockRegionBtn');
+        if (!statusEl || !btnEl) return;
+        const total = Object.keys(getRegionConfig()).length;
+
+        function updateRegionsHud() {
+          const count = (state.unlockedRegions && typeof state.unlockedRegions.size === 'number') ? state.unlockedRegions.size : 1;
+          statusEl.textContent = `${count}/${total}`;
+          btnEl.disabled = count >= total;
+          btnEl.title = count >= total ? 'All regions unlocked' : 'Unlock next region';
+        }
+
+        function nextRegionId() {
+          // unlock in ascending order 1..N
+          for (let i = 1; i <= total; i++) {
+            if (!state.unlockedRegions.has(i)) return i;
+          }
+          return null;
+        }
+
+        btnEl.addEventListener('click', () => {
+          const id = nextRegionId();
+          if (!id) return;
+          state.unlockedRegions.add(id);
+          drawWalls();
+          showNotification(`Unlocked region ${id}`);
+          updateRegionsHud();
+        });
+
+        // initial paint
+        updateRegionsHud();
+      })();
 
     })();
   </script>
