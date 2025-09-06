@@ -1,0 +1,410 @@
+// Auto-extracted data module
+export const ENEMIES_DATA = {
+      bandits: {
+        description:
+          "Without laws or consequences, the Bandits rose as predators of the wasteland. They raid settlements, caravans, and lone travelers, taking whatever they can carry and killing anyone who resists. Mobility is their greatest weapon, striking fast and vanishing before anyone can retaliate. They fight for greed, not survival, and see every road as their hunting ground. The only safety from Bandits is to stay hidden or be too well armed to attack.",
+        scaling: { hp: 1.0, atk: 1.1, def: 0.7, acc: 0.5, crit: 0.8, armPen: 0.5, aspd: 0.5 },
+        base: {
+          regular: { hp: 6, atk: 4, def: 2, acc: 70, critPct: 0.15, armPenPct: 0.10, aspd: 1.518 },
+          boss: { hp: 18, atk: 12, def: 6, acc: 70, critPct: 0.15, armPenPct: 0.10, aspd: 1.5 }
+        },
+        regular: [
+          { id: "the_marauder", name: "The Marauder" },
+          { id: "road_reaver", name: "Road-Reaver" },
+          { id: "the_ambusher", name: "The Ambusher" },
+          { id: "shank_digger", name: "Shank-Digger" },
+          { id: "the_flayer", name: "The Flayer" },
+          { id: "bone_breaker", name: "Bone-Breaker" },
+          { id: "the_wretched", name: "The Wretched" },
+          { id: "the_thrasher", name: "The Thrasher" },
+          { id: "bludgeon", name: "Bludgeon" },
+          { id: "the_iron_jaw", name: "The Iron-Jaw" },
+          { id: "the_ripper", name: "The Ripper" },
+          { id: "the_sun_stalker", name: "The Sun-Stalker" },
+          { id: "gut_hook", name: "Gut-Hook" },
+          { id: "the_blight_eye", name: "The Blight-Eye" },
+          { id: "the_wreck_hound", name: "The Wreck-Hound" },
+          { id: "the_dust_cutter", name: "The Dust-Cutter" },
+          { id: "the_unstable", name: "The Unstable" },
+          { id: "the_raker", name: "The Raker" },
+          { id: "the_bruiser", name: "The Bruiser" },
+          { id: "the_viper_tongue", name: "The Viper-Tongue" }
+        ],
+        bosses: [
+          { id: "the_road_king", name: "The Road-King" },
+          { id: "the_butcher", name: "The Butcher" },
+          { id: "the_serpent", name: "The Serpent" },
+          { id: "the_unbroken", name: "The Unbroken" },
+          { id: "the_tyrant_of_the_plains", name: "The Tyrant of the Plains" },
+          { id: "the_blood_feaster", name: "The Blood-Feaster" },
+          { id: "the_unhinged", name: "The Unhinged" },
+          { id: "the_clan_warden", name: "The Clan-Warden" },
+          { id: "the_lord_of_the_wastes", name: "The Lord of the Wastes" },
+          { id: "the_vulture_king", name: "The Vulture King" }
+        ]
+      },
+      zombies: {
+        description:
+          "When the outbreak began, the infected collapsed under fever and delirium before dying within days. They did not remain dead for long. Reanimated by the virus, their bodies rotted but retained enough strength to pursue the living endlessly. Driven only by hunger, they attack without fear or hesitation, biting and tearing at anything they can catch. Entire regions are left desolate as they wander in swarms, a constant reminder of how the world fell.",
+        scaling: { hp: 1.2, atk: 0.8, def: 1.0, acc: 0.5, crit: 0.5, armPen: 0.5, aspd: 0.3 },
+        base: {
+          regular: { hp: 15, atk: 2, def: 5, acc: 50, critPct: 0.02, armPenPct: 0.05, aspd: 0.845 },
+          boss: { hp: 45, atk: 6, def: 15, acc: 50, critPct: 0.02, armPenPct: 0.05, aspd: 0.8 }
+        },
+        regular: [
+          { id: "shambler", name: "Shambler" },
+          { id: "groaner", name: "Groaner" },
+          { id: "biter", name: "Biter" },
+          { id: "bloat", name: "Bloat" },
+          { id: "leaper", name: "Leaper" },
+          { id: "runner", name: "Runner" },
+          { id: "prowler", name: "Prowler" },
+          { id: "lurcher", name: "Lurcher" },
+          { id: "wretch", name: "Wretch" },
+          { id: "rotter", name: "Rotter" },
+          { id: "wailer", name: "Wailer" },
+          { id: "gnawer", name: "Gnawer" },
+          { id: "clinger", name: "Clinger" },
+          { id: "ripper", name: "Ripper" },
+          { id: "smasher", name: "Smasher" },
+          { id: "crawler", name: "Crawler" },
+          { id: "stunner", name: "Stunner" },
+          { id: "sprinter", name: "Sprinter" },
+          { id: "screamer", name: "Screamer" },
+          { id: "husk", name: "Husk" }
+        ],
+        bosses: [
+          { id: "sporebearer", name: "Sporebearer" },
+          { id: "the_unending", name: "The Unending" },
+          { id: "the_abomination", name: "The Abomination" },
+          { id: "plagueheart", name: "Plagueheart" },
+          { id: "the_devourer", name: "The Devourer" },
+          { id: "the_glutton", name: "The Glutton" },
+          { id: "broodfather", name: "Broodfather" },
+          { id: "the_colossus", name: "The Colossus" },
+          { id: "riven_king", name: "Riven King" },
+          { id: "the_blight_lord", name: "The Blight-Lord" }
+        ]
+      },
+      soldiers: {
+        description:
+          "Once part of the national military, these fighters adapted quickly to the chaos of the collapse. Many abandoned their oaths, taking up work as mercenaries for whoever could pay them in food, weapons, or territory. They operate in organized squads, using military discipline, modern firearms, and coordinated tactics to hold their ground. For survivors, facing a squad of Soldiers is more dangerous than any band of raiders. The only way past them is to pay their price or fight through their guns.",
+        scaling: { hp: 1.0, atk: 0.8, def: 1.0, acc: 0.7, crit: 0.5, armPen: 0.5, aspd: 0.3 },
+        base: {
+          regular: { hp: 12, atk: 3, def: 6, acc: 80, critPct: 0.05, armPenPct: 0.05, aspd: 0.736 },
+          boss: { hp: 36, atk: 9, def: 18, acc: 80, critPct: 0.05, armPenPct: 0.05, aspd: 0.7 }
+        },
+        regular: [
+          { id: "trooper", name: "Trooper" },
+          { id: "sergeant", name: "Sergeant" },
+          { id: "grunt", name: "Grunt" },
+          { id: "marksman", name: "Marksman" },
+          { id: "grenadier", name: "Grenadier" },
+          { id: "vanguard", name: "Vanguard" },
+          { id: "the_enforcer", name: "The Enforcer" },
+          { id: "the_sentinel", name: "The Sentinel" },
+          { id: "bruiser", name: "Bruiser" },
+          { id: "the_hardliner", name: "The Hardliner" },
+          { id: "the_grinder", name: "The Grinder" },
+          { id: "breacher", name: "Breacher" },
+          { id: "the_regulator", name: "The Regulator" },
+          { id: "the_butcher", name: "The Butcher" },
+          { id: "rifleman", name: "Rifleman" },
+          { id: "the_cold_eye", name: "The Cold-Eye" },
+          { id: "the_drifter", name: "The Drifter" },
+          { id: "veteran", name: "Veteran" },
+          { id: "the_warden", name: "The Warden" },
+          { id: "the_tracker", name: "The Tracker" }
+        ],
+        bosses: [
+          { id: "the_major", name: "The Major" },
+          { id: "the_juggernaut", name: "The Juggernaut" },
+          { id: "the_executioner", name: "The Executioner" },
+          { id: "the_commandant", name: "The Commandant" },
+          { id: "the_sniper", name: "The Sniper" },
+          { id: "the_iron_heart", name: "The Iron-Heart" },
+          { id: "the_unrelenting", name: "The Unrelenting" },
+          { id: "the_strategist", name: "The Strategist" },
+          { id: "the_warlord", name: "The Warlord" },
+          { id: "the_general", name: "The General" }
+        ]
+      },
+      cultists: {
+        description:
+          "In the wake of the outbreak, fear and despair gave birth to new faiths. Among the most dangerous are the Cultists, zealots who see the infection as divine judgment. They believe the spread of the plague is sacred, worshipping the undead as holy messengers. Their camps are filled with symbols of death and fire, places where survivors are captured and sacrificed in elaborate rituals. To them, the apocalypse is not an end but a promised rebirth.",
+        scaling: { hp: 1.0, atk: 0.8, def: 0.7, acc: 0.7, crit: 0.5, armPen: 0.8, aspd: 0.3 },
+        base: {
+          regular: { hp: 7, atk: 3, def: 1, acc: 90, critPct: 0.12, armPenPct: 0.15, aspd: 1.021 },
+          boss: { hp: 21, atk: 9, def: 3, acc: 90, critPct: 0.12, armPenPct: 0.15, aspd: 1.0 }
+        },
+        regular: [
+          { id: "the_zealot", name: "The Zealot" },
+          { id: "the_acolyte", name: "The Acolyte" },
+          { id: "the_penitent", name: "The Penitent" },
+          { id: "the_pyre_guard", name: "The Pyre-Guard" },
+          { id: "the_fanatic", name: "The Fanatic" },
+          { id: "the_ash_worshiper", name: "The Ash-Worshiper" },
+          { id: "the_sacrificer", name: "The Sacrificer" },
+          { id: "the_mourner", name: "The Mourner" },
+          { id: "the_unclean", name: "The Unclean" },
+          { id: "the_seeker", name: "The Seeker" },
+          { id: "the_incinerator", name: "The Incinerator" },
+          { id: "the_listener", name: "The Listener" },
+          { id: "the_whispering", name: "The Whispering" },
+          { id: "the_bone_binder", name: "The Bone-Binder" },
+          { id: "the_forlorn", name: "The Forlorn" },
+          { id: "the_vowed", name: "The Vowed" },
+          { id: "the_cinder_born", name: "The Cinder-Born" },
+          { id: "the_incendiary", name: "The Incendiary" },
+          { id: "the_initiate", name: "The Initiate" },
+          { id: "the_flame_wist", name: "The Flame-Wist" }
+        ],
+        bosses: [
+          { id: "the_prophet", name: "The Prophet" },
+          { id: "the_high_priest", name: "The High-Priest" },
+          { id: "the_fire_archon", name: "The Fire-Archon" },
+          { id: "the_soul_eater", name: "The Soul-Eater" },
+          { id: "the_harbinger", name: "The Harbinger" },
+          { id: "the_voice_of_the_end", name: "The Voice of the End" },
+          { id: "the_lord_of_cinders", name: "The Lord of Cinders" },
+          { id: "the_living_offering", name: "The Living Offering" },
+          { id: "the_final_consuming", name: "The Final Consuming" },
+          { id: "the_unending_fire", name: "The Unending Fire" }
+        ]
+      },
+      cannibals: {
+        description:
+          "Hunger pushed them to cross the line no one returns from. Their first kill may have been out of desperation, but it awakened a darker hunger that never faded. They hunt the living with patience and skill, setting traps and ambushes to claim their prey. Camps filled with butchered remains serve as warnings to outsiders, though some see them only too late. For Cannibals, human flesh is both survival and sport.",
+        scaling: { hp: 1.0, atk: 1.1, def: 0.7, acc: 0.5, crit: 0.7, armPen: 0.5, aspd: 0.3 },
+        base: {
+          regular: { hp: 8, atk: 5, def: 1, acc: 60, critPct: 0.10, armPenPct: 0.08, aspd: 1.224 },
+          boss: { hp: 24, atk: 15, def: 3, acc: 60, critPct: 0.10, armPenPct: 0.08, aspd: 1.2 }
+        },
+        regular: [
+          { id: "the_gorge", name: "The Gorge" },
+          { id: "marrow_eater", name: "Marrow-Eater" },
+          { id: "the_bloated", name: "The Bloated" },
+          { id: "viscera_cutter", name: "Viscera-Cutter" },
+          { id: "road_lurcher", name: "Road-Lurcher" },
+          { id: "the_wretched", name: "The Wretched" },
+          { id: "shank_digger", name: "Shank-Digger" },
+          { id: "iron_jaw", name: "Iron-Jaw" },
+          { id: "the_withered", name: "The Withered" },
+          { id: "gutter_hook", name: "Gutter-Hook" },
+          { id: "ambusher", name: "Ambusher" },
+          { id: "the_manic", name: "The Manic" },
+          { id: "cleaver_hand", name: "Cleaver-Hand" },
+          { id: "the_starved", name: "The Starved" },
+          { id: "bone_picker", name: "Bone-Picker" },
+          { id: "the_craver", name: "The Craver" },
+          { id: "the_scalper", name: "The Scalper" },
+          { id: "skin_walker", name: "Skin-Walker" },
+          { id: "dust_lurker", name: "Dust-Lurker" },
+          { id: "the_unfed", name: "The Unfed" }
+        ],
+        bosses: [
+          { id: "the_unhinged", name: "The Unhinged" },
+          { id: "the_butcher_of_the_wastes", name: "The Butcher of the Wastes" },
+          { id: "the_unending_hunger", name: "The Unending Hunger" },
+          { id: "the_skin_eater", name: "The Skin-Eater" },
+          { id: "the_spiked_scourge", name: "The Spiked Scourge" },
+          { id: "the_slavering_maw", name: "The Slavering Maw" },
+          { id: "the_gored_man", name: "The Gored Man" },
+          { id: "mother_of_scars", name: "Mother of Scars" },
+          { id: "the_silent_killer", name: "The Silent Killer" },
+          { id: "the_rusted_king", name: "The Rusted King" }
+        ]
+      },
+      scavengers: {
+        description:
+          "In the ruins of the old world, scavenging is a way of life. Scavengers search every abandoned building and wrecked street for supplies, tools, or anything they can sell. Some trade honestly, but most are opportunists who will take from the living as easily as from the dead. They are skilled at navigating dangerous terrain and finding hidden caches, making them unpredictable foes. In the wasteland, crossing paths with a desperate Scavenger can turn violent in an instant.",
+        scaling: { hp: 1.0, atk: 0.8, def: 0.7, acc: 0.7, crit: 0.5, armPen: 0.5, aspd: 0.5 },
+        base: {
+          regular: { hp: 5, atk: 3, def: 2, acc: 85, critPct: 0.04, armPenPct: 0.10, aspd: 1.815 },
+          boss: { hp: 15, atk: 9, def: 6, acc: 85, critPct: 0.04, armPenPct: 0.10, aspd: 1.8 }
+        },
+        regular: [
+          { id: "the_scrounger", name: "The Scrounger" },
+          { id: "ash_sifter", name: "Ash-Sifter" },
+          { id: "the_opportunist", name: "The Opportunist" },
+          { id: "the_ruin_runner", name: "The Ruin-Runner" },
+          { id: "the_creep", name: "The Creep" },
+          { id: "the_whispering", name: "The Whispering" },
+          { id: "the_sorter", name: "The Sorter" },
+          { id: "the_hoarder", name: "The Hoarder" },
+          { id: "the_junk_taker", name: "The Junk-Taker" },
+          { id: "the_dust_walker", name: "The Dust-Walker" },
+          { id: "the_digger", name: "The Digger" },
+          { id: "the_tinker", name: "The Tinker" },
+          { id: "the_finder", name: "The Finder" },
+          { id: "the_shadow_stalk", name: "The Shadow-Stalk" },
+          { id: "the_grubber", name: "The Grubber" },
+          { id: "the_lookout", name: "The Lookout" },
+          { id: "the_looter", name: "The Looter" },
+          { id: "the_collector", name: "The Collector" },
+          { id: "the_forager", name: "The Forager" },
+          { id: "the_cache_finder", name: "The Cache-Finder" }
+        ],
+        bosses: [
+          { id: "the_junk_king", name: "The Junk-King" },
+          { id: "the_baron_of_rust", name: "The Baron of Rust" },
+          { id: "the_ghost_of_the_ruins", name: "The Ghost of the Ruins" },
+          { id: "the_archivist", name: "The Archivist" },
+          { id: "the_wasteland_warden", name: "The Wasteland Warden" },
+          { id: "the_vulture_king", name: "The Vulture King" },
+          { id: "the_labyrinthian", name: "The Labyrinthian" },
+          { id: "the_collector_boss", name: "The Collector" },
+          { id: "the_last_opportunist", name: "The Last Opportunist" },
+          { id: "the_master_finder", name: "The Master Finder" }
+        ]
+      },
+      the_directorate: {
+        description:
+          "Before the fall, they were billionaires, corporate leaders, and crime lords who thrived on wealth and influence. When the old world collapsed, they consolidated power into fortified sanctuary cities where the rich lived in safety and the poor were left to rot in the streets. Protected by their own private armies and a network of loyal enforcers, they control trade, food, and shelter with an iron grip. Every debt, favor, and deal is another chain tying survivors to their rule. In their eyes, the apocalypse is simply another market to dominate.",
+        scaling: { hp: 1.0, atk: 0.8, def: 0.7, acc: 0.5, crit: 0.8, armPen: 0.8, aspd: 0.3 },
+        base: {
+          regular: { hp: 9, atk: 5, def: 3, acc: 75, critPct: 0.20, armPenPct: 0.15, aspd: 1.127 },
+          boss: { hp: 27, atk: 15, def: 9, acc: 75, critPct: 0.20, armPenPct: 0.15, aspd: 1.1 }
+        },
+        regular: [
+          { id: "enforcer", name: "Enforcer" },
+          { id: "regulator", name: "Regulator" },
+          { id: "bruiser", name: "Bruiser" },
+          { id: "fixer", name: "Fixer" },
+          { id: "cleaner", name: "Cleaner" },
+          { id: "auditor", name: "Auditor" },
+          { id: "warden", name: "Warden" },
+          { id: "taxman", name: "Taxman" },
+          { id: "slasher", name: "Slasher" },
+          { id: "headhunter", name: "Headhunter" },
+          { id: "knuckleduster", name: "Knuckleduster" },
+          { id: "sentinel", name: "Sentinel" },
+          { id: "muscle", name: "Muscle" },
+          { id: "thug", name: "Thug" },
+          { id: "wiseguy", name: "Wiseguy" },
+          { id: "scribe", name: "Scribe" },
+          { id: "operative", name: "Operative" },
+          { id: "handler", name: "Handler" },
+          { id: "collector", name: "Collector" },
+          { id: "ledger_man", name: "Ledger-Man" }
+        ],
+        bosses: [
+          { id: "the_don", name: "The Don" },
+          { id: "the_kingpin", name: "The Kingpin" },
+          { id: "the_underboss", name: "The Underboss" },
+          { id: "the_governor", name: "The Governor" },
+          { id: "the_mayor", name: "The Mayor" },
+          { id: "the_architect", name: "The Architect" },
+          { id: "the_founder", name: "The Founder" },
+          { id: "the_consigliere", name: "The Consigliere" },
+          { id: "the_blackhand", name: "The Blackhand" },
+          { id: "the_capo", name: "The Capo" }
+        ]
+      },
+      mutants: {
+        description:
+          "When the zombie virus began to spread, desperate scientists rushed an experimental suppressant to market, claiming it could halt the infection. The drug worked, the infected did not die or turn, but the so-called cure rewrote the user’s DNA almost immediately. Within weeks, their bodies began to change as bones thickened, muscles distorted, and skin hardened in unnatural ways. As the mutations advanced, reason and identity slipped away until the once-human cured became feral predators, more dangerous in some ways than the zombies they were meant to avoid.",
+        scaling: { hp: 1.2, atk: 1.0, def: 0.7, acc: 0.5, crit: 0.5, armPen: 0.5, aspd: 0.3 },
+        base: {
+          regular: { hp: 20, atk: 6, def: 3, acc: 40, critPct: 0.08, armPenPct: 0.12, aspd: 0.960 },
+          boss: { hp: 60, atk: 18, def: 9, acc: 40, critPct: 0.08, armPenPct: 0.12, aspd: 0.9 }
+        },
+        regular: [
+          { id: "bonebreaker", name: "Bonebreaker" },
+          { id: "the_hulking", name: "The Hulking" },
+          { id: "marrow_mangler", name: "Marrow-Mangler" },
+          { id: "the_brute", name: "The Brute" },
+          { id: "the_smasher", name: "The Smasher" },
+          { id: "the_crushing", name: "The Crushing" },
+          { id: "hardhide", name: "Hardhide" },
+          { id: "ironclad", name: "Ironclad" },
+          { id: "plated", name: "Plated" },
+          { id: "ossifier", name: "Ossifier" },
+          { id: "flesh_warp", name: "Flesh-Warp" },
+          { id: "the_wretch", name: "The Wretch" },
+          { id: "tendon_snapper", name: "Tendon-Snapper" },
+          { id: "the_withered", name: "The Withered" },
+          { id: "spiked_shoulder", name: "Spiked-Shoulder" },
+          { id: "the_grotesque", name: "The Grotesque" },
+          { id: "carapace", name: "Carapace" },
+          { id: "the_feral", name: "The Feral" },
+          { id: "the_unmade", name: "The Unmade" },
+          { id: "the_maw", name: "The Maw" }
+        ],
+        bosses: [
+          { id: "the_behemoth", name: "The Behemoth" },
+          { id: "the_titan", name: "The Titan" },
+          { id: "the_juggernaut", name: "The Juggernaut" },
+          { id: "the_insatiable", name: "The Insatiable" },
+          { id: "the_monstrosity", name: "The Monstrosity" },
+          { id: "the_alpha", name: "The Alpha" },
+          { id: "the_unmaker", name: "The Unmaker" },
+          { id: "the_anomaly", name: "The Anomaly" },
+          { id: "the_first_patient", name: "The First Patient" },
+          { id: "the_iron_king", name: "The Iron-King" }
+        ]
+      },
+    };
+
+export const FACTION_CONFIG = {
+      zombies: {
+        name: "Zombies",
+        id: "zombies",
+        color: { r: 34, g: 197, b: 94 },    // Green
+        textOpacity: 1.0,
+        borderOpacity: 0.7
+      },
+      scavengers: {
+        name: "Scavengers",
+        id: "scavengers",
+        color: { r: 234, g: 179, b: 8 },    // Yellow
+        textOpacity: 1.0,
+        borderOpacity: 0.75
+      },
+      bandits: {
+        name: "Bandits",
+        id: "bandits",
+        color: { r: 239, g: 68, b: 68 },    // Red
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      cannibals: {
+        name: "Cannibals",
+        id: "cannibals",
+        color: { r: 220, g: 38, b: 38 },    // Dark Red
+        textOpacity: 1.0,
+        borderOpacity: 0.85
+      },
+      mutants: {
+        name: "Mutants",
+        id: "mutants",
+        color: { r: 139, g: 92, b: 246 },   // Purple
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      cultists: {
+        name: "Cultists",
+        id: "cultists",
+        color: { r: 168, g: 85, b: 247 },   // Light Purple
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      soldiers: {
+        name: "Soldiers",
+        id: "soldiers",
+        color: { r: 96, g: 165, b: 250 },   // Blue
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      },
+      the_directorate: {
+        name: "The Directorate",
+        id: "the_directorate",
+        color: { r: 6, g: 182, b: 212 },    // Cyan
+        textOpacity: 1.0,
+        borderOpacity: 0.8
+      }
+    };
+
+export const NAME_TO_FACTION_ID = {};
+
+export default { ENEMIES_DATA, FACTION_CONFIG, NAME_TO_FACTION_ID };
