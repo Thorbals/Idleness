@@ -463,7 +463,7 @@
         console.log("Loading embedded game data...");
 
         gameData.areas = AREAS_DATA.areas;
-        gameData.skills = SKILLS_DATA;
+        gameData.skills = { ...window.gathering_skills.SKILLS_DATA, combat_skills: window.COMBAT_SKILLS_DATA, production_skills: window.PRODUCTION_SKILLS_DATA };
         gameData.upgrades = UPGRADES_DATA;
 
         gameData.items = {
@@ -1609,7 +1609,7 @@
           let resultQty = action.recipe.result.quantity;
           if (action.recipe.randomResult && action.recipe.randomResult.type === 'bar') {
             const playerLevel = gameState.skills.forging?.level || 1;
-            const metalRecipes = (gameData?.skills?.crafting_skills?.forging?.recipes) || [];
+            const metalRecipes = (window.crafting_skills.RECIPES_DATA.crafting_skills?.forging?.recipes) || [];
             const eligibleBars = metalRecipes
               .filter(r => r.result && typeof r.result.item === 'string' && r.result.item.endsWith('_bar') && (r.level || 0) <= playerLevel)
               .map(r => r.result.item);
@@ -4426,7 +4426,7 @@
           </div>
         `;
 
-      const skillData = gameData.skills.crafting_skills[skill];
+      const skillData = window.crafting_skills.RECIPES_DATA.crafting_skills[skill];
       if (!skillData || !skillData.recipes) {
         const noRecipesMsg = document.createElement("div");
         noRecipesMsg.style.textAlign = "center";

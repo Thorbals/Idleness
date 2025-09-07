@@ -5,12 +5,14 @@ import * as items from './src/data/items.js';
 import * as equipment from './src/data/equipment.js';
 import * as factions from './src/data/factions.js';
 import * as areas from './src/data/areas.js';
-import * as nodes from './src/data/nodes.js';
-import * as recipes from './src/data/recipes.js';
+import * as gathering_skills from './src/data/gathering_skills.js';
+import * as crafting_skills from './src/data/crafting_skills.js';
 import * as shops from './src/data/shops.js';
+import * as combat_skills from './src/data/combat_skills.js';
+import * as production_skills from './src/data/production_skills.js';
 
 // Expose legacy globals expected by monolith.js
-for (const mod of [items, equipment, factions, areas, nodes, recipes, shops]) {
+for (const mod of [items, equipment, factions, areas, gathering_skills, crafting_skills, shops, combat_skills, production_skills]) {
   for (const [k, v] of Object.entries(mod)) {
     if (k === "default") continue;
     if (!(k in window)) {
@@ -20,15 +22,21 @@ for (const mod of [items, equipment, factions, areas, nodes, recipes, shops]) {
   }
 }
 
+// Expose module objects directly for legacy code
+window.gathering_skills = gathering_skills.default;
+window.crafting_skills = crafting_skills.default;
+
 // Aggregate legacy gameData convenience
 window.gameData = {
   items: items.default,
   equipment: equipment.default,
   factions: factions.default,
   areas: areas.default,
-  nodes: nodes.default,
-  recipes: recipes.default,
+  gathering_skills: gathering_skills.default,
+  crafting_skills: crafting_skills.default,
   shops: shops.default,
+  combat_skills: combat_skills.default,
+  production_skills: production_skills.default,
 };
 
 async function importMonolith() {
