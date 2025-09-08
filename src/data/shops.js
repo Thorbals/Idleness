@@ -1,6 +1,4 @@
 // shops.js — Shop data and functionality
-import * as items from './items.js';
-import * as equipment from './equipment.js';
 import * as production_skills from './production_skills.js';
 
 // Shop tabs configuration
@@ -32,20 +30,269 @@ export const SHOP_DATA = {
 // Import animal data from production_skills
 export const ANIMAL_DATA = production_skills.ANIMAL_CARE_DATA;
 
-// Move all tool and workshop upgrades from items.js
+// Tool and workshop upgrades for all skills
 export const TOOL_UPGRADES = {
-  cooking: items.UPGRADES_DATA?.cooking || {},
-  tailoring: items.UPGRADES_DATA?.tailoring || {},
-  firstaid: items.UPGRADES_DATA?.firstaid || {},
-  forging: items.UPGRADES_DATA?.forging || {},
-  gunsmithing: items.UPGRADES_DATA?.gunsmithing || {},
-  scavenging: items.UPGRADES_DATA?.scavenging || {},
-  looting: items.UPGRADES_DATA?.looting || {},
-  carpentry: items.UPGRADES_DATA?.carpentry || {},
-  tinkering: items.UPGRADES_DATA?.tinkering || {},
-  masonry: items.UPGRADES_DATA?.masonry || {},
-  chemistry: items.UPGRADES_DATA?.chemistry || {},
-  electrical: items.UPGRADES_DATA?.electrical || {}
+  // Gathering Skills
+  mining: {
+    tools: [
+      { id: "mining_pickaxe_stone", name: "Stone Pickaxe", requiredLevel: 1, scrapCost: 10 },
+      { id: "mining_pickaxe_copper", name: "Copper Pickaxe", requiredLevel: 5, scrapCost: 50 },
+      { id: "mining_pickaxe_iron", name: "Iron Pickaxe", requiredLevel: 15, scrapCost: 200 },
+      { id: "mining_pickaxe_bronze", name: "Bronze Pickaxe", requiredLevel: 25, scrapCost: 500 },
+      { id: "mining_pickaxe_tungsten", name: "Tungsten Pickaxe", requiredLevel: 35, scrapCost: 1500 },
+      { id: "mining_pickaxe_titanium", name: "Titanium Pickaxe", requiredLevel: 50, scrapCost: 5000 }
+    ],
+    workshops: [
+      { id: "mining_workshop_basic", name: "Basic Mining Workshop", requiredLevel: 10, scrapCost: 1000 },
+      { id: "mining_workshop_advanced", name: "Advanced Mining Workshop", requiredLevel: 30, scrapCost: 5000 },
+      { id: "mining_workshop_industrial", name: "Industrial Mining Facility", requiredLevel: 60, scrapCost: 25000 }
+    ]
+  },
+  woodcutting: {
+    tools: [
+      { id: "woodcutting_axe_stone", name: "Stone Axe", requiredLevel: 1, scrapCost: 10 },
+      { id: "woodcutting_axe_copper", name: "Copper Axe", requiredLevel: 5, scrapCost: 50 },
+      { id: "woodcutting_axe_iron", name: "Iron Axe", requiredLevel: 15, scrapCost: 200 },
+      { id: "woodcutting_axe_bronze", name: "Bronze Axe", requiredLevel: 25, scrapCost: 500 },
+      { id: "woodcutting_axe_tungsten", name: "Tungsten Axe", requiredLevel: 35, scrapCost: 1500 },
+      { id: "woodcutting_axe_titanium", name: "Titanium Axe", requiredLevel: 50, scrapCost: 5000 }
+    ],
+    workshops: [
+      { id: "woodcutting_workshop_basic", name: "Basic Woodworking Shop", requiredLevel: 10, scrapCost: 1000 },
+      { id: "woodcutting_workshop_advanced", name: "Advanced Woodworking Shop", requiredLevel: 30, scrapCost: 5000 },
+      { id: "woodcutting_workshop_industrial", name: "Industrial Sawmill", requiredLevel: 60, scrapCost: 25000 }
+    ]
+  },
+  foraging: {
+    tools: [
+      { id: "foraging_basket_basic", name: "Basic Foraging Basket", requiredLevel: 1, scrapCost: 25 },
+      { id: "foraging_basket_reinforced", name: "Reinforced Foraging Basket", requiredLevel: 10, scrapCost: 100 },
+      { id: "foraging_tools_basic", name: "Basic Foraging Tools", requiredLevel: 20, scrapCost: 300 },
+      { id: "foraging_tools_advanced", name: "Advanced Foraging Tools", requiredLevel: 40, scrapCost: 1500 }
+    ],
+    workshops: [
+      { id: "foraging_workshop_basic", name: "Basic Herbology Lab", requiredLevel: 15, scrapCost: 2000 },
+      { id: "foraging_workshop_advanced", name: "Advanced Herbology Lab", requiredLevel: 45, scrapCost: 10000 }
+    ]
+  },
+  hunting: {
+    tools: [
+      { id: "hunting_knife_basic", name: "Basic Hunting Knife", requiredLevel: 1, scrapCost: 30 },
+      { id: "hunting_knife_steel", name: "Steel Hunting Knife", requiredLevel: 10, scrapCost: 150 },
+      { id: "hunting_bow_basic", name: "Basic Hunting Bow", requiredLevel: 15, scrapCost: 200 },
+      { id: "hunting_bow_compound", name: "Compound Hunting Bow", requiredLevel: 35, scrapCost: 1000 },
+      { id: "hunting_rifle_basic", name: "Basic Hunting Rifle", requiredLevel: 50, scrapCost: 3000 }
+    ],
+    workshops: [
+      { id: "hunting_workshop_basic", name: "Basic Hunting Lodge", requiredLevel: 20, scrapCost: 3000 },
+      { id: "hunting_workshop_advanced", name: "Advanced Hunting Lodge", requiredLevel: 50, scrapCost: 15000 }
+    ]
+  },
+  fishing: {
+    tools: [
+      { id: "fishing_rod_basic", name: "Basic Fishing Rod", requiredLevel: 1, scrapCost: 20 },
+      { id: "fishing_rod_reinforced", name: "Reinforced Fishing Rod", requiredLevel: 10, scrapCost: 100 },
+      { id: "fishing_net_basic", name: "Basic Fishing Net", requiredLevel: 15, scrapCost: 150 },
+      { id: "fishing_net_advanced", name: "Advanced Fishing Net", requiredLevel: 30, scrapCost: 800 },
+      { id: "fishing_boat_basic", name: "Basic Fishing Boat", requiredLevel: 45, scrapCost: 2500 }
+    ],
+    workshops: [
+      { id: "fishing_workshop_basic", name: "Basic Fish Processing Plant", requiredLevel: 25, scrapCost: 4000 },
+      { id: "fishing_workshop_advanced", name: "Advanced Fish Processing Plant", requiredLevel: 55, scrapCost: 20000 }
+    ]
+  },
+  scavenging: {
+    tools: [
+      { id: "scavenging_tools_basic", name: "Basic Scavenging Tools", requiredLevel: 1, scrapCost: 15 },
+      { id: "scavenging_tools_advanced", name: "Advanced Scavenging Tools", requiredLevel: 20, scrapCost: 300 },
+      { id: "scavenging_detector_basic", name: "Basic Metal Detector", requiredLevel: 35, scrapCost: 1200 },
+      { id: "scavenging_detector_advanced", name: "Advanced Metal Detector", requiredLevel: 55, scrapCost: 4000 }
+    ],
+    workshops: [
+      { id: "scavenging_workshop_basic", name: "Basic Salvage Workshop", requiredLevel: 15, scrapCost: 2000 },
+      { id: "scavenging_workshop_advanced", name: "Advanced Salvage Workshop", requiredLevel: 45, scrapCost: 12000 }
+    ]
+  },
+  looting: {
+    tools: [
+      { id: "looting_tools_basic", name: "Basic Lockpicking Set", requiredLevel: 1, scrapCost: 25 },
+      { id: "looting_tools_advanced", name: "Advanced Lockpicking Set", requiredLevel: 25, scrapCost: 600 },
+      { id: "looting_crowbar_basic", name: "Basic Crowbar", requiredLevel: 10, scrapCost: 80 },
+      { id: "looting_crowbar_reinforced", name: "Reinforced Crowbar", requiredLevel: 30, scrapCost: 400 }
+    ],
+    workshops: [
+      { id: "looting_workshop_basic", name: "Basic Locksmith Shop", requiredLevel: 20, scrapCost: 3000 },
+      { id: "looting_workshop_advanced", name: "Advanced Locksmith Shop", requiredLevel: 50, scrapCost: 15000 }
+    ]
+  },
+
+  // Crafting Skills
+  cooking: {
+    tools: [
+      { id: "cooking_knife_basic", name: "Basic Kitchen Knife", requiredLevel: 1, scrapCost: 20 },
+      { id: "cooking_knife_chef", name: "Chef's Knife", requiredLevel: 15, scrapCost: 150 },
+      { id: "cooking_pan_basic", name: "Basic Cooking Pan", requiredLevel: 5, scrapCost: 40 },
+      { id: "cooking_pan_advanced", name: "Advanced Cooking Pan", requiredLevel: 25, scrapCost: 300 },
+      { id: "cooking_stove_basic", name: "Basic Cooking Stove", requiredLevel: 35, scrapCost: 800 }
+    ],
+    workshops: [
+      { id: "cooking_workshop_basic", name: "Basic Kitchen", requiredLevel: 10, scrapCost: 1000 },
+      { id: "cooking_workshop_advanced", name: "Advanced Kitchen", requiredLevel: 30, scrapCost: 5000 },
+      { id: "cooking_workshop_restaurant", name: "Restaurant Kitchen", requiredLevel: 60, scrapCost: 25000 }
+    ]
+  },
+  tailoring: {
+    tools: [
+      { id: "tailoring_needle_basic", name: "Basic Sewing Needle", requiredLevel: 1, scrapCost: 10 },
+      { id: "tailoring_needle_advanced", name: "Advanced Sewing Needle", requiredLevel: 20, scrapCost: 100 },
+      { id: "tailoring_machine_basic", name: "Basic Sewing Machine", requiredLevel: 30, scrapCost: 600 },
+      { id: "tailoring_machine_industrial", name: "Industrial Sewing Machine", requiredLevel: 50, scrapCost: 2500 }
+    ],
+    workshops: [
+      { id: "tailoring_workshop_basic", name: "Basic Tailor Shop", requiredLevel: 15, scrapCost: 2000 },
+      { id: "tailoring_workshop_advanced", name: "Advanced Tailor Shop", requiredLevel: 40, scrapCost: 10000 },
+      { id: "tailoring_workshop_factory", name: "Textile Factory", requiredLevel: 70, scrapCost: 50000 }
+    ]
+  },
+  firstaid: {
+    tools: [
+      { id: "firstaid_kit_basic", name: "Basic First Aid Kit", requiredLevel: 1, scrapCost: 30 },
+      { id: "firstaid_kit_advanced", name: "Advanced First Aid Kit", requiredLevel: 20, scrapCost: 200 },
+      { id: "firstaid_surgical_tools", name: "Surgical Tools", requiredLevel: 40, scrapCost: 1000 },
+      { id: "firstaid_defibrillator", name: "Defibrillator", requiredLevel: 60, scrapCost: 3000 }
+    ],
+    workshops: [
+      { id: "firstaid_workshop_basic", name: "Basic Medical Clinic", requiredLevel: 25, scrapCost: 4000 },
+      { id: "firstaid_workshop_advanced", name: "Advanced Medical Clinic", requiredLevel: 55, scrapCost: 20000 },
+      { id: "firstaid_workshop_hospital", name: "Field Hospital", requiredLevel: 80, scrapCost: 100000 }
+    ]
+  },
+  forging: {
+    tools: [
+      { id: "forging_hammer_basic", name: "Basic Forging Hammer", requiredLevel: 1, scrapCost: 25 },
+      { id: "forging_hammer_advanced", name: "Advanced Forging Hammer", requiredLevel: 20, scrapCost: 150 },
+      { id: "forging_anvil_basic", name: "Basic Anvil", requiredLevel: 10, scrapCost: 200 },
+      { id: "forging_anvil_advanced", name: "Advanced Anvil", requiredLevel: 35, scrapCost: 1000 },
+      { id: "forging_furnace_basic", name: "Basic Forge Furnace", requiredLevel: 25, scrapCost: 500 }
+    ],
+    workshops: [
+      { id: "forging_workshop_basic", name: "Basic Blacksmith Shop", requiredLevel: 15, scrapCost: 2000 },
+      { id: "forging_workshop_advanced", name: "Advanced Blacksmith Shop", requiredLevel: 45, scrapCost: 12000 },
+      { id: "forging_workshop_factory", name: "Metalworking Factory", requiredLevel: 75, scrapCost: 60000 }
+    ]
+  },
+  gunsmithing: {
+    tools: [
+      { id: "gunsmithing_tools_basic", name: "Basic Gunsmithing Tools", requiredLevel: 1, scrapCost: 40 },
+      { id: "gunsmithing_tools_advanced", name: "Advanced Gunsmithing Tools", requiredLevel: 25, scrapCost: 300 },
+      { id: "gunsmithing_press_basic", name: "Basic Reloading Press", requiredLevel: 15, scrapCost: 150 },
+      { id: "gunsmithing_press_advanced", name: "Advanced Reloading Press", requiredLevel: 40, scrapCost: 1200 },
+      { id: "gunsmithing_lathe", name: "Precision Lathe", requiredLevel: 55, scrapCost: 4000 }
+    ],
+    workshops: [
+      { id: "gunsmithing_workshop_basic", name: "Basic Gunsmith Shop", requiredLevel: 20, scrapCost: 3000 },
+      { id: "gunsmithing_workshop_advanced", name: "Advanced Gunsmith Shop", requiredLevel: 50, scrapCost: 15000 },
+      { id: "gunsmithing_workshop_factory", name: "Arms Manufacturing Plant", requiredLevel: 80, scrapCost: 75000 }
+    ]
+  },
+  carpentry: {
+    tools: [
+      { id: "carpentry_tools_basic", name: "Basic Carpentry Tools", requiredLevel: 1, scrapCost: 20 },
+      { id: "carpentry_tools_advanced", name: "Advanced Carpentry Tools", requiredLevel: 20, scrapCost: 150 },
+      { id: "carpentry_saw_basic", name: "Basic Carpentry Saw", requiredLevel: 10, scrapCost: 80 },
+      { id: "carpentry_saw_power", name: "Power Saw", requiredLevel: 35, scrapCost: 800 },
+      { id: "carpentry_workbench", name: "Carpentry Workbench", requiredLevel: 25, scrapCost: 400 }
+    ],
+    workshops: [
+      { id: "carpentry_workshop_basic", name: "Basic Carpentry Shop", requiredLevel: 15, scrapCost: 2000 },
+      { id: "carpentry_workshop_advanced", name: "Advanced Carpentry Shop", requiredLevel: 45, scrapCost: 12000 },
+      { id: "carpentry_workshop_factory", name: "Furniture Factory", requiredLevel: 70, scrapCost: 50000 }
+    ]
+  },
+  tinkering: {
+    tools: [
+      { id: "tinkering_tools_basic", name: "Basic Tinkering Tools", requiredLevel: 1, scrapCost: 15 },
+      { id: "tinkering_tools_advanced", name: "Advanced Tinkering Tools", requiredLevel: 20, scrapCost: 120 },
+      { id: "tinkering_soldering_iron", name: "Soldering Iron", requiredLevel: 15, scrapCost: 100 },
+      { id: "tinkering_multimeter", name: "Multimeter", requiredLevel: 30, scrapCost: 300 },
+      { id: "tinkering_oscilloscope", name: "Oscilloscope", requiredLevel: 50, scrapCost: 2000 }
+    ],
+    workshops: [
+      { id: "tinkering_workshop_basic", name: "Basic Electronics Lab", requiredLevel: 25, scrapCost: 4000 },
+      { id: "tinkering_workshop_advanced", name: "Advanced Electronics Lab", requiredLevel: 55, scrapCost: 20000 },
+      { id: "tinkering_workshop_factory", name: "Electronics Factory", requiredLevel: 80, scrapCost: 100000 }
+    ]
+  },
+  masonry: {
+    tools: [
+      { id: "masonry_tools_basic", name: "Basic Masonry Tools", requiredLevel: 1, scrapCost: 25 },
+      { id: "masonry_tools_advanced", name: "Advanced Masonry Tools", requiredLevel: 20, scrapCost: 150 },
+      { id: "masonry_mixer_basic", name: "Basic Cement Mixer", requiredLevel: 15, scrapCost: 200 },
+      { id: "masonry_mixer_advanced", name: "Advanced Cement Mixer", requiredLevel: 40, scrapCost: 1200 },
+      { id: "masonry_crane", name: "Construction Crane", requiredLevel: 60, scrapCost: 5000 }
+    ],
+    workshops: [
+      { id: "masonry_workshop_basic", name: "Basic Construction Site", requiredLevel: 20, scrapCost: 3000 },
+      { id: "masonry_workshop_advanced", name: "Advanced Construction Site", requiredLevel: 50, scrapCost: 15000 },
+      { id: "masonry_workshop_factory", name: "Concrete Plant", requiredLevel: 75, scrapCost: 75000 }
+    ]
+  },
+  chemistry: {
+    tools: [
+      { id: "chemistry_tools_basic", name: "Basic Chemistry Set", requiredLevel: 1, scrapCost: 30 },
+      { id: "chemistry_tools_advanced", name: "Advanced Chemistry Set", requiredLevel: 25, scrapCost: 200 },
+      { id: "chemistry_beaker_set", name: "Precision Beaker Set", requiredLevel: 15, scrapCost: 150 },
+      { id: "chemistry_distiller", name: "Distillation Apparatus", requiredLevel: 35, scrapCost: 800 },
+      { id: "chemistry_spectrometer", name: "Spectrometer", requiredLevel: 55, scrapCost: 3000 }
+    ],
+    workshops: [
+      { id: "chemistry_workshop_basic", name: "Basic Chemistry Lab", requiredLevel: 20, scrapCost: 3000 },
+      { id: "chemistry_workshop_advanced", name: "Advanced Chemistry Lab", requiredLevel: 50, scrapCost: 15000 },
+      { id: "chemistry_workshop_factory", name: "Chemical Processing Plant", requiredLevel: 80, scrapCost: 75000 }
+    ]
+  },
+  electrical: {
+    tools: [
+      { id: "electrical_tools_basic", name: "Basic Electrical Tools", requiredLevel: 1, scrapCost: 20 },
+      { id: "electrical_tools_advanced", name: "Advanced Electrical Tools", requiredLevel: 20, scrapCost: 150 },
+      { id: "electrical_wire_stripper", name: "Wire Stripper Set", requiredLevel: 10, scrapCost: 80 },
+      { id: "electrical_multimeter", name: "Digital Multimeter", requiredLevel: 30, scrapCost: 300 },
+      { id: "electrical_generator", name: "Portable Generator", requiredLevel: 50, scrapCost: 2000 }
+    ],
+    workshops: [
+      { id: "electrical_workshop_basic", name: "Basic Electrical Shop", requiredLevel: 25, scrapCost: 4000 },
+      { id: "electrical_workshop_advanced", name: "Advanced Electrical Shop", requiredLevel: 55, scrapCost: 20000 },
+      { id: "electrical_workshop_factory", name: "Power Generation Facility", requiredLevel: 85, scrapCost: 100000 }
+    ]
+  },
+
+  // Production Skills
+  farming: {
+    tools: [
+      { id: "farming_tools_basic", name: "Basic Farming Tools", requiredLevel: 1, scrapCost: 15 },
+      { id: "farming_tools_advanced", name: "Advanced Farming Tools", requiredLevel: 20, scrapCost: 120 },
+      { id: "farming_tractor_basic", name: "Basic Tractor", requiredLevel: 35, scrapCost: 1000 },
+      { id: "farming_irrigation", name: "Irrigation System", requiredLevel: 25, scrapCost: 400 }
+    ],
+    workshops: [
+      { id: "farming_workshop_basic", name: "Basic Farm", requiredLevel: 10, scrapCost: 1500 },
+      { id: "farming_workshop_advanced", name: "Advanced Farm", requiredLevel: 40, scrapCost: 8000 },
+      { id: "farming_workshop_factory", name: "Agricultural Complex", requiredLevel: 70, scrapCost: 40000 }
+    ]
+  },
+  animalcare: {
+    tools: [
+      { id: "animalcare_tools_basic", name: "Basic Animal Care Tools", requiredLevel: 1, scrapCost: 20 },
+      { id: "animalcare_tools_advanced", name: "Advanced Animal Care Tools", requiredLevel: 20, scrapCost: 150 },
+      { id: "animalcare_veterinary_kit", name: "Veterinary Kit", requiredLevel: 30, scrapCost: 400 },
+      { id: "animalcare_feed_mixer", name: "Animal Feed Mixer", requiredLevel: 40, scrapCost: 800 }
+    ],
+    workshops: [
+      { id: "animalcare_workshop_basic", name: "Basic Animal Shelter", requiredLevel: 15, scrapCost: 2000 },
+      { id: "animalcare_workshop_advanced", name: "Advanced Animal Shelter", requiredLevel: 45, scrapCost: 10000 },
+      { id: "animalcare_workshop_factory", name: "Livestock Processing Plant", requiredLevel: 75, scrapCost: 50000 }
+    ]
+  }
 };
 
 // Editable shop configuration
