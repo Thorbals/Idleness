@@ -1,14 +1,10 @@
-// @ts-nocheck
-// homebase_all_override.js
-// Same as homebase_all.js but assigns functions to window.<name> to override existing ones safely.
-
-// Home Base related functions (by name/body match) ----
-window.critPctToRating = function (pct) {
+// Homebase module (cleaned): top-level helpers exposed on window.
+window.critPctToRating = window.critPctToRating || ((pct) => {
   const p = Math.max(0, Math.min(0.95, pct || 0));
   return Math.round((p / (1 - p)) * 200);
-};
+});
 
-window.scaleEnemyForLevel = function (factionId, baseEnemy, level, kind) {
+window.scaleEnemyForLevel = window.scaleEnemyForLevel || ((factionId, baseEnemy, level, kind) => {
   const f =
     (gameData && gameData.enemies && gameData.enemies[factionId]) || null;
   if (!f) return null;
@@ -56,7 +52,7 @@ window.scaleEnemyForLevel = function (factionId, baseEnemy, level, kind) {
     xp: (isBoss ? 25 : 10) * L,
     drops,
   };
-};
+});
 
 window.gameData = {
   areas: null,
@@ -190,13 +186,17 @@ window.currentSkill = null;
 window.equipmentTooltip = null;
 window.showDropPercentages = false;
 
-async function loadGameData() {
+window.loadGameData = async () => {
   try {
     showLoadingScreen();
     console.log("Loading embedded game data...");
 
     gameData.areas = AREAS_DATA.areas;
-    gameData.skills = { ...window.gathering_skills.SKILLS_DATA, combat_skills: window.COMBAT_SKILLS_DATA, production_skills: window.PRODUCTION_SKILLS_DATA };
+    gameData.skills = {
+      ...window.gathering_skills.SKILLS_DATA,
+      combat_skills: window.COMBAT_SKILLS_DATA,
+      production_skills: window.PRODUCTION_SKILLS_DATA,
+    };
     gameData.upgrades = UPGRADES_DATA;
 
     gameData.items = {
@@ -218,7 +218,7 @@ async function loadGameData() {
       ...ITEMS_DATA.trophies,
       ...EQUIPMENT_DATA,
     };
-
++
     ensureAllItemIcons();
     try {
       applyDungeonRevamp();
@@ -237,7 +237,7 @@ async function loadGameData() {
     console.error("Failed to load game data:", error);
     showNotification("Failed to load game data! Check console for details.");
   }
-} // Close loadGameData
+};
 
 window.injectFactionCSS = function () {
   const styleId = "dynamic-faction-styles";
@@ -290,25 +290,25 @@ window.applyDungeonRevamp = function () {
   });
 };
 
-window.getHitChance = function (attacker, defender) {
+window.getHitChance = window.getHitChance || function (attacker, defender) {
   const acc = Math.max(0, attacker.accuracy ?? 50);
   const eva = Math.max(0, defender.evasion ?? 25);
   if (acc === 0 && eva === 0) return 0.5;
   return acc / (acc + eva);
 };
 
-window.getCritChance = function (attacker) {
+window.getCritChance = window.getCritChance || function (attacker) {
   const rating = Math.max(0, attacker.critical ?? 0);
   return Math.min(0.75, rating / (rating + 200));
 };
 
-window.getEffectiveCritChance = function (attacker, defender) {
+window.getEffectiveCritChance = window.getEffectiveCritChance || function (attacker, defender) {
   const base = getCritChance(attacker);
   const resist = Math.max(0, Math.min(1, (defender.critResistance ?? 0) / 100));
   return Math.max(0, base - resist);
 };
 
-window.getEffectiveDefense = function (defender, attacker) {
+window.getEffectiveDefense = window.getEffectiveDefense || function (defender, attacker) {
   const base = Math.max(0, defender.defense ?? 0);
   const penPctRaw = Math.max(0, Math.min(90, attacker.armorPen ?? 0));
   const penResist = Math.max(0, Math.min(90, defender.armorPenResistance ?? 0));
@@ -316,12 +316,12 @@ window.getEffectiveDefense = function (defender, attacker) {
   return base * (1 - penPct / 100);
 };
 
-window.getDamageReduction = function (defenseValue) {
+window.getDamageReduction = window.getDamageReduction || function (defenseValue) {
   const dr = defenseValue / (defenseValue + 100);
   return Math.min(0.95, Math.max(0, dr));
 };
 
-window.computeDamage = function (attacker, defender) {
+window.computeDamage = window.computeDamage || function (attacker, defender) {
   let hitRollGuaranteed = false;
   if (
     attacker.alwaysHitIfAccHigher &&
@@ -366,7 +366,7 @@ window.computeDamage = function (attacker, defender) {
   return { damage: dmg, crit: isCrit, hit: true, blocked, reflectDamage };
 };
 
-window.getAttackIntervalMs = function (attacker) {
+window.getAttackIntervalMs = window.getAttackIntervalMs || function (attacker) {
   const base = Math.max(500, Math.min(5000, attacker.baseSpeedMs ?? 3000));
   const spd = Math.max(0, attacker.attackSpeed ?? 0);
   const interval = base / (1 + spd / 100);
@@ -391,7 +391,27 @@ window.getSlotName = function (slot) {
 
 // Ensure itemTooltip global exists (was used before being declared)
 window.itemTooltip = window.itemTooltip || null;
-
+// Delegating fallbacks for tooltip helpers (use legacy implementations if present)
+window.hideItemTooltip = window.hideItemTooltip || function () {
+  if (window.itemTooltip) {
+    window.itemTooltip.remove();
+    window.itemTooltip = null;
+  }
+};
+window.createItemTooltip = window.createItemTooltip || function (item) {
+  console.warn('createItemTooltip fallback used');
+  return null;
+};
+window.hideEquipmentTooltip = window.hideEquipmentTooltip || function () {
+  if (window.equipmentTooltip) {
+    window.equipmentTooltip.remove();
+    window.equipmentTooltip = null;
+  }
+};
+window.createEquipmentTooltip = window.createEquipmentTooltip || function (item) {
+  console.warn('createEquipmentTooltip fallback used');
+  return null;
+};
 window.renderEquipmentSlots = function () {
   Object.keys(gameState.equipment).forEach((slot) => {
     const slotElement = document.getElementById(`${slot}-slot`);
@@ -456,24 +476,20 @@ window.showEquipmentTooltip = function (event, slot) {
 
 // Generic item tooltip
 window.showItemTooltip = function (event, itemId) {
-  window.hideItemTooltip();
+  window.hideItemTooltip?.();
   const item = gameData.items[itemId];
-  if (!item) {
-    console.warn(`Item not found: ${itemId}`);
-    return;
-  }
-  const tooltip = window.createItemTooltip(item);
+  const tooltip = window.createItemTooltip?.(item);
   if (!tooltip) return;
   document.body.appendChild(tooltip);
   const rect = event.target.getBoundingClientRect();
   const tooltipRect = tooltip.getBoundingClientRect();
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
-  const showOnLeft = rect.right + 10 + tooltipRect.width > windowWidth;
-  if (showOnLeft) {
-    tooltip.style.left = `${rect.left - tooltipRect.width - 10}px`;
+  const wouldOverflowRight = rect.right + 10 + tooltipRect.width > windowWidth;
+  if (wouldOverflowRight) {
+    tooltip.style.left = rect.left - tooltipRect.width - 10 + "px";
   } else {
-    tooltip.style.left = `${rect.right + 10}px`;
+    tooltip.style.left = rect.right + 10 + "px";
   }
   let topPosition = rect.top + window.scrollY;
   const wouldOverflowBottom = rect.top + tooltipRect.height > windowHeight;
@@ -481,56 +497,9 @@ window.showItemTooltip = function (event, itemId) {
     topPosition = rect.bottom + window.scrollY - tooltipRect.height;
     topPosition = Math.max(window.scrollY, topPosition);
   }
-  tooltip.style.top = `${topPosition}px`;
-  setTimeout(() => tooltip.classList.add("show"), 10);
+  tooltip.style.top = topPosition + "px";
+  requestAnimationFrame(() => tooltip.classList.add("show"));
   itemTooltip = tooltip;
-};
-
-window.hideItemTooltip = function () {
-  if (itemTooltip) {
-    itemTooltip.remove();
-    itemTooltip = null;
-  }
-};
-
-// Create generic item tooltip (unchanged logic)
-window.createItemTooltip = function (item) {
-  if (!item) {
-    console.warn("createItemTooltip called with null item");
-    return null;
-  }
-  const tooltip = document.createElement("div");
-  tooltip.className = "equipment-tooltip";
-  let content = `<h4>${item.name}</h4>`;
-  content += `<div class="item-type">${
-    item.type ? item.type.charAt(0).toUpperCase() + item.type.slice(1) : ""
-  }</div>`;
-  if (item.sellPrice) {
-    content += `<div class="stat-line"><span>Sell Price:</span><span class="stat-positive">${item.sellPrice} credits</span></div>`;
-  }
-  if (item.level) {
-    content += `<div class="stat-line"><span>Level Required:</span><span>${item.level}</span></div>`;
-  }
-  if (item.attack) {
-    content += `<div class="stat-line"><span>Attack:</span><span class="stat-positive">+${item.attack}</span></div>`;
-  }
-  if (item.defense) {
-    content += `<div class="stat-line"><span>Defense:</span><span class="stat-positive">+${item.defense}</span></div>`;
-  }
-  if (item.hp) {
-    content += `<div class="stat-line"><span>HP:</span><span class="stat-positive">+${item.hp}</span></div>`;
-  }
-  if (item.accuracy) {
-    content += `<div class="stat-line"><span>Accuracy:</span><span class="stat-positive">+${item.accuracy}</span></div>`;
-  }
-  if (item.critical) {
-    content += `<div class="stat-line"><span>Critical:</span><span class="stat-positive">+${item.critical}</span></div>`;
-  }
-  if (item.description) {
-    content += `<div class="item-desc">${item.description}</div>`;
-  }
-  tooltip.innerHTML = content;
-  return tooltip;
 };
 
 window.getBandageIds = function () {
@@ -3308,6 +3277,8 @@ if (document.readyState === "loading") {
     occupied: new Map(), // key "x,y" -> { id, name }
     // Regions unlocked for homebase; start with Region 1. Add others (2..6) as the player unlocks.
     unlockedRegions: new Set([1]),
+    // Wall upgrade level: 0=wood, 1=concrete, 2=metal, 3=concrete/metal mix
+    wallLevel: 0,
   };
 
   // ======= DOM REFS =======
@@ -3680,6 +3651,13 @@ if (document.readyState === "loading") {
   const drawWalls = function () {
     const regionConfig = getRegionConfig();
     const unlocked = state.unlockedRegions || new Set([1]);
+    const wallLevel = state.wallLevel || 0;
+
+    // Helper to get wall level class
+    function getWallLevelClass() {
+  const wallClasses = ['wood-wall', 'concrete-wall', 'metal-wall', 'bunker-wall'];
+      return wallClasses[wallLevel] || 'wood-wall';
+    }
 
     // Clear previous wall and buoy classes
     for (let y = 0; y < state.rows; y++) {
@@ -3696,7 +3674,11 @@ if (document.readyState === "loading") {
           "b-right",
           "b-bottom",
           "b-left",
-          "b-diagonal"
+          "b-diagonal",
+          "wood-wall",
+          "concrete-wall",
+          "metal-wall",
+          "bunker-wall"
         );
       }
     }
@@ -3720,7 +3702,7 @@ if (document.readyState === "loading") {
             if (t.classList.contains("river")) {
               t.classList.add("b-diagonal");
             } else {
-              t.classList.add("wall");
+              t.classList.add("wall", getWallLevelClass());
             }
           } else {
             t.classList.add("wall", sideClass);
@@ -3741,10 +3723,10 @@ if (document.readyState === "loading") {
             if (t.classList.contains("river")) {
               t.classList.add("b-diagonal");
             } else {
-              t.classList.add("wall");
+              t.classList.add("wall", getWallLevelClass());
             }
           } else {
-            t.classList.add("wall", sideClass);
+            t.classList.add("wall", sideClass, getWallLevelClass());
           }
         }
       }

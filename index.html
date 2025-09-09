@@ -6,12 +6,9 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Post-Apocalyptic Idle</title>
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/homebase.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
 
     .shop-animals-grid {
       display: grid;
@@ -467,129 +464,7 @@
     .area-content.active {
       display: block;
     }
-    /* When a tile is a wall and has a diagonal shoreline, replace the shore edge with a diagonal log wall */
-    #homebase-page .tile.wall .diagonal-rail-nw,
-    #homebase-page .tile.wall .diagonal-rail-ne,
-    #homebase-page .tile.wall .diagonal-rail-sw,
-    #homebase-page .tile.wall .diagonal-rail-se {
-      height: calc(var(--cell) / 5) !important; /* exact straight wall thickness */
-      z-index: 1002 !important; /* above everything, including wall ::before */
-      border-radius: 0;
-      background-image:
-        /* Match TOP straight wall: 5 log ends + backing bar */
-        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
-        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
-        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
-        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
-        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
-        linear-gradient(180deg, #3b2f21, #4a3c29);
-      background-repeat: no-repeat;
-      background-size:
-        /* five circles as squares + full-length backing bar */
-        calc(var(--cell) / 5) calc(var(--cell) / 5),
-        calc(var(--cell) / 5) calc(var(--cell) / 5),
-        calc(var(--cell) / 5) calc(var(--cell) / 5),
-        calc(var(--cell) / 5) calc(var(--cell) / 5),
-        calc(var(--cell) / 5) calc(var(--cell) / 5),
-        100% calc(var(--cell) / 5);
-      background-position:
-        0 0,
-        20% 0,
-        40% 0,
-        60% 0,
-        80% 0,
-        left top;
-    }
 
-    /* Prevent wall background on no-wall tiles */
-    #homebase-page .tile.no-wall .diagonal-rail-nw,
-    #homebase-page .tile.no-wall .diagonal-rail-ne,
-    #homebase-page .tile.no-wall .diagonal-rail-sw,
-    #homebase-page .tile.no-wall .diagonal-rail-se {
-      background-image: none !important;
-      height: 3px !important;
-      background: #4a4a4a !important;
-      border-radius: 0;
-    }
-
-    /* Hide the decorative shoreline grass/path when a wall occupies the diagonal */
-    #homebase-page .tile.wall .diagonal-grass-nw,
-    #homebase-page .tile.wall .diagonal-grass-ne,
-    #homebase-page .tile.wall .diagonal-grass-sw,
-    #homebase-page .tile.wall .diagonal-grass-se,
-    #homebase-page .tile.wall .diagonal-path-nw,
-    #homebase-page .tile.wall .diagonal-path-ne,
-    #homebase-page .tile.wall .diagonal-path-sw,
-    #homebase-page .tile.wall .diagonal-path-se { display: none !important; }
-
-    /* On diagonal wall tiles, hide straight wall bands so only the diagonal shows */
-    #homebase-page .tile.wall.diagonal-nw,
-    #homebase-page .tile.wall.diagonal-ne,
-    #homebase-page .tile.wall.diagonal-sw,
-    #homebase-page .tile.wall.diagonal-se {
-      --w-top: 0 !important;
-      --w-bottom: 0 !important;
-      --w-left: 0 !important;
-      --w-right: 0 !important;
-    }
-
-    /* Also remove straight wall pseudo background entirely on diagonal wall tiles */
-    #homebase-page .tile.wall.diagonal-nw::before,
-    #homebase-page .tile.wall.diagonal-ne::before,
-    #homebase-page .tile.wall.diagonal-sw::before,
-    #homebase-page .tile.wall.diagonal-se::before {
-      background-image: none !important;
-    }
-
-  /* On diagonal wall tiles, hide any straight shoreline elements */
-  #homebase-page .tile.wall.diagonal-nw .river-side-n,
-  #homebase-page .tile.wall.diagonal-nw .river-side-s,
-  #homebase-page .tile.wall.diagonal-nw .river-side-w,
-  #homebase-page .tile.wall.diagonal-nw .river-side-e,
-  #homebase-page .tile.wall.diagonal-ne .river-side-n,
-  #homebase-page .tile.wall.diagonal-ne .river-side-s,
-  #homebase-page .tile.wall.diagonal-ne .river-side-w,
-  #homebase-page .tile.wall.diagonal-ne .river-side-e,
-  #homebase-page .tile.wall.diagonal-sw .river-side-n,
-  #homebase-page .tile.wall.diagonal-sw .river-side-s,
-  #homebase-page .tile.wall.diagonal-sw .river-side-w,
-  #homebase-page .tile.wall.diagonal-sw .river-side-e,
-  #homebase-page .tile.wall.diagonal-se .river-side-n,
-  #homebase-page .tile.wall.diagonal-se .river-side-s,
-  #homebase-page .tile.wall.diagonal-se .river-side-w,
-  #homebase-page .tile.wall.diagonal-se .river-side-e,
-  #homebase-page .tile.wall.diagonal-nw .river-grass-n,
-  #homebase-page .tile.wall.diagonal-nw .river-grass-s,
-  #homebase-page .tile.wall.diagonal-nw .river-grass-w,
-  #homebase-page .tile.wall.diagonal-nw .river-grass-e,
-  #homebase-page .tile.wall.diagonal-ne .river-grass-n,
-  #homebase-page .tile.wall.diagonal-ne .river-grass-s,
-  #homebase-page .tile.wall.diagonal-ne .river-grass-w,
-  #homebase-page .tile.wall.diagonal-ne .river-grass-e,
-  #homebase-page .tile.wall.diagonal-sw .river-grass-n,
-  #homebase-page .tile.wall.diagonal-sw .river-grass-s,
-  #homebase-page .tile.wall.diagonal-sw .river-grass-w,
-  #homebase-page .tile.wall.diagonal-sw .river-grass-e,
-  #homebase-page .tile.wall.diagonal-se .river-grass-n,
-  #homebase-page .tile.wall.diagonal-se .river-grass-s,
-  #homebase-page .tile.wall.diagonal-se .river-grass-w,
-  #homebase-page .tile.wall.diagonal-se .river-grass-e,
-  #homebase-page .tile.wall.diagonal-nw .river-path-n,
-  #homebase-page .tile.wall.diagonal-nw .river-path-s,
-  #homebase-page .tile.wall.diagonal-nw .river-path-w,
-  #homebase-page .tile.wall.diagonal-nw .river-path-e,
-  #homebase-page .tile.wall.diagonal-ne .river-path-n,
-  #homebase-page .tile.wall.diagonal-ne .river-path-s,
-  #homebase-page .tile.wall.diagonal-ne .river-path-w,
-  #homebase-page .tile.wall.diagonal-ne .river-path-e,
-  #homebase-page .tile.wall.diagonal-sw .river-path-n,
-  #homebase-page .tile.wall.diagonal-sw .river-path-s,
-  #homebase-page .tile.wall.diagonal-sw .river-path-w,
-  #homebase-page .tile.wall.diagonal-sw .river-path-e,
-  #homebase-page .tile.wall.diagonal-se .river-path-n,
-  #homebase-page .tile.wall.diagonal-se .river-path-s,
-  #homebase-page .tile.wall.diagonal-se .river-path-w,
-  #homebase-page .tile.wall.diagonal-se .river-path-e { display: none !important; }
 
     .gathering-grid {
       display: grid;
@@ -1657,9 +1532,8 @@
       outline: 3px solid rgba(224, 88, 88, 0.35);
       outline-offset: 2px;
     }
-  </style>
-  <style id="homebase-styles">
-    /* Home Base styles aligned to global design tokens */
+    
+    /* homebase-scoped rules start here (kept inline for highest precedence) */
     #homebase-page {
       --bg: transparent;
       /* ambient handled by page */
@@ -2098,9 +1972,10 @@
       z-index: 0; /* below the road surface overlay */
     }
 
-    /* Force walls to be fully opaque and override any road/bridge ::before on the same tile */
-    #homebase-page .tile.wall.road::before,
-    #homebase-page .tile.wall.bridge::before {
+   /* Force ONLY wood-tier walls (level 0) that sit on road/bridge tiles to use log texture.
+     Upgraded tiers (concrete/metal/mixed) must show their own border stripes, so we scope to .wood-wall */
+   #homebase-page .tile.wall.wood-wall.road::before,
+   #homebase-page .tile.wall.wood-wall.bridge::before {
       z-index: 1000 !important;
       opacity: 1 !important;
       mix-blend-mode: normal !important;
@@ -4053,6 +3928,13 @@
             <span class="k">Regions</span>
             <span class="v" id="regionsStatus">1/6</span>
             <button class="btn mini" id="unlockRegionBtn" title="Unlock next region">Unlock</button>
+          </div>
+          <div class="badge" id="wallUpgrade">
+            <span class="k">Walls</span>
+            <span class="v" id="wallLevel">Wood</span>
+            <button class="btn mini wall-upgrade-button" id="upgradeWallBtn" title="Upgrade wall material">
+              <span class="wall-icon">🪵</span>Upgrade
+            </button>
           </div>
           <div class="mode">
             <button class="btn mini" id="toggleBorders" title="Toggle region debug borders">Borders</button>

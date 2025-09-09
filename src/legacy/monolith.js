@@ -6482,6 +6482,8 @@
   occupied: new Map(), // key "x,y" -> { id, name }
   // Regions unlocked for homebase; start with Region 1. Add others (2..6) as the player unlocks.
   unlockedRegions: new Set([1]),
+  // Wall upgrade level: 0=wood, 1=concrete, 2=metal, 3=concrete/metal mix
+  wallLevel: 0,
       };
 
       // ======= DOM REFS =======
@@ -6741,13 +6743,20 @@
       function drawWalls() {
         const regionConfig = getRegionConfig();
         const unlocked = state.unlockedRegions || new Set([1]);
+        const wallLevel = state.wallLevel || 0;
+
+        // Helper to get wall level class
+        function getWallLevelClass() {
+          const wallClasses = ['wood-wall', 'concrete-wall', 'metal-wall', 'bunker-wall'];
+          return wallClasses[wallLevel] || 'wood-wall';
+        }
 
         // Clear previous wall and buoy classes
         for (let y = 0; y < state.rows; y++) {
           for (let x = 0; x < state.cols; x++) {
             const t = tileAt(x, y);
             if (!t) continue;
-            t.classList.remove('wall', 'w-top', 'w-right', 'w-bottom', 'w-left', 'b-top', 'b-right', 'b-bottom', 'b-left', 'b-diagonal');
+            t.classList.remove('wall', 'w-top', 'w-right', 'w-bottom', 'w-left', 'b-top', 'b-right', 'b-bottom', 'b-left', 'b-diagonal', 'wood-wall', 'concrete-wall', 'metal-wall', 'bunker-wall');
           }
         }
 
@@ -6767,7 +6776,7 @@
                   // For river tiles on diagonal borders, add diagonal buoy marker
                   t.classList.add('b-diagonal');
                 } else {
-                  t.classList.add('wall');
+                  t.classList.add('wall', getWallLevelClass());
                 }
                 continue;
               }
@@ -6784,7 +6793,7 @@
                   for (let fallbackX = x + 1; fallbackX <= regionXe; fallbackX++) {
                     const fallbackTile = tileAt(fallbackX, y);
                     if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
-                      fallbackTile.classList.add('wall', sideClass);
+                      fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
                       break;
                     }
                   }
@@ -6798,14 +6807,14 @@
                   for (let fallbackX = x - 1; fallbackX >= regionXs; fallbackX--) {
                     const fallbackTile = tileAt(fallbackX, y);
                     if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
-                      fallbackTile.classList.add('wall', sideClass);
+                      fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
                       break;
                     }
                   }
                 }
                 continue;
               }
-              t.classList.add('wall', sideClass);
+              t.classList.add('wall', sideClass, getWallLevelClass());
             }
           } else if (y0 === y1) {
             // horizontal edge along constant y
@@ -6818,7 +6827,7 @@
                   // For river tiles on diagonal borders, add a diagonal buoy marker
                   t.classList.add('b-diagonal');
                 } else {
-                  t.classList.add('wall');
+                  t.classList.add('wall', getWallLevelClass());
                 }
                 continue;
               }
@@ -6835,7 +6844,7 @@
                   for (let fallbackY = y + 1; fallbackY <= regionYe; fallbackY++) {
                     const fallbackTile = tileAt(x, fallbackY);
                     if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
-                      fallbackTile.classList.add('wall', sideClass);
+                      fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
                       break;
                     }
                   }
@@ -6849,14 +6858,14 @@
                   for (let fallbackY = y - 1; fallbackY >= regionYs; fallbackY--) {
                     const fallbackTile = tileAt(x, fallbackY);
                     if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
-                      fallbackTile.classList.add('wall', sideClass);
+                      fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
                       break;
                     }
                   }
                 }
                 continue;
               }
-              t.classList.add('wall', sideClass);
+              t.classList.add('wall', sideClass, getWallLevelClass());
             }
           }
         }
@@ -7705,6 +7714,16 @@
       // ======= VALIDATION =======
       function canAfford(b) { return state.wood >= b.cost.wood && state.stone >= b.cost.stone; }
 
+      /**
+       * Validates if a building can be placed at the specified location
+       * Checks for:
+       * - Out of bounds
+       * - Roads/rivers/bridges
+       * - Occupied spaces
+       * - Walls
+       * - Fog of war (locked regions)
+       * - Road adjacency requirements
+       */
       function validatePlacement(x, y, w, h) {
         const b = state.selection; if (!b) return { ok: false, reason: 'No selection' };
         if (x < 0 || y < 0 || x + w > state.cols || y + h > state.rows) return { ok: false, reason: 'Out of bounds' };
@@ -7717,6 +7736,9 @@
             // Check if tile has a wall - buildings cannot be placed on walls
             const tile = tileAt(xx, yy);
             if (tile && tile.classList.contains('wall')) return { ok: false, reason: 'Cannot place on walls' };
+            
+            // Check if tile is in fog of war (locked region) - prevent building in areas you don't own
+            if (tile && tile.classList.contains('fog-of-war')) return { ok: false, reason: 'Cannot build in locked regions' };
             
             // For road-adjacent buildings, also check if tile is directly touching rivers or bridges
             if (b.tags.includes('Road-adjacent')) {
@@ -7768,7 +7790,13 @@
         // Use auto-fit system to find best placement position
         const bestFit = findBestFit(clickX, clickY, w, h);
         if (!bestFit) {
-          toast('Cannot place building in this area', 'warn');
+          // Check if trying to place in fog of war
+          const hasFog = t.classList.contains('fog-of-war');
+          if (hasFog) {
+            toast('Cannot build in locked regions - unlock this area first', 'warn');
+          } else {
+            toast('Cannot place building in this area', 'warn');
+          }
           return;
         }
         
@@ -7894,6 +7922,81 @@
 
         // initial paint
         updateRegionsHud();
+      })();
+
+      // ======= WALL UPGRADE HUD =======
+      (function initWallUpgradeHud() {
+        const levelEl = document.querySelector('#homebase-page #wallLevel');
+        const btnEl = document.querySelector('#homebase-page #upgradeWallBtn');
+        if (!levelEl || !btnEl) return;
+
+        // Bunker now replaces the old Concrete/Metal mix as the final tier; bunker-tier removed.
+        const wallTypes = ['Wood', 'Concrete', 'Metal', 'Bunker'];
+        const wallIcons = ['🪵', '🧱', '⚙️', '🛡️'];
+        // TEST MODE: All upgrade costs zero
+        const upgradeCosts = [
+          { wood: 0, stone: 0 },  // Wood -> Concrete
+          { wood: 0, stone: 0 },  // Concrete -> Metal
+          { wood: 0, stone: 0 }   // Metal -> Bunker
+        ];
+
+        function updateWallUpgradeHud() {
+          const level = state.wallLevel || 0;
+          levelEl.textContent = wallTypes[level];
+          
+          // Update button icon
+          const iconSpan = btnEl.querySelector('.wall-icon') || document.createElement('span');
+          iconSpan.className = 'wall-icon';
+          iconSpan.textContent = wallIcons[level];
+          if (!btnEl.querySelector('.wall-icon')) {
+            btnEl.insertBefore(iconSpan, btnEl.firstChild);
+          }
+          
+          if (level >= wallTypes.length - 1) {
+            btnEl.disabled = true;
+            btnEl.title = 'Walls fully upgraded';
+            btnEl.textContent = 'Max';
+            btnEl.insertBefore(iconSpan, btnEl.firstChild);
+          } else {
+            const cost = upgradeCosts[level];
+            const canAfford = true; // always true in test mode
+              btnEl.disabled = false;
+              btnEl.title = `Upgrade to ${wallTypes[level + 1]} (TEST: 0 cost)`;
+            btnEl.textContent = 'Upgrade';
+            btnEl.insertBefore(iconSpan, btnEl.firstChild);
+          }
+          
+          // Update button class for styling
+          btnEl.className = 'btn mini wall-upgrade-button';
+          if (level === 1) btnEl.classList.add('concrete');
+          else if (level === 2) btnEl.classList.add('metal');
+          else if (level === 3) btnEl.classList.add('bunker');
+        }
+
+        function upgradeWall() {
+          const level = state.wallLevel || 0;
+          if (level >= wallTypes.length - 1) return;
+          
+          const cost = upgradeCosts[level];
+          // In test mode, skip affordability check and resource deduction
+          
+          // Upgrade wall level
+          state.wallLevel = level + 1;
+          
+          // Redraw walls with new texture
+          drawWalls();
+          
+          // Update UI
+          updateWallUpgradeHud();
+          updateAffordChip();
+          
+          showNotification(`Walls upgraded to ${wallTypes[state.wallLevel]}`);
+        }
+
+        btnEl.addEventListener('click', upgradeWall);
+
+        // initial paint
+        updateWallUpgradeHud();
       })();
 
     })();
