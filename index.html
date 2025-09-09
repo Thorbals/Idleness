@@ -8,6 +8,7 @@
   <title>Post-Apocalyptic Idle</title>
   <link rel="stylesheet" href="styles/layout.css">
   <link rel="stylesheet" href="styles/homebase.css">
+  <link rel="stylesheet" href="styles/survivors.css">
   <style>
 
     .shop-animals-grid {
@@ -3936,6 +3937,12 @@
               <span class="wall-icon">🪵</span>Upgrade
             </button>
           </div>
+          <div class="badge" id="survivorRecruit">
+            <span class="k">Survivors</span>
+            <button class="btn mini" id="findSurvivorBtn" title="Find a new survivor">
+              <span>👤</span>Find Survivor
+            </button>
+          </div>
           <div class="mode">
             <button class="btn mini" id="toggleBorders" title="Toggle region debug borders">Borders</button>
             <button class="btn mini" id="rotateLeft">↺</button>
@@ -4017,6 +4024,7 @@
   
   
 
+  <script src="./src/survivors.js"></script>
   <script type="module" src="./main.js"></script>
 </body>
 
