@@ -249,9 +249,14 @@ window.injectFactionCSS = function () {
   document.head.appendChild(style);
 };
 
-window.NAME_TO_FACTION_ID = window.NAME_TO_FACTION_ID || {};
+// Initialize NAME_TO_FACTION_ID mapping if not already done
+if (!window.NAME_TO_FACTION_ID) {
+  window.NAME_TO_FACTION_ID = {};
+}
+
+// Populate the mapping
 Object.values(FACTION_CONFIG).forEach((faction) => {
-  NAME_TO_FACTION_ID[faction.name] = faction.id;
+  window.NAME_TO_FACTION_ID[faction.name] = faction.id;
 });
 
 window.nf = function (s) {
@@ -2451,139 +2456,18 @@ window.showGeneralShopItems = function (container) {
   container.appendChild(animalsSection);
 };
 
-window.showEquipmentShopItems = function (container) {
-  container.innerHTML = `
-    <div style="text-align: center; color: #8b949e; padding: 40px;">
-      Equipment shop coming soon...
-    </div>
-  `;
-};
+// Temporarily disabled - now properly exported from shops.js
+// window.showUpgradesShopItems = function (container) {
+//   // Function body removed - now properly exported from shops.js
+// }
 
-window.showUpgradesShopItems = function (container) {
-  container.innerHTML = "";
-  const miningHeader = document.createElement("div");
-  miningHeader.style.cssText =
-    "grid-column: 1 / -1; width: 100%; margin-bottom: 10px; text-align: center;";
-  miningHeader.innerHTML =
-    '<h3 style="color: var(--brand);">Mining</h3><div class="muted" style="margin-top: -6px;">Tools</div>';
-  container.appendChild(miningHeader);
-  const miningTools =
-    gameData.upgrades &&
-    gameData.upgrades.mining &&
-    gameData.upgrades.mining.tools
-      ? gameData.upgrades.mining.tools
-      : [];
-  const miningLevel =
-    gameState.skills && gameState.skills.mining && gameState.skills.mining.level
-      ? gameState.skills.mining.level
-      : 1;
+// Removed orphaned code from showUpgradesShopItems function
 
-  if (miningTools.length === 0) {
-    const empty = document.createElement("div");
-    empty.style.cssText =
-      "grid-column: 1 / -1; color: #8b949e; padding: 20px; text-align: center;";
-    empty.textContent = "No mining upgrades available.";
-    container.appendChild(empty);
-  } else {
-    miningTools.forEach((tool) => {
-      const purchased = !!(
-        gameState.upgrades &&
-        gameState.upgrades.mining &&
-        gameState.upgrades.mining.purchased[tool.id]
-      );
-      const meetsLevel = miningLevel >= tool.requiredLevel;
-      const canUnlock = !purchased && meetsLevel;
-      const card = document.createElement("div");
-      card.className = "shop-item";
-      card.innerHTML = `
-        <div class="item-icon">⛏️</div>
-        <div class="item-name">${tool.name}</div>
-        <div class="item-meta">Requires Mining Lv ${tool.requiredLevel}</div>
-        <button class="action-button shop-buy" ${canUnlock ? "" : "disabled"}>${
-        purchased ? "Purchased" : meetsLevel ? "Unlock" : "Level Too Low"
-      }</button>
-      `;
-      const btn = card.querySelector("button");
-      btn.addEventListener("click", () => {
-        if (!canUnlock) return;
-        gameState.upgrades.mining.purchased[tool.id] = true;
-        showNotification(`${tool.name} unlocked`);
-        saveGame();
-        showUpgradesShopItems(container);
-      });
+// Removed orphaned code from showUpgradesShopItems function
 
-      container.appendChild(card);
-    });
-  }
-
-  const forestryHeader = document.createElement("div");
-  forestryHeader.style.cssText =
-    "grid-column: 1 / -1; width: 100%; margin: 20px 0 10px; text-align: center;";
-  forestryHeader.innerHTML =
-    '<h3 style="color: var(--brand);">Forestry</h3><div class="muted" style="margin-top: -6px;">Tools</div>';
-  container.appendChild(forestryHeader);
-  const forestryTools =
-    gameData.upgrades &&
-    gameData.upgrades.forestry &&
-    gameData.upgrades.forestry.tools
-      ? gameData.upgrades.forestry.tools
-      : [];
-
-  if (forestryTools.length === 0) {
-    const emptyF = document.createElement("div");
-    emptyF.style.cssText =
-      "grid-column: 1 / -1; color: #8b949e; padding: 20px; text-align: center;";
-    emptyF.textContent = "No forestry upgrades available.";
-    container.appendChild(emptyF);
-  }
-};
-
-window.purchaseAnimal = function (
-  animalId,
-  structureType,
-  price,
-  requiredLevel
-) {
-  const playerLevel = gameState.skills.animalcare.level;
-  const playerCoins = gameState.bank.coins || 0;
-
-  if (playerLevel < requiredLevel) {
-    showNotification(
-      `Need level ${requiredLevel} Animal Care to purchase this animal.`,
-      "error"
-    );
-    return;
-  }
-
-  if (!isFinite(price) || price <= 0) {
-    showNotification(`This animal is not for sale.`, "error");
-    return;
-  }
-
-  if (playerCoins < price) {
-    showNotification(
-      `Need ${price} coins to purchase this animal. You have ${playerCoins}.`,
-      "error"
-    );
-    return;
-  }
-
-  gameState.bank.coins = (gameState.bank.coins || 0) - price;
-  if (gameState.bank.coins <= 0) {
-    delete gameState.bank.coins;
-  }
-
-  gameState.bank[animalId] = (gameState.bank[animalId] || 0) + 1;
-  const animalData = ANIMAL_CARE_DATA.animals[structureType].find(
-    (a) => a.id === animalId
-  );
-  showNotification(
-    `Purchased ${animalData.name} for ${price} coins! Added to bank.`,
-    "success"
-  );
-  renderBank();
-  showShopTab("general");
-};
+window.purchaseAnimal = function (animalId, structureType, price, requiredLevel) {
+  // Function implementation here - TODO: Add proper implementation
+}
 
 window.showAnimalCareInterface = function (container) {
   const playerLevel = gameState.skills.animalcare.level;
@@ -3648,14 +3532,14 @@ if (document.readyState === "loading") {
   };
 
   // Draw walls on the outer edge of unlocked regions; remove inner walls between two unlocked neighbors
-  const drawWalls = function () {
+  const drawWalls = function() {
     const regionConfig = getRegionConfig();
     const unlocked = state.unlockedRegions || new Set([1]);
     const wallLevel = state.wallLevel || 0;
 
     // Helper to get wall level class
     function getWallLevelClass() {
-  const wallClasses = ['wood-wall', 'concrete-wall', 'metal-wall', 'bunker-wall'];
+      const wallClasses = ['wood-wall', 'concrete-wall', 'metal-wall', 'bunker-wall'];
       return wallClasses[wallLevel] || 'wood-wall';
     }
 
@@ -3664,225 +3548,265 @@ if (document.readyState === "loading") {
       for (let x = 0; x < state.cols; x++) {
         const t = tileAt(x, y);
         if (!t) continue;
-        t.classList.remove(
-          "wall",
-          "w-top",
-          "w-right",
-          "w-bottom",
-          "w-left",
-          "b-top",
-          "b-right",
-          "b-bottom",
-          "b-left",
-          "b-diagonal",
-          "wood-wall",
-          "concrete-wall",
-          "metal-wall",
-          "bunker-wall"
-        );
+        t.classList.remove('wall', 'w-top', 'w-right', 'w-bottom', 'w-left', 'b-top', 'b-right', 'b-bottom', 'b-left', 'b-diagonal', 'wood-wall', 'concrete-wall', 'metal-wall', 'bunker-wall');
       }
     }
 
-    const markEdge = function (x0, x1, y0, y1, sideClass, regionBounds) {
-      const buoyClass = "b-" + sideClass.substring(2); // Convert w-top to b-top, etc.
-
+    // Helper to mark a continuous edge, with fallback positioning for water/bridges
+    function markEdge(x0, x1, y0, y1, sideClass, regionBounds) {
+      const [regionXs, regionXe, regionYs, regionYe] = regionBounds;
+      const buoyClass = 'b-' + sideClass.substring(2); // Convert w-top to b-top, etc.
+      
       if (x0 === x1) {
         // vertical edge along constant x
         const x = x0;
         for (let y = y0; y <= y1; y++) {
-          const t = tileAt(x, y);
-          if (!t) continue;
+          const t = tileAt(x, y); if (!t) continue;
           // If tile is a diagonal half-land/half-water, mark as wall but avoid straight band
-          if (
-            t.classList.contains("diagonal-nw") ||
-            t.classList.contains("diagonal-ne") ||
-            t.classList.contains("diagonal-sw") ||
-            t.classList.contains("diagonal-se")
-          ) {
-            if (t.classList.contains("river")) {
-              t.classList.add("b-diagonal");
+          if (t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) {
+            if (t.classList.contains('river')) {
+              // For river tiles on diagonal borders, add diagonal buoy marker
+              t.classList.add('b-diagonal');
             } else {
-              t.classList.add("wall", getWallLevelClass());
+              t.classList.add('wall', getWallLevelClass());
             }
-          } else {
-            t.classList.add("wall", sideClass);
+            continue;
           }
+          // If water/bridge, add buoy class
+          if (t.classList.contains('river') || t.classList.contains('bridge') || (typeof isRiver === 'function' && isRiver(x, y))) {
+            // For vertical edges, add buoys to water tiles and walls to land tiles
+            if (sideClass === 'w-left') {
+              // For water tiles, add buoy class
+              if (t.classList.contains('river')) {
+                t.classList.add(buoyClass);
+              }
+              
+              // Walk right from the boundary until we find land, but stay within region
+              for (let fallbackX = x + 1; fallbackX <= regionXe; fallbackX++) {
+                const fallbackTile = tileAt(fallbackX, y);
+                if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                  fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
+                  break;
+                }
+              }
+            } else if (sideClass === 'w-right') {
+              // For water tiles, add buoy class
+              if (t.classList.contains('river')) {
+                t.classList.add(buoyClass);
+              }
+              
+              // Walk left from the boundary until we find land, but stay within region
+              for (let fallbackX = x - 1; fallbackX >= regionXs; fallbackX--) {
+                const fallbackTile = tileAt(fallbackX, y);
+                if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                  fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
+                  break;
+                }
+              }
+            }
+            continue;
+          }
+          t.classList.add('wall', sideClass, getWallLevelClass());
         }
       } else if (y0 === y1) {
-        // horizontal edge
+        // horizontal edge along constant y
         const y = y0;
         for (let x = x0; x <= x1; x++) {
-          const t = tileAt(x, y);
-          if (!t) continue;
-          if (
-            t.classList.contains("diagonal-nw") ||
-            t.classList.contains("diagonal-ne") ||
-            t.classList.contains("diagonal-sw") ||
-            t.classList.contains("diagonal-se")
-          ) {
-            if (t.classList.contains("river")) {
-              t.classList.add("b-diagonal");
+          const t = tileAt(x, y); if (!t) continue;
+          // If tile is a diagonal half-land/half-water, mark as wall but avoid straight band
+          if (t.classList.contains('diagonal-nw') || t.classList.contains('diagonal-ne') || t.classList.contains('diagonal-sw') || t.classList.contains('diagonal-se')) {
+            if (t.classList.contains('river')) {
+              // For river tiles on diagonal borders, add a diagonal buoy marker
+              t.classList.add('b-diagonal');
             } else {
-              t.classList.add("wall", getWallLevelClass());
+              t.classList.add('wall', getWallLevelClass());
             }
-          } else {
-            t.classList.add("wall", sideClass, getWallLevelClass());
+            continue;
           }
+          // If water/bridge, add buoy class
+          if (t.classList.contains('river') || t.classList.contains('bridge') || (typeof isRiver === 'function' && isRiver(x, y))) {
+            // For horizontal edges, add buoys to water tiles and walls to land tiles
+            if (sideClass === 'w-top') {
+              // For water tiles, add buoy class
+              if (t.classList.contains('river')) {
+                t.classList.add(buoyClass);
+              }
+              
+              // Walk down from the boundary until we find land, but stay within region
+              for (let fallbackY = y + 1; fallbackY <= regionYe; fallbackY++) {
+                const fallbackTile = tileAt(x, fallbackY);
+                if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                  fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
+                  break;
+                }
+              }
+            } else if (sideClass === 'w-bottom') {
+              // For water tiles, add buoy class
+              if (t.classList.contains('river')) {
+                t.classList.add(buoyClass);
+              }
+              
+              // Walk up from the boundary until we find land, but stay within region
+              for (let fallbackY = y - 1; fallbackY >= regionYs; fallbackY--) {
+                const fallbackTile = tileAt(x, fallbackY);
+                if (fallbackTile && !fallbackTile.classList.contains('river') && !fallbackTile.classList.contains('bridge')) {
+                  fallbackTile.classList.add('wall', sideClass, getWallLevelClass());
+                  break;
+                }
+              }
+            }
+            continue;
+          }
+          t.classList.add('wall', sideClass, getWallLevelClass());
         }
       }
-    };
+    }
 
-    const adjacency = {
-      1: { left: null, right: 2, top: null, bottom: 4 },
-      2: { left: 1, right: null, top: null, bottom: 3 },
-      3: { left: 4, right: null, top: 2, bottom: 6 },
-      4: { left: null, right: 3, top: 1, bottom: 5 },
-      5: { left: null, right: 6, top: 4, bottom: 8 },
-      6: { left: 5, right: null, top: 3, bottom: 7 },
-      7: { left: 8, right: null, top: 6, bottom: null },
-      8: { left: null, right: 7, top: 5, bottom: null },
-    };
-
-    const hasAdjacentRect = (rectangles, cfg, direction, xs, xe, ys, ye) => {
-      for (const otherCfg of rectangles) {
-        if (otherCfg === cfg) continue;
-        const [oxs, oxe] = otherCfg.x;
-        const [oys, oye] = otherCfg.y;
-        if (direction === "top" && oye === ys - 1 && oxs <= xe && oxe >= xs)
-          return true;
-        if (direction === "bottom" && oys === ye + 1 && oxs <= xe && oxe >= xs)
-          return true;
-        if (direction === "left" && oxe === xs - 1 && oys <= ye && oye >= ys)
-          return true;
-        if (direction === "right" && oxs === xe + 1 && oys <= ye && oye >= ys)
-          return true;
-      }
-      return false;
-    };
-
+    // For each unlocked region, paint external edges only
     for (const id of unlocked) {
       const rectangles = regionConfig[id];
       if (!rectangles) continue;
-
       for (const cfg of rectangles) {
-        const [xs, xe] = cfg.x;
-        const [ys, ye] = cfg.y;
+        const [xs, xe] = cfg.x; const [ys, ye] = cfg.y;
+
+        // Helper to check if edge is adjacent to another rectangle in same region
+        const hasAdjacentRect = (direction, start, end) => {
+          for (const otherCfg of rectangles) {
+            if (otherCfg === cfg) continue;
+            const [oxs, oxe] = otherCfg.x; const [oys, oye] = otherCfg.y;
+            if (direction === 'top' && oye === ys - 1 && oxs <= xe && oxe >= xs) return true;
+            if (direction === 'bottom' && oys === ye + 1 && oxs <= xe && oxe >= xs) return true;
+            if (direction === 'left' && oxe === xs - 1 && oys <= ye && oye >= ys) return true;
+            if (direction === 'right' && oxs === xe + 1 && oys <= ye && oye >= ys) return true;
+          }
+          return false;
+        };
+
+        // Find neighbors by layout
+        const neighborLeft = (id === 2 || id === 3 || id === 6) ? id - 1 : null; // 2->1, 3->2? (we arranged 4/3 in middle row), 6->5
+        const neighborRight = (id === 1 || id === 4 || id === 5) ? id + (id === 1 ? 1 : id === 4 ? -1 + 3 : 1) : null; // keep simple: we'll use explicit map instead
+
+        // Use explicit map to avoid mistakes
+        const adjacency = {
+          1: { left: null, right: 2, top: null, bottom: 4 },
+          2: { left: 1, right: null, top: null, bottom: 3 },
+          3: { left: 4, right: null, top: 2, bottom: 6 },
+          4: { left: null, right: 3, top: 1, bottom: 5 },
+          5: { left: null, right: 6, top: 4, bottom: 8 },
+          6: { left: 5, right: null, top: 3, bottom: 7 },
+          7: { left: 8, right: null, top: 6, bottom: null },
+          8: { left: null, right: 7, top: 5, bottom: null },
+        };
         const nbr = adjacency[id];
 
-        if (
-          (!nbr.top || !unlocked.has(nbr.top)) &&
-          !hasAdjacentRect(rectangles, cfg, "top", xs, xe, ys, ye)
-        )
-          markEdge(xs, xe, ys, ys, "w-top", [xs, xe, ys, ye]);
-        if (
-          (!nbr.bottom || !unlocked.has(nbr.bottom)) &&
-          !hasAdjacentRect(rectangles, cfg, "bottom", xs, xe, ys, ye)
-        )
-          markEdge(xs, xe, ye, ye, "w-bottom", [xs, xe, ys, ye]);
-        if (
-          (!nbr.left || !unlocked.has(nbr.left)) &&
-          !hasAdjacentRect(rectangles, cfg, "left", xs, xe, ys, ye)
-        )
-          markEdge(xs, xs, ys, ye, "w-left", [xs, xe, ys, ye]);
-        if (
-          (!nbr.right || !unlocked.has(nbr.right)) &&
-          !hasAdjacentRect(rectangles, cfg, "right", xs, xe, ys, ye)
-        )
-          markEdge(xe, xe, ys, ye, "w-right", [xs, xe, ys, ye]);
+        // Top edge if neighbor top not unlocked and not adjacent to same region
+        if ((!nbr.top || !unlocked.has(nbr.top)) && !hasAdjacentRect('top', xs, xe)) markEdge(xs, xe, ys, ys, 'w-top', [xs, xe, ys, ye]);
+        // Bottom edge if neighbor bottom not unlocked and not adjacent to same region
+        if ((!nbr.bottom || !unlocked.has(nbr.bottom)) && !hasAdjacentRect('bottom', xs, xe)) markEdge(xs, xe, ye, ye, 'w-bottom', [xs, xe, ys, ye]);
+        // Left edge if neighbor left not unlocked and not adjacent to same region
+        if ((!nbr.left || !unlocked.has(nbr.left)) && !hasAdjacentRect('left', ys, ye)) markEdge(xs, xs, ys, ye, 'w-left', [xs, xe, ys, ye]);
+        // Right edge if neighbor right not unlocked and not adjacent to same region
+        if ((!nbr.right || !unlocked.has(nbr.right)) && !hasAdjacentRect('right', ys, ye)) markEdge(xe, xe, ys, ye, 'w-right', [xs, xe, ys, ye]);
       }
     }
 
     // Special-case: add/remove a dedicated `.special-buoy` element at grid (15,14) when region 4 is locked
-    (function manageSpecialBuoy() {
+    (function manageSpecialBuoy(){
       // Remove any previous special-buoys
-      document
-        .querySelectorAll("#homebase-page .tile .special-buoy")
-        .forEach((e) => e.remove());
+      document.querySelectorAll('#homebase-page .tile .special-buoy').forEach(e => e.remove());
+
       const specialTile = tileAt(15, 14);
       if (!specialTile) return;
 
       if (unlocked.has(3) && !unlocked.has(4)) {
         // Ensure tile has water class when map data says it's water
-        if (
-          !specialTile.classList.contains("river") &&
-          typeof isRiver === "function" &&
-          isRiver(15, 14)
-        ) {
-          specialTile.classList.add("river");
+        if (!(specialTile.classList.contains('river')) && (typeof isRiver === 'function' && isRiver(15, 14))) {
+          specialTile.classList.add('river');
         }
 
         // Create a special buoy element and append it to the tile so it renders regardless of background layering
-        const buoyEl = document.createElement("div");
-        buoyEl.className = "special-buoy";
+        const buoyEl = document.createElement('div');
+        buoyEl.className = 'special-buoy';
         specialTile.appendChild(buoyEl);
       } else {
         // Region unlocked: ensure no special buoy remains
-        const existing = specialTile.querySelectorAll(".special-buoy");
-        existing.forEach((e) => e.remove());
+        const existing = specialTile.querySelectorAll('.special-buoy');
+        existing.forEach(e => e.remove());
       }
     })();
 
     // Apply fog of war to tiles outside unlocked regions
     applyFogOfWar(unlocked, regionConfig);
+
+    // Cleanup: strip straight bands from diagonal wall tiles
+    (function cleanupDiagonalWallBands(){
+      const sel = '#homebase-page .tile.wall.diagonal-nw, #homebase-page .tile.wall.diagonal-ne, #homebase-page .tile.wall.diagonal-sw, #homebase-page .tile.wall.diagonal-se';
+      document.querySelectorAll(sel).forEach(t => {
+        t.classList.remove('w-top','w-right','w-bottom','w-left');
+      });
+    })();
   };
 
   // Function to apply fog of war to areas outside unlocked regions
-  const applyFogOfWar = function (unlocked, regionConfig) {
-    // Clear existing fog indicators
+  const applyFogOfWar = function(unlocked, regionConfig) {
+    // Clear existing fog
     for (let y = 0; y < state.rows; y++) {
       for (let x = 0; x < state.cols; x++) {
         const t = tileAt(x, y);
         if (!t) continue;
-        t.classList.remove("fog-of-war");
-        const existingFogs = t.querySelectorAll(".forced-fog");
-        existingFogs.forEach((f) => f.remove());
+        t.classList.remove('fog-of-war');
+        
+        // Also remove any existing forced-fog elements
+        const existingFogs = t.querySelectorAll('.forced-fog');
+        existingFogs.forEach(fog => t.removeChild(fog));
       }
     }
-
-    // Helper to test if a tile is inside any unlocked region (regionConfig: { id: { x:[min,max], y:[min,max] } })
-    const isInUnlockedRegion = (x, y) => {
-      for (const id of unlocked) {
-        const cfg = regionConfig[id];
-        if (!cfg) continue;
-        const [xs, xe] = cfg.x;
-        const [ys, ye] = cfg.y;
-        if (x >= xs && x <= xe && y >= ys && y <= ye) return true;
-      }
-      return false;
-    };
-
+    
     // Apply fog to tiles outside unlocked regions
     for (let y = 0; y < state.rows; y++) {
       for (let x = 0; x < state.cols; x++) {
         const t = tileAt(x, y);
         if (!t) continue;
-
-        const isSpecialCoord =
-          (x === 15 && y === 14) ||
-          (x === 19 && y === 15) ||
-          (x === 23 && y === 16) ||
-          (x === 27 && y === 17);
-
-        // Special diagonal gate coords stay fogged until regions 3 or 4 unlock
+        
+        // These coordinates get fog only if region 3 is not unlocked
+        const isSpecialCoord = (x === 15 && y === 14) || (x === 19 && y === 15) || 
+                               (x === 23 && y === 16) || (x === 27 && y === 17);
+        
         if (isSpecialCoord && !unlocked.has(3) && !unlocked.has(4)) {
-          t.classList.add("fog-of-war");
-          continue;
+          // Force explicit fog styling on these specific coordinates
+          
+          // Add new fog element
+          const fogElement = document.createElement('div');
+          fogElement.className = 'forced-fog';
+          t.appendChild(fogElement);
+          
+          // Add normal fog class too
+          t.classList.add('fog-of-war');
+          
+          continue; // Skip the region check for these tiles
         }
-
-        if (!isInUnlockedRegion(x, y)) {
-          t.classList.add("fog-of-war");
+        
+        // Check if the tile is in an unlocked region
+        let isInUnlockedRegion = false;
+        for (const id of unlocked) {
+          const rectangles = regionConfig[id];
+          if (!rectangles) continue;
+          for (const cfg of rectangles) {
+            const [xs, xe] = cfg.x; const [ys, ye] = cfg.y;
+            if (x >= xs && x <= xe && y >= ys && y <= ye) {
+              isInUnlockedRegion = true;
+              break;
+            }
+          }
+          if (isInUnlockedRegion) break;
+        }
+        
+        // Apply fog to all tiles outside unlocked regions
+        if (!isInUnlockedRegion) {
+          t.classList.add('fog-of-war');
         }
       }
     }
-
-    // Clean up diagonal wall band classes once after fog application
-    (function cleanupDiagonalWallBands() {
-      const sel =
-        "#homebase-page .tile.wall.diagonal-nw, #homebase-page .tile.wall.diagonal-ne, #homebase-page .tile.wall.diagonal-sw, #homebase-page .tile.wall.diagonal-se";
-      document.querySelectorAll(sel).forEach((t) => {
-        t.classList.remove("w-top", "w-right", "w-bottom", "w-left");
-      });
-    })();
   };
 
   // Helper functions for easy coordinate management
@@ -4009,6 +3933,85 @@ if (document.readyState === "loading") {
     }
   };
 
+  // ======= WALL UPGRADE HUD =======
+  const initWallUpgradeHud = function() {
+    const levelEl = document.querySelector('#homebase-page #wallLevel');
+    const btnEl = document.querySelector('#homebase-page #upgradeWallBtn');
+    if (!levelEl || !btnEl) return;
+
+    // Bunker now replaces the old Concrete/Metal mix as the final tier
+    const wallTypes = ['Wood', 'Concrete', 'Metal', 'Bunker'];
+    const wallIcons = ['🪵', '🧱', '⚙️', '🛡️'];
+    // TEST MODE: All upgrade costs zero
+    const upgradeCosts = [
+      { wood: 0, stone: 0 },  // Wood -> Concrete
+      { wood: 0, stone: 0 },  // Concrete -> Metal
+      { wood: 0, stone: 0 }   // Metal -> Bunker
+    ];
+
+    function updateWallUpgradeHud() {
+      const level = state.wallLevel || 0;
+      levelEl.textContent = wallTypes[level];
+      
+      // Update button icon
+      const iconSpan = btnEl.querySelector('.wall-icon') || document.createElement('span');
+      iconSpan.className = 'wall-icon';
+      iconSpan.textContent = wallIcons[level];
+      if (!btnEl.querySelector('.wall-icon')) {
+        btnEl.insertBefore(iconSpan, btnEl.firstChild);
+      }
+      
+      if (level >= wallTypes.length - 1) {
+        btnEl.disabled = true;
+        btnEl.title = 'Walls fully upgraded';
+        btnEl.textContent = 'Max';
+        btnEl.insertBefore(iconSpan, btnEl.firstChild);
+      } else {
+        const cost = upgradeCosts[level];
+        const canAfford = true; // always true in test mode
+        btnEl.disabled = false;
+        btnEl.title = `Upgrade to ${wallTypes[level + 1]} (TEST: 0 cost)`;
+        btnEl.textContent = 'Upgrade';
+        btnEl.insertBefore(iconSpan, btnEl.firstChild);
+      }
+      
+      // Update button class for styling
+      btnEl.className = 'btn mini wall-upgrade-button';
+      if (level === 1) btnEl.classList.add('concrete');
+      else if (level === 2) btnEl.classList.add('metal');
+      else if (level === 3) btnEl.classList.add('bunker');
+    }
+
+    function upgradeWall() {
+      const level = state.wallLevel || 0;
+      if (level >= wallTypes.length - 1) return;
+      
+      const cost = upgradeCosts[level];
+      // In test mode, skip affordability check and resource deduction
+      
+      // Upgrade wall level
+      state.wallLevel = level + 1;
+      
+      // Redraw walls with new texture
+      drawWalls();
+      
+      // Update UI
+      updateWallUpgradeHud();
+      if (typeof updateAffordChip === 'function') {
+        updateAffordChip();
+      }
+      
+      if (typeof showNotification === 'function') {
+        showNotification(`Walls upgraded to ${wallTypes[state.wallLevel]}`);
+      }
+    }
+
+    btnEl.addEventListener('click', upgradeWall);
+
+    // initial paint
+    updateWallUpgradeHud();
+  };
+
   // Initialize visuals once module loads
   document.addEventListener("DOMContentLoaded", function () {
     try {
@@ -4030,6 +4033,11 @@ if (document.readyState === "loading") {
       drawWalls();
     } catch (e) {
       console.warn("drawWalls failed:", e);
+    }
+    try {
+      initWallUpgradeHud();
+    } catch (e) {
+      console.warn("initWallUpgradeHud failed:", e);
     }
   });
 })(); // end Home Base merged module

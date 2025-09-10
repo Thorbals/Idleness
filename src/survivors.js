@@ -1,5 +1,13 @@
 // survivors.js - Gacha system for random survivors
 
+// Precompute rarity cumulative probabilities for performance
+const RARITY_CUM_RATES = [
+  { key: 'COMMON', value: 0.6 },
+  { key: 'RARE', value: 0.85 },  // 0.6 + 0.25
+  { key: 'EPIC', value: 0.97 },  // 0.85 + 0.12
+  { key: 'LEGENDARY', value: 1.0 }  // 0.97 + 0.03
+];
+
 // Rarity definitions with base stats and scaling multipliers
 const RARITIES = {
   COMMON: {
@@ -88,13 +96,18 @@ class Survivor {
     const baseStats = RARITIES[this.rarity].baseStats;
     const multiplier = RARITIES[this.rarity].levelUpMultiplier;
     const levelBonus = (this.level - 1) * multiplier;
+    
+    // Helper function for random number generation (faster than Math.random() * range)
+    const getRandomInt = (min, max) => {
+      return min + ((max - min + 1) * Math.random()) | 0;
+    };
 
-    // Generate random base stats within the rarity's range
+    // Generate random base stats within the rarity's range (optimized)
     const randomBaseStats = {
-      attack: Math.floor(Math.random() * (baseStats.attack.max - baseStats.attack.min + 1)) + baseStats.attack.min,
-      defense: Math.floor(Math.random() * (baseStats.defense.max - baseStats.defense.min + 1)) + baseStats.defense.min,
-      hp: Math.floor(Math.random() * (baseStats.hp.max - baseStats.hp.min + 1)) + baseStats.hp.min,
-      luck: Math.floor(Math.random() * (baseStats.luck.max - baseStats.luck.min + 1)) + baseStats.luck.min
+      attack: getRandomInt(baseStats.attack.min, baseStats.attack.max),
+      defense: getRandomInt(baseStats.defense.min, baseStats.defense.max),
+      hp: getRandomInt(baseStats.hp.min, baseStats.hp.max),
+      luck: getRandomInt(baseStats.luck.min, baseStats.luck.max)
     };
 
     // Apply level scaling
@@ -122,15 +135,14 @@ class Survivor {
   }
 }
 
-// Gacha system functions
+// Optimized gacha system functions
 function getRandomRarity() {
   const rand = Math.random();
-  let cumulativeRate = 0;
-
-  for (const [key, rarity] of Object.entries(RARITIES)) {
-    cumulativeRate += rarity.dropRate;
-    if (rand <= cumulativeRate) {
-      return key;
+  
+  // Use precomputed cumulative rates for better performance
+  for (let i = 0; i < RARITY_CUM_RATES.length; i++) {
+    if (rand <= RARITY_CUM_RATES[i].value) {
+      return RARITY_CUM_RATES[i].key;
     }
   }
 
@@ -876,6 +888,49 @@ window.PERKS_DATA = PERKS_DATA;
 
 // ======= SURVIVOR RECRUITMENT UI SYSTEM =======
 (function initSurvivorRecruitment() {
+  // Create a debounce function to prevent multiple rapid clicks
+  const debounce = (fn, delay) => {
+    let timer;
+    return function(...args) {
+      if (timer) return;
+      timer = setTimeout(() => {
+        fn.apply(this, args);
+        timer = null;
+      }, delay);
+    };
+  };
+
+  // Define the findSurvivor function first
+  function findSurvivorHandler() {
+    // Check if survivors system is loaded
+    if (!window.pullSurvivor) {
+      if (window.showNotification) {
+        window.showNotification('Survivor system not loaded yet. Please try again.');
+      }
+      return;
+    }
+
+    // Roll a survivor
+    const survivor = window.pullSurvivor();
+
+    // Select a random perk (optimized)
+    let randomPerk = null;
+    if (window.PERKS_DATA) {
+      const allSkills = Object.keys(window.PERKS_DATA);
+      const randomSkill = allSkills[(Math.random() * allSkills.length) | 0];
+      const perks = window.PERKS_DATA[randomSkill]?.perks;
+      if (perks && perks.length) {
+        randomPerk = perks[(Math.random() * perks.length) | 0];
+      }
+    }
+
+    // Show survivor popup
+    showSurvivorPopup(survivor, randomPerk);
+  }
+
+  // Create debounced version
+  const findSurvivor = debounce(findSurvivorHandler, 300);
+
   // Wait for DOM to be ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
@@ -888,28 +943,6 @@ window.PERKS_DATA = PERKS_DATA;
     if (!btnEl) return;
 
     btnEl.addEventListener('click', findSurvivor);
-  }
-
-  function findSurvivor() {
-    // Check if survivors system is loaded
-    if (!window.pullSurvivor) {
-      showNotification('Survivor system not loaded yet. Please try again.');
-      return;
-    }
-
-    // Roll a survivor
-    const survivor = window.pullSurvivor();
-
-    // Assign a random perk from any skill
-    let randomPerk = null;
-    if (window.getAllSkillsWithPerks && window.getRandomPerkForSkill) {
-      const allSkills = window.getAllSkillsWithPerks();
-      const randomSkill = allSkills[Math.floor(Math.random() * allSkills.length)];
-      randomPerk = window.getRandomPerkForSkill(randomSkill);
-    }
-
-    // Show survivor popup
-    showSurvivorPopup(survivor, randomPerk);
   }
 
   function showSurvivorPopup(survivor, perk) {
@@ -931,75 +964,140 @@ window.PERKS_DATA = PERKS_DATA;
 
     const rarityClass = rarityColors[survivor.rarity] || 'rarity-common';
 
-    popup.innerHTML = `
-      <div style="text-align: center; margin-bottom: 20px;">
-        <h2 class="${rarityClass}">${survivor.name}</h2>
-        <div class="${rarityClass}" style="font-weight: bold; font-size: 18px;">${survivor.rarity}</div>
-      </div>
+    // Use DOM APIs instead of innerHTML for better performance
+    const createPopupDOM = () => {
+      // Header section
+      const header = document.createElement('div');
+      header.style.textAlign = 'center';
+      header.style.marginBottom = '20px';
+      
+      const name = document.createElement('h2');
+      name.className = rarityClass;
+      name.textContent = survivor.name;
+      
+      const rarityEl = document.createElement('div');
+      rarityEl.className = rarityClass;
+      rarityEl.style.fontWeight = 'bold';
+      rarityEl.style.fontSize = '18px';
+      rarityEl.textContent = survivor.rarity;
+      
+      header.appendChild(name);
+      header.appendChild(rarityEl);
+      
+      // Stats grid
+      const statsGrid = document.createElement('div');
+      statsGrid.className = 'stats-grid';
+      
+      const statsData = [
+        {icon: '⚔️', label: 'Attack:', value: survivor.stats.attack, className: 'stat-attack'},
+        {icon: '🛡️', label: 'Defense:', value: survivor.stats.defense, className: 'stat-defense'},
+        {icon: '❤️', label: 'HP:', value: survivor.stats.hp, className: 'stat-hp'},
+        {icon: '🍀', label: 'Luck:', value: survivor.stats.luck, className: 'stat-luck'}
+      ];
+      
+      statsData.forEach(stat => {
+        const statItem = document.createElement('div');
+        statItem.className = `stat-item ${stat.className}`;
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'stat-icon';
+        iconSpan.textContent = stat.icon;
+        
+        const valueSpan = document.createElement('span');
+        valueSpan.textContent = `${stat.label} ${stat.value}`;
+        
+        statItem.appendChild(iconSpan);
+        statItem.appendChild(valueSpan);
+        statsGrid.appendChild(statItem);
+      });
+      
+      // Buttons
+      const actionButtons = document.createElement('div');
+      actionButtons.className = 'action-buttons';
+      
+      const recruitBtn = document.createElement('button');
+      recruitBtn.id = 'recruitBtn';
+      recruitBtn.className = 'btn-recruit';
+      recruitBtn.textContent = 'Recruit';
+      
+      const dismissBtn = document.createElement('button');
+      dismissBtn.id = 'dismissBtn';
+      dismissBtn.className = 'btn-dismiss';
+      dismissBtn.textContent = 'Dismiss';
+      
+      actionButtons.appendChild(recruitBtn);
+      actionButtons.appendChild(dismissBtn);
+      
+      // Build popup
+      popup.appendChild(header);
+      popup.appendChild(statsGrid);
+      
+      // Add perk if available
+      if (perk) {
+        const perkSection = document.createElement('div');
+        perkSection.className = 'perk-section';
+        
+        const perkTitle = document.createElement('h3');
+        perkTitle.textContent = 'Perk';
+        
+        const perkCard = document.createElement('div');
+        perkCard.className = 'perk-card';
+        
+        const perkName = document.createElement('div');
+        perkName.className = 'perk-name';
+        perkName.textContent = perk.name;
+        
+        const perkDesc = document.createElement('div');
+        perkDesc.className = 'perk-description';
+        perkDesc.textContent = perk.description;
+        
+        perkCard.appendChild(perkName);
+        perkCard.appendChild(perkDesc);
+        perkSection.appendChild(perkTitle);
+        perkSection.appendChild(perkCard);
+        
+        popup.appendChild(perkSection);
+      }
+      
+      popup.appendChild(actionButtons);
+      
+      return { recruitBtn, dismissBtn };
+    };
+    
+    // Create DOM elements and get buttons
+    createPopupDOM();
 
-      <div class="stats-grid">
-        <div class="stat-item stat-attack">
-          <span class="stat-icon">⚔️</span>
-          <span>Attack: ${survivor.stats.attack}</span>
-        </div>
-        <div class="stat-item stat-defense">
-          <span class="stat-icon">🛡️</span>
-          <span>Defense: ${survivor.stats.defense}</span>
-        </div>
-        <div class="stat-item stat-hp">
-          <span class="stat-icon">❤️</span>
-          <span>HP: ${survivor.stats.hp}</span>
-        </div>
-        <div class="stat-item stat-luck">
-          <span class="stat-icon">🍀</span>
-          <span>Luck: ${survivor.stats.luck}</span>
-        </div>
-      </div>
-
-      ${perk ? `
-      <div class="perk-section">
-        <h3>Perk</h3>
-        <div class="perk-card">
-          <div class="perk-name">${perk.name}</div>
-          <div class="perk-description">${perk.description}</div>
-        </div>
-      </div>
-      ` : ''}
-
-      <div class="action-buttons">
-        <button class="btn-recruit" id="recruitBtn">Recruit</button>
-        <button class="btn-dismiss" id="dismissBtn">Dismiss</button>
-      </div>
-    `;
-
+    // Add popup to document
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
 
-    // Add event listeners
-    const recruitBtn = popup.querySelector('#recruitBtn');
-    const dismissBtn = popup.querySelector('#dismissBtn');
+    // Get button references
+    const recruitBtn = document.getElementById('recruitBtn');
+    const dismissBtn = document.getElementById('dismissBtn');
 
-    recruitBtn.addEventListener('click', () => {
-      // TODO: Add survivor to player's collection
-      if (window.showNotification) {
-        window.showNotification(`Recruited ${survivor.name}!`);
-      }
-      document.body.removeChild(overlay);
-    });
+    // Use a single event handler for performance
+    const handleButtonClick = (action) => {
+      return function() {
+        if (window.showNotification) {
+          window.showNotification(
+            action === 'recruit' 
+              ? `Recruited ${survivor.name}!` 
+              : `Dismissed ${survivor.name}`
+          );
+        }
+        document.body.removeChild(overlay);
+      };
+    };
+    
+    recruitBtn.addEventListener('click', handleButtonClick('recruit'));
+    dismissBtn.addEventListener('click', handleButtonClick('dismiss'));
 
-    dismissBtn.addEventListener('click', () => {
-      if (window.showNotification) {
-        window.showNotification(`Dismissed ${survivor.name}`);
-      }
-      document.body.removeChild(overlay);
-    });
-
-    // Close on overlay click
+    // Close on overlay click (with passive option for better performance)
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
         document.body.removeChild(overlay);
       }
-    });
+    }, { passive: true });
   }
 
   // Expose the popup function globally for external use

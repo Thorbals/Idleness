@@ -1,38 +1,3 @@
-// monolith.js — generated from inline <script> tags in complete_game.html
-// External script references that were present (not bundled due to unavailable files):
-// --- begin extracted inline scripts ---
-
-
-// ---- inline script #1 ----
-
-
-          /* Old homebase system removed to avoid conflicts */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-// ---- inline script #2 ----
-
 
     (function () {
       function onReady(fn) {
@@ -6482,7 +6447,7 @@
   occupied: new Map(), // key "x,y" -> { id, name }
   // Regions unlocked for homebase; start with Region 1. Add others (2..6) as the player unlocks.
   unlockedRegions: new Set([1]),
-  // Wall upgrade level: 0=wood, 1=concrete, 2=metal, 3=concrete/metal mix
+  // Wall upgrade level: 0=wood, 1=concrete, 2=metal, 3=bunker
   wallLevel: 0,
       };
 
@@ -6947,6 +6912,7 @@
         applyFogOfWar(unlocked, regionConfig);
       }
 
+      // Function to apply fog of war to areas outside unlocked regions
       // Function to apply fog of war to areas outside unlocked regions
       function applyFogOfWar(unlocked, regionConfig) {
         // Clear existing fog

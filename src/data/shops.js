@@ -588,3 +588,10 @@ export default {
   updateShopItem,
   toggleShopCategory
 };
+
+// Expose functions globally for game integration
+window.showShopTab = showShopTab;
+window.showMaterialsShopItems = showMaterialsShopItems;
+window.showEquipmentShopItems = showEquipmentShopItems;
+window.showUpgradesShopItems = showUpgradesShopItems;
+window.showAnimalShopItems = showAnimalShopItems;
