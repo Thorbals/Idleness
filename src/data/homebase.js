@@ -239,14 +239,14 @@ window.loadGameData = async () => {
   }
 };
 
-window.injectFactionCSS = function () {
-  const styleId = "dynamic-faction-styles";
-  const existingStyle = document.getElementById(styleId);
-  if (existingStyle) existingStyle.remove();
-  const style = document.createElement("style");
-  style.id = styleId;
-  style.textContent = generateFactionCSS();
-  document.head.appendChild(style);
+window.hideCombatProgress = function() {
+  const combatProgress = document.getElementById("combat-progress");
+  if (combatProgress) combatProgress.classList.add("hidden");
+};
+
+window.hideEnemyDisplay = function() {
+  const enemyDisplay = document.getElementById("enemy-display");
+  if (enemyDisplay) enemyDisplay.classList.add("hidden");
 };
 
 // Initialize NAME_TO_FACTION_ID mapping if not already done
@@ -432,10 +432,8 @@ window.renderEquipmentSlots = function () {
     if (equippedItem && gameData.items[equippedItem]) {
       const item = gameData.items[equippedItem];
       slotElement.innerHTML = `
-        <div style="font-size: 24px;">${item.icon || "??"}</div>
-        <div style="font-size: 8px; color: #f8f9fa; text-align: center; margin-top: 2px; word-wrap: break-word; line-height: 1.1;">${
-          item.name
-        }</div>
+        <div class="item-icon">${item.icon || "??"}</div>
+        <div class="item-name">${item.name}</div>
       `;
       equipmentSlot.classList.add("equipped");
       equipmentSlot.title = item.name;
@@ -458,14 +456,17 @@ window.showEquipmentTooltip = function (event, slot) {
   if (!tooltip) return;
 
   document.body.appendChild(tooltip);
+  tooltip.classList.add("tooltip-positioned");
   const rect = event.target.getBoundingClientRect();
   const tooltipRect = tooltip.getBoundingClientRect();
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   const wouldOverflowRight = rect.right + 10 + tooltipRect.width > windowWidth;
   if (wouldOverflowRight) {
+    tooltip.classList.add("tooltip-left");
     tooltip.style.left = rect.left - tooltipRect.width - 10 + "px";
   } else {
+    tooltip.classList.remove("tooltip-left");
     tooltip.style.left = rect.right + 10 + "px";
   }
   let topPosition = rect.top + window.scrollY;
@@ -634,8 +635,6 @@ window.getOrCreateHeldGhost = function () {
   if (!ghost) {
     ghost = document.createElement("div");
     ghost.id = "bank-held-ghost";
-    ghost.style.cssText =
-      "position:absolute; pointer-events:none; z-index:9999; display:none; background:#111111; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 6px; color:#f8f9fa; font-size:12px; box-shadow:0 2px 6px rgba(0,0,0,0.3);";
     document.body.appendChild(ghost);
   }
   return ghost;
@@ -646,7 +645,7 @@ window.showHeldGhost = function (itemId) {
   const item = gameData.items[itemId];
   const icon = item?.icon || "??";
   const qty = gameState.bank[itemId] || 0;
-  ghost.innerHTML = `<span style="font-size:16px; margin-right:6px;">${icon}</span><span>${
+  ghost.innerHTML = `<span class="ghost-icon">${icon}</span><span class="ghost-text">${
     item?.name || itemId
   } (${qty})</span>`;
   ghost.style.display = "block";
@@ -979,30 +978,28 @@ window.showAreaDetail = function (areaId) {
 
   if (!existingButton) {
     const toggleButton = document.createElement("button");
-    toggleButton.className = "drops-toggle-button";
+    toggleButton.className = "toggle-button";
+    if (showDropPercentages) {
+      toggleButton.classList.add("active");
+    }
     toggleButton.textContent = "Drops %";
-    toggleButton.style.cssText = `
-      background: ${showDropPercentages ? "#2ecc71" : "rgba(255,255,255,0.06)"};
-      color: #e6edf3;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-left: 10px;
-      transition: background-color 0.3s;
-    `;
 
     toggleButton.addEventListener("click", () => {
       showDropPercentages = !showDropPercentages;
-      toggleButton.style.background = showDropPercentages
-        ? "#2ecc71"
-        : "rgba(255,255,255,0.06)";
+      if (showDropPercentages) {
+        toggleButton.classList.add("active");
+      } else {
+        toggleButton.classList.remove("active");
+      }
       renderAreaContent(area);
     });
 
     contentHeader.appendChild(toggleButton);
   }
+
+  // Properly manage page visibility
+  document.getElementById("areas-page").classList.remove("visible");
+  document.getElementById("area-detail-page").classList.add("visible");
 }; // CLOSE showAreaDetail
 
 // A simple areas renderer (ensures top-level scope; safe if you already have one)
@@ -1487,9 +1484,8 @@ window.selectEnemy = function (item, enemy) {
         return;
       }
     }
-    const cpbStop = document.getElementById("combat-progress");
-    if (cpbStop) cpbStop.style.display = "none";
-    document.getElementById("enemy-display").style.display = "none";
+    hideCombatProgress();
+    hideEnemyDisplay();
     const noEnemy = document.getElementById("no-enemy");
     if (noEnemy) noEnemy.style.display = "block";
     addCombatLog("Combat stopped");
@@ -1966,19 +1962,17 @@ window.showCombatSkillPage = function (skill) {
     card.className = "resource-card";
     card.style.padding = "12px";
     const title = document.createElement("div");
-    title.style.cssText =
-      "color: var(--brand); margin-bottom: 8px; font-weight: 600;";
+    title.className = "gathering-title";
     title.textContent = titleText;
     card.appendChild(title);
     rows.forEach(([label, value]) => {
       const line = document.createElement("div");
-      line.style.cssText =
-        "display:flex; justify-content:space-between; font-size:13px; color:#c9d1d9; margin:2px 0;";
+      line.className = "gathering-line";
       const l = document.createElement("span");
       l.textContent = label;
       const v = document.createElement("span");
+      v.className = "gathering-value";
       v.textContent = value;
-      v.style.color = "#8b949e";
       line.appendChild(l);
       line.appendChild(v);
       card.appendChild(line);
@@ -2125,12 +2119,11 @@ window.showSkillCraftingPage = function (skill) {
   const recipeList = document.createElement("div");
   recipeList.style.cssText = "flex: 1; overflow-y: auto; max-height: 500px;";
   const recipeTitle = document.createElement("h3");
+  recipeTitle.className = "recipe-title";
   recipeTitle.textContent = "Available Recipes";
-  recipeTitle.style.cssText = "margin-bottom: 15px; color: var(--brand);";
   recipeList.appendChild(recipeTitle);
   const craftingArea = document.createElement("div");
-  craftingArea.style.cssText =
-    "flex: 1; padding: 20px; background: #111111; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);";
+  craftingArea.className = "crafting-area";
   craftingArea.innerHTML = `
     <h3 style="color: var(--brand); margin-bottom: 15px;">Crafting Station</h3>
     <div id="selected-recipe" style="color: #8b949e; text-align: center; padding: 40px;">
@@ -2244,23 +2237,16 @@ window.showFarmingInterface = function (container) {
   FARMING_DATA.plots.forEach((plot, index) => {
     const isUnlocked = index < unlockedPlots;
     const plotCard = document.createElement("div");
-    plotCard.className = "resource-card";
+    plotCard.className = "plot-card";
+    if (isUnlocked) {
+      plotCard.classList.add("unlocked");
+    } else {
+      plotCard.classList.add("locked");
+    }
     const plotState = gameState.farming.unlockedPlots.find(
       (p) => p.name === plot.name
     );
     const isPlanted = plotState && plotState.plantedSeed;
-
-    plotCard.style.cssText = `
-      background: ${
-        isUnlocked ? "rgba(40, 167, 69, 0.2)" : "rgba(255,255,255,0.06)"
-      };
-      border: 1px solid ${
-        isUnlocked ? "var(--brand)" : "rgba(255,255,255,0.08)"
-      };
-      opacity: ${isUnlocked ? "1" : "0.6"};
-      cursor: ${isUnlocked ? "pointer" : "default"};
-      min-height: 220px;
-    `;
     const compatibleSeeds = getCompatibleSeeds(plot.type, playerLevel);
     const hasSeeds = compatibleSeeds.length > 0;
 
@@ -2410,10 +2396,10 @@ window.selectSeedForPlot = function (plotName, plotType, plotIndex) {
       document.body.removeChild(modal);
     });
     seedOption.addEventListener("mouseenter", () => {
-      seedOption.style.backgroundColor = "rgba(40, 167, 69, 0.4)";
+      seedOption.classList.add("hover");
     });
     seedOption.addEventListener("mouseleave", () => {
-      seedOption.style.backgroundColor = "rgba(40, 167, 69, 0.2)";
+      seedOption.classList.remove("hover");
     });
     seedGrid.appendChild(seedOption);
   });
@@ -2709,10 +2695,10 @@ window.selectAnimalForStructure = function (
       document.body.removeChild(modal);
     });
     animalOption.addEventListener("mouseenter", () => {
-      animalOption.style.backgroundColor = "rgba(142, 68, 173, 0.4)";
+      animalOption.classList.add("hover");
     });
     animalOption.addEventListener("mouseleave", () => {
-      animalOption.style.backgroundColor = "rgba(142, 68, 173, 0.2)";
+      animalOption.classList.remove("hover");
     });
     animalGrid.appendChild(animalOption);
   });

@@ -112,16 +112,17 @@
     }
 
     .game-container {
-      display: flex;
-      height: 100vh;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      height: 100dvh;
     }
 
     .sidebar {
-      width: 250px;
-      background: rgba(18, 18, 18, 0.95);
-      padding: 20px;
-      overflow-y: auto;
-      border-right: 2px solid rgba(255, 255, 255, 0.08);
+      background: var(--surface-1);
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(10px) saturate(1.2);
+      -webkit-backdrop-filter: blur(10px) saturate(1.2);
+      padding: 20px 16px;
     }
 
     .logo {
@@ -190,9 +191,7 @@
     }
 
     .main-content {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.3);
-      overflow-y: auto;
+      background: transparent;
     }
 
     .top-bar {
@@ -3573,13 +3572,13 @@
       </header>
       <div class="content-area">
         <div class="loading" id="loading-screen">Loading game data...</div>
-        <div class="page-content" id="areas-page" style="display: none">
+        <div class="page-content" id="areas-page">
           <div class="content-header">
             <h1 class="content-title">Areas</h1>
           </div>
           <div class="areas-grid" id="areas-grid"></div>
         </div>
-        <section aria-labelledby="area-detail-title" class="page-content" id="area-detail-page" style="display: none">
+        <section aria-labelledby="area-detail-title" class="page-content" id="area-detail-page">
           <div class="content-header">
             <h1 class="content-title" id="area-detail-title">Area Name</h1>
             <button class="action-button" id="back-to-areas">
@@ -3602,13 +3601,13 @@
                       <div class="stat-item"><span>Defense:</span><span id="player-defense">10</span></div>
                     </div>
                     <div class="hp-bar">
-                      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="player-hp-bar" role="progressbar" style="width: 100%"></div>
+                      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="player-hp-bar" role="progressbar"></div>
                     </div>
                     <div id="player-hp" style="font-size:12px;">100/100</div>
                   </div>
                   <div class="combat-box">
                     <h4 style="margin:0 0 6px 0;">Enemy</h4>
-                    <div id="enemy-display" style="display:none;">
+                    <div id="enemy-display">
                       <div class="stats-grid">
                         <div class="stat-item"><span>Name:</span><span id="current-enemy-name">Enemy</span></div>
                         <div class="stat-item"><span>Level:</span><span id="enemy-level-display">-</span></div>
@@ -3616,7 +3615,7 @@
                         <div class="stat-item"><span>Defense:</span><span id="enemy-defense-display">-</span></div>
                       </div>
                       <div class="hp-bar">
-                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="enemy-hp-bar" role="progressbar" style="width: 100%"></div>
+                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="enemy-hp-bar" role="progressbar"></div>
                       </div>
                       <div id="enemy-hp-text">100/100</div>
                     </div>
@@ -3712,7 +3711,7 @@
           </div>
         </section>
       </div>
-      <div class="page-content" id="homebase-page" style="display: none">
+      <div class="page-content" id="homebase-page">
         <div class="hud">
           <div class="badge"><span class="k">🪵 Wood</span> <span class="v" id="wood">150</span> <span class="delta" id="woodDelta"></span></div>
           <div class="badge"><span class="k">🪨 Stone</span> <span class="v" id="stone">120</span> <span class="delta" id="stoneDelta"></span></div>
@@ -3762,7 +3761,7 @@
         <div class="toasts" id="toasts"></div>
         
       </div>
-      <div class="page-content" id="bank-page" style="display: none">
+      <div class="page-content" id="bank-page">
         <div class="content-header">
           <h1 class="content-title">Bank</h1>
           <p>
@@ -3772,7 +3771,7 @@
         </div>
         <div class="bank-grid" id="bank-grid"></div>
       </div>
-      <div class="page-content" id="shop-page" style="display: none">
+      <div class="page-content" id="shop-page">
         <div class="content-header">
           <h1 class="content-title">Shop</h1>
           <p>Purchase upgrades and equipment</p>
@@ -3784,7 +3783,7 @@
         </div>
         <div class="shop-grid" id="shop-items"></div>
       </div>
-      <div class="page-content" id="skill-page" style="display: none">
+      <div class="page-content" id="skill-page">
         <div class="content-header">
           <h1 class="content-title" id="skill-page-title">Skill</h1>
         </div>

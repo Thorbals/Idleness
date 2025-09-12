@@ -575,13 +575,38 @@
     }
 
     function showLoadingScreen() {
-      document.getElementById("loading-screen").style.display = "flex";
-      document.getElementById("areas-page").style.display = "none";
+      const loadingScreen = document.getElementById("loading-screen");
+      const areasPage = document.getElementById("areas-page");
+      if (loadingScreen) loadingScreen.classList.add("show");
+      if (areasPage) areasPage.classList.add("hidden");
     }
 
     function hideLoadingScreen() {
-      document.getElementById("loading-screen").style.display = "none";
+      const loadingScreen = document.getElementById("loading-screen");
+      const areasPage = document.getElementById("areas-page");
+      if (loadingScreen) loadingScreen.classList.remove("show");
+      if (areasPage) areasPage.classList.remove("hidden");
       showPage("areas");
+    }
+
+    function showCombatProgress() {
+      const combatProgress = document.getElementById("combat-progress");
+      if (combatProgress) combatProgress.classList.remove("hidden");
+    }
+
+    function hideCombatProgress() {
+      const combatProgress = document.getElementById("combat-progress");
+      if (combatProgress) combatProgress.classList.add("hidden");
+    }
+
+    function showEnemyDisplay() {
+      const enemyDisplay = document.getElementById("enemy-display");
+      if (enemyDisplay) enemyDisplay.classList.remove("hidden");
+    }
+
+    function hideEnemyDisplay() {
+      const enemyDisplay = document.getElementById("enemy-display");
+      if (enemyDisplay) enemyDisplay.classList.add("hidden");
     }
 
 
@@ -851,8 +876,8 @@
         if (equippedItem && gameData.items[equippedItem]) {
           const item = gameData.items[equippedItem];
           slotElement.innerHTML = `
-        <div style="font-size: 24px;">${item.icon || "??"}</div>
-              <div style="font-size: 8px; color: #f8f9fa; text-align: center; margin-top: 2px; word-wrap: break-word; line-height: 1.1;">${item.name}</div>
+        <div class="item-icon">${item.icon || "??"}</div>
+              <div class="item-name">${item.name}</div>
             `;
           equipmentSlot.classList.add("equipped");
           equipmentSlot.title = item.name;
@@ -891,18 +916,13 @@
       if (!tooltip) return;
 
       document.body.appendChild(tooltip);
+      tooltip.classList.add("tooltip-positioned");
 
       const rect = event.target.getBoundingClientRect();
 
       const tooltipRect = tooltip.getBoundingClientRect();
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const wouldOverflowRight = rect.right + 10 + tooltipRect.width > windowWidth;
-      if (wouldOverflowRight) {
-        tooltip.style.left = rect.left - tooltipRect.width - 10 + "px";
-      } else {
-        tooltip.style.left = rect.right + 10 + "px";
-      }
       let topPosition = rect.top + window.scrollY;
       const wouldOverflowBottom = rect.top + tooltipRect.height > windowHeight;
 
@@ -911,7 +931,14 @@
         topPosition = Math.max(window.scrollY, topPosition);
       }
 
-      tooltip.style.top = topPosition + "px";
+      const wouldOverflowRight = rect.right + 10 + tooltipRect.width > windowWidth;
+      if (wouldOverflowRight) {
+        tooltip.style.transform = `translate(${rect.left - tooltipRect.width - 10}px, ${topPosition}px)`;
+        tooltip.classList.add("tooltip-left");
+      } else {
+        tooltip.style.transform = `translate(${rect.right + 10}px, ${topPosition}px)`;
+        tooltip.classList.remove("tooltip-left");
+      }
 
       requestAnimationFrame(() => {
         tooltip.classList.add("show");
@@ -984,7 +1011,7 @@
         content += `<div class="stat-line"><span>Elemental Status:</span><span class="stat-positive">+${item.elementalStatus}%</span></div>`;
       }
 
-      content += `<div style="margin-top: 8px; color: #8b949e; font-size: 11px;">Click to unequip</div>`;
+      content += `<div class="unequip-instruction">Click to unequip</div>`;
 
       tooltip.innerHTML = content;
       return tooltip;
@@ -1010,12 +1037,6 @@
       const tooltipRect = tooltip.getBoundingClientRect();
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const showOnLeft = rect.right + 10 + tooltipRect.width > windowWidth;
-      if (showOnLeft) {
-        tooltip.style.left = `${rect.left - tooltipRect.width - 10}px`;
-      } else {
-        tooltip.style.left = `${rect.right + 10}px`;
-      }
       let topPosition = rect.top + window.scrollY;
       const wouldOverflowBottom = rect.top + tooltipRect.height > windowHeight;
 
@@ -1024,7 +1045,14 @@
         topPosition = Math.max(window.scrollY, topPosition);
       }
 
-      tooltip.style.top = `${topPosition}px`;
+      const showOnLeft = rect.right + 10 + tooltipRect.width > windowWidth;
+      if (showOnLeft) {
+        tooltip.style.transform = `translate(${rect.left - tooltipRect.width - 10}px, ${topPosition}px)`;
+        tooltip.classList.add("tooltip-left");
+      } else {
+        tooltip.style.transform = `translate(${rect.right + 10}px, ${topPosition}px)`;
+        tooltip.classList.remove("tooltip-left");
+      }
 
       setTimeout(() => {
         tooltip.classList.add("show");
@@ -1123,9 +1151,9 @@
       updatePlayerStats();
       updateUI();
       setupEventListeners();
-      setTimeout(() => {
-        renderEquipmentSlots();
-      }, 100);
+
+      // Set initial page state
+      showPage('areas');
 
       startGameLoop();
       loadGame();
@@ -1161,8 +1189,7 @@
       document.addEventListener("mousemove", function (e) {
         const ghost = document.getElementById("bank-held-ghost");
         if (gameState.bankHeldItem && ghost) {
-          ghost.style.left = (e.pageX + 12) + "px";
-          ghost.style.top = (e.pageY + 12) + "px";
+          ghost.style.transform = `translate(${e.pageX + 12}px, ${e.pageY + 12}px)`;
         }
       });
       document.addEventListener("keydown", function (e) {
@@ -1194,10 +1221,10 @@
 
               combat.inCombat = false;
               combat.currentEnemy = null;
-              const cpb2 = document.getElementById("combat-progress"); if (cpb2) cpb2.style.display = "none";
-              document.getElementById("enemy-display").style.display = "none";
+              hideCombatProgress();
+              hideEnemyDisplay();
               const noEnemy = document.getElementById("no-enemy");
-              if (noEnemy) noEnemy.style.display = "block";
+              if (noEnemy) noEnemy.classList.add("visible");
 
               showNotification("Fled from combat", "info");
             }
@@ -1377,7 +1404,6 @@
       if (!ghost) {
         ghost = document.createElement("div");
         ghost.id = "bank-held-ghost";
-        ghost.style.cssText = "position:absolute; pointer-events:none; z-index:9999; display:none; background:#111111; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 6px; color:#f8f9fa; font-size:12px; box-shadow:0 2px 6px rgba(0,0,0,0.3);";
         document.body.appendChild(ghost);
       }
       return ghost;
@@ -1389,12 +1415,12 @@
       const icon = item?.icon || "??";
       const qty = gameState.bank[itemId] || 0;
       ghost.innerHTML = `<span style="font-size:16px; margin-right:6px;">${icon}</span><span>${item?.name || itemId} (${qty})</span>`;
-      ghost.style.display = "block";
+      ghost.classList.add("visible");
     }
 
     function hideHeldGhost() {
       const ghost = document.getElementById("bank-held-ghost");
-      if (ghost) ghost.style.display = "none";
+      if (ghost) ghost.classList.remove("visible");
     }
 
     function handleClick(event) {
@@ -1616,7 +1642,7 @@
 
             const craftingProgress = document.getElementById("crafting-progress");
             if (craftingProgress) {
-              craftingProgress.style.display = "none";
+              craftingProgress.classList.add("hidden");
             }
 
             const selectedRecipeDiv = document.getElementById("selected-recipe");
@@ -1647,7 +1673,7 @@
 
           const craftingProgress = document.getElementById("crafting-progress");
           if (craftingProgress) {
-            craftingProgress.style.display = "none";
+            craftingProgress.classList.add("hidden");
           }
 
           addToMessageLog("Crafting error occurred - system reset", "error");
@@ -1871,10 +1897,10 @@
 
       combat.inCombat = false;
       combat.currentEnemy = null;
-      const cpb2 = document.getElementById("combat-progress"); if (cpb2) cpb2.style.display = "none";
-      document.getElementById("enemy-display").style.display = "none";
+      hideCombatProgress();
+      hideEnemyDisplay();
       const noEnemy = document.getElementById("no-enemy");
-      if (noEnemy) noEnemy.style.display = "block";
+      if (noEnemy) noEnemy.classList.add("visible");
 
       document.querySelectorAll('.enemy-item').forEach((i) => i.classList.remove('active'));
     }
@@ -1965,10 +1991,10 @@
             combat.inCombat = false;
             combat.currentEnemy = null;
             combat.dungeonProgress = 0;
-            const cpb1 = document.getElementById("combat-progress"); if (cpb1) cpb1.style.display = "none";
-            document.getElementById("enemy-display").style.display = "none";
+            hideCombatProgress();
+            hideEnemyDisplay();
             const noEnemy = document.getElementById("no-enemy");
-            if (noEnemy) noEnemy.style.display = "block";
+            if (noEnemy) noEnemy.classList.add("visible");
             renderEnemies(gameState.currentArea);
           }
         } else {
@@ -1979,16 +2005,18 @@
               combat.enemyMaxHp = enemy.hp;
               combat.playerTimer = 0;
               combat.enemyTimer = 0;
-              document.getElementById("combat-progress-fill").style.width = "0%";
-              document.getElementById("enemy-hp-bar").style.width = "100%";
+              const progressFill = document.getElementById("combat-progress-fill");
+              const enemyHpBar = document.getElementById("enemy-hp-bar");
+              if (progressFill) progressFill.classList.add("reset");
+              if (enemyHpBar) enemyHpBar.classList.add("full");
               document.getElementById("enemy-hp-text").textContent = `${enemy.hp}/${enemy.hp}`;
               addCombatLog(`${enemy.name} respawned! Fighting again...`);
             }, 800);
           } else {
             combat.inCombat = false;
             combat.currentEnemy = null;
-            document.getElementById("combat-progress").style.display = "none";
-            document.getElementById("enemy-display").style.display = "none";
+            hideCombatProgress();
+            hideEnemyDisplay();
             document.getElementById("combat-status").textContent = "Enemy defeated! Select another enemy.";
           }
         }
@@ -2047,10 +2075,10 @@
 
         combat.inCombat = false;
         combat.currentEnemy = null;
-        const cpb2 = document.getElementById("combat-progress"); if (cpb2) cpb2.style.display = "none";
-        document.getElementById("enemy-display").style.display = "none";
+        hideCombatProgress();
+        hideEnemyDisplay();
         const noEnemy = document.getElementById("no-enemy");
-        if (noEnemy) noEnemy.style.display = "block";
+        if (noEnemy) noEnemy.classList.add("visible");
       }
     }
 
@@ -2443,14 +2471,12 @@
         gameState.player.combatLevel;
 
       const hpPercent = (gameState.player.hp / gameState.player.maxHp) * 100;
-      document.getElementById("player-hp-bar").style.width = `${hpPercent}%`;
+      document.documentElement.style.setProperty('--player-hp-width', `${hpPercent}%`);
 
       if (gameState.combat.currentEnemy) {
         const enemyHpPercent =
           (gameState.combat.enemyHp / gameState.combat.enemyMaxHp) * 100;
-        document.getElementById(
-          "enemy-hp-bar"
-        ).style.width = `${enemyHpPercent}%`;
+        document.documentElement.style.setProperty('--enemy-hp-width', `${enemyHpPercent}%`);
         document.getElementById(
           "enemy-hp-text"
         ).textContent = `${gameState.combat.enemyHp}/${gameState.combat.enemyMaxHp}`;
@@ -2565,7 +2591,7 @@
         const craftTimer = document.getElementById("craft-timer");
 
         if (craftProgressFill) {
-          craftProgressFill.style.width = `${Math.min(100, progressPercent)}%`;
+          document.documentElement.style.setProperty('--crafting-progress-width', `${Math.min(100, progressPercent)}%`);
         }
 
         if (craftTimer) {
@@ -2580,19 +2606,12 @@
       } else if (action.type === "gathering") {
         const gatheringProgressFill = document.getElementById("gathering-progress-fill");
         if (gatheringProgressFill) {
-          gatheringProgressFill.style.width = `${Math.min(100, progressPercent)}%`;
+          document.documentElement.style.setProperty('--gathering-progress-width', `${Math.min(100, progressPercent)}%`);
         } else {
           console.warn("Gathering progress fill element not found");
         }
       } else {
-        const progressElements = document.querySelectorAll(".progress-fill");
-        progressElements.forEach((element) => {
-          if (element.id !== "combat-progress-fill" &&
-            element.id !== "craft-progress-fill" &&
-            element.id !== "gathering-progress-fill") {
-            element.style.width = `${progressPercent}%`;
-          }
-        });
+        document.documentElement.style.setProperty('--progress-fill-width', `${progressPercent}%`);
       }
     }
 
@@ -2602,8 +2621,7 @@
       const denom = combat.playerInterval || 2000;
       const numer = Math.min(denom, combat.playerTimer || 0);
       const progressPercent = (numer / denom) * 100;
-      const cpf = document.getElementById("combat-progress-fill");
-      if (cpf) cpf.style.width = `${progressPercent}%`;
+      document.documentElement.style.setProperty('--combat-progress-width', `${progressPercent}%`);
     }
 
     function updateSkillInfo() {
@@ -2654,7 +2672,7 @@
         skillXpInfo.textContent = `Level ${skillData.level} (${progressXp}/${nextLevelXp} XP)`;
       }
       if (skillXpBar) {
-        skillXpBar.style.width = `${progressPercent}%`;
+        document.documentElement.style.setProperty('--skill-xp-width', `${progressPercent}%`);
       }
 
       const skillPageTitle = document.getElementById("skill-page-title");
@@ -2664,9 +2682,7 @@
           skillData.level;
         document.getElementById("skill-xp-display").textContent = `${skillData.xp
           }/${getXPForLevel(skillData.level + 1)}`;
-        document.getElementById(
-          "skill-page-xp-bar"
-        ).style.width = `${progressPercent}%`;
+        document.documentElement.style.setProperty('--skill-xp-width', `${progressPercent}%`);
       }
     }
 
@@ -2704,12 +2720,12 @@
       hideAllTooltips();
 
       document.querySelectorAll(".page-content").forEach((page) => {
-        page.style.display = "none";
+        page.classList.remove("visible");
       });
 
       const page = document.getElementById(`${pageId}-page`);
       if (page) {
-        page.style.display = "block";
+        page.classList.add("visible");
 
         if (pageId === "shop") {
           initializeShop();
@@ -2748,7 +2764,7 @@
         });
 
       document.querySelectorAll(".progress-bar").forEach((bar) => {
-        bar.style.display = "none";
+        bar.classList.remove("visible");
       });
     }
 
@@ -2792,8 +2808,8 @@
 
       renderAreaContent(area);
 
-      document.getElementById("areas-page").style.display = "none";
-      document.getElementById("area-detail-page").style.display = "block";
+      document.getElementById("areas-page").classList.remove("visible");
+      document.getElementById("area-detail-page").classList.add("visible");
     }
 
     function renderAreas() {
@@ -3022,10 +3038,7 @@
     }
 
     function resetGatheringProgress() {
-      const gatheringProgressFill = document.getElementById("gathering-progress-fill");
-      if (gatheringProgressFill) {
-        gatheringProgressFill.style.width = "0%";
-      }
+      document.documentElement.style.setProperty('--gathering-progress-width', '0%');
     }
 
     function createGatheringProgressBox(resourceName) {
@@ -3064,7 +3077,7 @@
     function showGatheringProgress() {
       const gatheringProgress = document.getElementById("gathering-progress");
       if (gatheringProgress) {
-        gatheringProgress.style.display = "block";
+        gatheringProgress.classList.add("visible");
       }
     }
 
@@ -3302,8 +3315,8 @@
           }
         }
 
-        const cpbStop = document.getElementById("combat-progress"); if (cpbStop) cpbStop.style.display = "none";
-        document.getElementById("enemy-display").style.display = "none";
+        hideCombatProgress();
+        hideEnemyDisplay();
         const noEnemy = document.getElementById("no-enemy");
         if (noEnemy) noEnemy.style.display = "block";
 
@@ -3346,7 +3359,7 @@
       }
 
       const noEnemy = document.getElementById("no-enemy");
-      if (noEnemy) noEnemy.style.display = "none";
+      if (noEnemy) noEnemy.classList.remove("visible");
 
       const lvlEl = document.getElementById("enemy-level-display");
       const atkEl = document.getElementById("enemy-attack-display");
@@ -3562,8 +3575,10 @@
             slot.classList.add("has-item");
 
             if ((item.type === "food" || item.type === "cooked_food") && item.healAmount) {
-              slot.style.cursor = "pointer";
-              slot.style.borderColor = item.type === "cooked_food" ? "#2ecc71" : "var(--brand)";
+              slot.classList.add("food-item");
+              if (item.type === "cooked_food") {
+                slot.classList.add("cooked-food");
+              }
               slot.onclick = (evt) => {
                 evt.stopPropagation();
                 useFood(itemId);
@@ -3572,7 +3587,7 @@
               const canOpen = item.openable && Array.isArray(item.openable.drops) && item.openable.drops.length > 0;
               if (canOpen || itemId === "birds_nest") {
                 slot.style.cursor = "pointer";
-                slot.style.borderColor = "#1a7f37";
+                slot.classList.add("usable-item");
                 slot.onclick = (evt) => {
                   evt.stopPropagation();
                   if (canOpen) useOpenable(itemId);
@@ -3580,8 +3595,9 @@
                 };
               }
             } else if (["weapon", "helmet", "armor", "gloves", "boots", "offhand", "accessory"].includes(item.type)) {
-              slot.style.cursor = "pointer";
-              slot.style.borderColor = canEquipItem(itemId) ? "#238636" : "var(--brand)";
+              if (canEquipItem(itemId)) {
+                slot.classList.add("can-equip");
+              }
               slot.onclick = (evt) => {
                 evt.stopPropagation();
                 evt.preventDefault();
@@ -4229,9 +4245,7 @@
 
       if (nodesGrid.children.length === 0) {
         const noNodesMsg = document.createElement("div");
-        noNodesMsg.style.textAlign = "center";
-        noNodesMsg.style.color = "#8b949e";
-        noNodesMsg.style.padding = "40px";
+        noNodesMsg.className = "no-nodes-message";
         noNodesMsg.textContent = `No ${skill} nodes available yet. Explore more areas!`;
         skillContent.appendChild(noNodesMsg);
       } else {
@@ -4264,9 +4278,9 @@
         card.appendChild(title);
         rows.forEach(([label, value]) => {
           const line = document.createElement("div");
-          line.style.cssText = "display:flex; justify-content:space-between; font-size:13px; color:#c9d1d9; margin:2px 0;";
+          line.className = "gathering-line";
           const l = document.createElement("span"); l.textContent = label;
-          const v = document.createElement("span"); v.textContent = value; v.style.color = "#8b949e";
+          const v = document.createElement("span"); v.className = "gathering-value"; v.textContent = value;
           line.appendChild(l); line.appendChild(v); card.appendChild(line);
         });
         return card;
@@ -4394,9 +4408,7 @@
       const skillData = window.crafting_skills.RECIPES_DATA.crafting_skills[skill];
       if (!skillData || !skillData.recipes) {
         const noRecipesMsg = document.createElement("div");
-        noRecipesMsg.style.textAlign = "center";
-        noRecipesMsg.style.color = "#8b949e";
-        noRecipesMsg.style.padding = "40px";
+        noRecipesMsg.className = "no-recipes-message";
         noRecipesMsg.textContent = `No recipes available for ${skill}.`;
         skillContent.appendChild(noRecipesMsg);
         return;
@@ -4758,7 +4770,7 @@
         }
       }, 50);
 
-      craftingProgress.style.display = "block";
+      craftingProgress.classList.remove("hidden");
 
       addToMessageLog(`Started crafting ${recipe.result.quantity}x ${itemName}.`, "info");
       renderBank();

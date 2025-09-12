@@ -5,13 +5,379 @@
 */
 
 /* Crafting container and layout */
+.crafting-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.crafting-container-flex {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+}
+
+.crafting-workbench {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.recipe-list-container {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.crafting-area {
+  flex: 1;
+  padding: 20px;
+  background: #111111;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.crafting-recipes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recipe-category {
+  margin-bottom: 15px;
+}
+
+.category-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #444;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
 
 /* Recipe cards and displays */
+.recipe-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
-/* Material requirements */
+.recipe-item:hover {
+  background: rgba(33, 33, 33, 0.9);
+  border-color: #666;
+  transform: translateY(-2px);
+}
+
+.recipe-item.selected {
+  background: rgba(51, 51, 51, 0.9);
+  border-color: var(--brand);
+  box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+}
+
+.recipe-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.recipe-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+.recipe-level {
+  font-size: 11px;
+  color: #ffd43b;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.recipe-level-info {
+  font-size: 12px;
+  color: #8b949e;
+  margin-bottom: 8px;
+}
+
+.recipe-level-info.locked {
+  color: #555;
+}
 
 /* Crafting progress and timers */
+.crafting-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
-/* Crafting queue and management */
+.crafting-preview {
+  padding: 15px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+}
 
-/* Recipe discovery and unlocks */
+.preview-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+
+.preview-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.preview-description {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.crafting-materials {
+  padding: 15px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.materials-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.materials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.material-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: rgba(10, 10, 10, 0.9);
+  border-radius: 4px;
+}
+
+.material-icon {
+  font-size: 20px;
+}
+
+.material-info {
+  flex: 1;
+}
+
+.material-name {
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.material-quantity {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.material-available {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.material-available.enough {
+  color: var(--success);
+}
+
+.material-available.shortage {
+  color: var(--danger);
+}
+
+.crafting-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.crafting-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.crafting-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand), #357abd);
+  transition: width 0.3s ease;
+  width: var(--crafting-progress-width, 0%);
+}
+
+.crafting-timer {
+  font-size: 14px;
+  color: #ccc;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.craft-button {
+  padding: 12px 24px;
+  background: var(--brand);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.craft-button:hover:not(:disabled) {
+  background: #357abd;
+  transform: translateY(-1px);
+}
+
+.craft-button:disabled {
+  background: #333;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.crafting-queue {
+  padding: 15px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.queue-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.queue-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(18, 18, 18, 0.9);
+  border-radius: 4px;
+}
+
+.queue-item-icon {
+  font-size: 24px;
+}
+
+.queue-item-info {
+  flex: 1;
+}
+
+.queue-item-name {
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.queue-item-progress {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.queue-item-remove {
+  padding: 4px 8px;
+  background: var(--danger);
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s ease;
+}
+
+.queue-item-remove:hover {
+  background: #ff6666;
+}
+
+.crafting-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #ccc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  background: rgba(51, 51, 51, 0.9);
+  color: #fff;
+}
+
+.filter-button.active {
+  background: var(--brand);
+  border-color: #357abd;
+  color: #fff;
+}
+
+.no-recipes-message {
+  color: #8b949e;
+  text-align: center;
+  padding: 20px;
+}
