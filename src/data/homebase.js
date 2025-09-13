@@ -217,8 +217,7 @@ window.loadGameData = async () => {
       ...ITEMS_DATA.junk,
       ...ITEMS_DATA.trophies,
       ...EQUIPMENT_DATA,
-    };
-+
+  };
     ensureAllItemIcons();
     try {
       applyDungeonRevamp();
