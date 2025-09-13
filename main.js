@@ -49,7 +49,7 @@ async function importMonolith() {
     await import('./src/data/homebase.js');
     console.log('[BOOT] homebase module loaded');
     // Load structured data modules (new architecture)
-    const dataIndex = await import('./src/data/index.js');
+    const dataIndex = await import('./src/data/game.js');
     dataIndex.default?.initAllModules?.();
     console.log('[BOOT] structured data modules initialized');
   } catch (err) {
