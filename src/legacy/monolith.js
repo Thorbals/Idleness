@@ -1,6 +1,6 @@
-//===============================================
-// GAME.JS - Core game initialization and setup
-//===============================================
+//======================================
+// SECTION: data/game.js
+//======================================
 
 (function () {
   function onReady(fn) {
@@ -133,11 +133,25 @@
 
 
 
-//======================================
-// ITEMS_LIST.JS - Item data definitions
-//======================================
 
-// ---- inline script #3 ----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: lists/items_list.js
+//======================================
 
 ITEMS_DATA.raw_materials.wood = {
   stick: { id: "stick", name: "Stick", type: "material", icon: "🪵" },
@@ -475,12 +489,6 @@ ITEMS_DATA.seeds = {
   },
 };
 
-const STRUCTURE_CAPACITY = { pen: 10, coop: 12, hutch: 8, insect: 30 };
-
-function critPctToRating(pct) {
-  const p = Math.max(0, Math.min(0.95, pct || 0));
-  return Math.round((p / (1 - p)) * 200);
-}
 
 
 
@@ -498,9 +506,37 @@ function critPctToRating(pct) {
 
 
 
-//=================================================
-// FACTIONS.JS - Enemy factions and scaling system
-//=================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/factions.js
+//======================================
 
 function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
   const f =
@@ -551,6 +587,57 @@ function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
   };
 }
 
+function getFactionTextColor(factionId) {
+  const faction = FACTION_CONFIG[factionId];
+  if (!faction) return "rgba(255, 255, 255, 1)";
+  return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.textOpacity})`;
+}
+
+function getFactionBorderColor(factionId) {
+  const faction = FACTION_CONFIG[factionId];
+  if (!faction) return "rgba(255, 255, 255, 0.3)";
+  return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.borderOpacity})`;
+}
+
+function getFactionRGBString(factionId) {
+  const faction = FACTION_CONFIG[factionId];
+  if (!faction) return "128,128,128";
+  return `${faction.color.r},${faction.color.g},${faction.color.b}`;
+}
+
+function generateFactionCSS() {
+  let css = "";
+  Object.values(FACTION_CONFIG).forEach((faction) => {
+    css += `.faction-${faction.id} { color: ${getFactionTextColor(
+      faction.id
+    )}; }\n`;
+  });
+  Object.values(FACTION_CONFIG).forEach((faction) => {
+    css += `.enemy-item.faction-${
+      faction.id
+    } .enemy-name { color: ${getFactionTextColor(faction.id)}; }\n`;
+  });
+
+  return css;
+}
+
+function injectFactionCSS() {
+  const styleId = "dynamic-faction-styles";
+  let existingStyle = document.getElementById(styleId);
+
+  if (existingStyle) {
+    existingStyle.remove();
+  }
+
+  const style = document.createElement("style");
+  style.id = styleId;
+  style.textContent = generateFactionCSS();
+  document.head.appendChild(style);
+}
+
+Object.values(FACTION_CONFIG).forEach((faction) => {
+  NAME_TO_FACTION_ID[faction.name] = faction.id;
+});
 
 
 
@@ -567,9 +654,26 @@ function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
 
 
 
-//=====================================
-// GAME.JS - Core game state and logic
-//=====================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/game.js
+//======================================
 
 let gameData = {
   areas: null,
@@ -714,6 +818,46 @@ let currentSkill = null;
 let equipmentTooltip = null;
 let showDropPercentages = false;
 
+function nf(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+}
+
+function ensureAllItemIcons() {
+  if (!gameData || !gameData.items) return;
+  const defaultByType = {
+    currency: "⚙️",
+    material: "📦",
+    weapon: "⚔️",
+    helmet: "🪖",
+    armor: "🛡️",
+    gloves: "🧤",
+    boots: "🥾",
+    offhand: "🛡️",
+    accessory: "🎖️",
+    consumable: "🍞",
+    special: "✨",
+    junk: "📦",
+    trophies: "🏆",
+  };
+  let fixed = 0;
+  Object.entries(gameData.items).forEach(([id, item]) => {
+    const icon = item && item.icon;
+    const malformed = !icon || typeof icon !== "string" || icon.trim() === "";
+    const suspicious = /�|�|�|�|�|�/.test(icon || "");
+    if (malformed || suspicious) {
+      const t = (item && item.type) || "misc";
+      item.icon = defaultByType[t] || "??";
+      fixed++;
+    }
+  });
+  if (fixed > 0) {
+    console.log(`Fixed ${fixed} item icons`);
+  }
+}
+
 async function loadGameData() {
   try {
     showLoadingScreen();
@@ -767,158 +911,45 @@ async function loadGameData() {
   }
 }
 
-function getFactionTextColor(factionId) {
-  const faction = FACTION_CONFIG[factionId];
-  if (!faction) return "rgba(255, 255, 255, 1)";
-  return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.textOpacity})`;
-}
 
-function getFactionBorderColor(factionId) {
-  const faction = FACTION_CONFIG[factionId];
-  if (!faction) return "rgba(255, 255, 255, 0.3)";
-  return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.borderOpacity})`;
-}
 
-function getFactionRGBString(factionId) {
-  const faction = FACTION_CONFIG[factionId];
-  if (!faction) return "128,128,128";
-  return `${faction.color.r},${faction.color.g},${faction.color.b}`;
-}
-function generateFactionCSS() {
-  let css = "";
-  Object.values(FACTION_CONFIG).forEach((faction) => {
-    css += `.faction-${faction.id} { color: ${getFactionTextColor(
-      faction.id
-    )}; }\n`;
-  });
-  Object.values(FACTION_CONFIG).forEach((faction) => {
-    css += `.enemy-item.faction-${
-      faction.id
-    } .enemy-name { color: ${getFactionTextColor(faction.id)}; }\n`;
-  });
 
-  return css;
-}
-function injectFactionCSS() {
-  const styleId = "dynamic-faction-styles";
-  let existingStyle = document.getElementById(styleId);
 
-  if (existingStyle) {
-    existingStyle.remove();
-  }
 
-  const style = document.createElement("style");
-  style.id = styleId;
-  style.textContent = generateFactionCSS();
-  document.head.appendChild(style);
-}
 
-Object.values(FACTION_CONFIG).forEach((faction) => {
-  NAME_TO_FACTION_ID[faction.name] = faction.id;
-});
 
-function nf(s) {
-  return String(s || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "")
-    .trim();
-}
 
-function applyDungeonRevamp() {
-  if (!Array.isArray(gameData.areas)) return;
-  const byId = Object.create(null);
-  gameData.areas.forEach((a) => {
-    if (a && a.id) byId[a.id] = a;
-  });
-  Object.entries(AREA_REVAMP_CONFIG).forEach(([areaId, cfg]) => {
-    const area = byId[areaId];
-    if (!area) return;
-    area.areaType = cfg.areaType;
-    const areaFactions = (area.factions || []).map(
-      (name) => NAME_TO_FACTION_ID[name] || name
-    );
-    area.dungeons = (cfg.dungeons || []).map((d) => {
-      const primary = d.primary;
-      const secondary = areaFactions.filter((f) => f !== primary);
-      return {
-        id: d.id,
-        name: d.name,
-        level: area.level,
-        type: d.type,
-        primaryFaction: primary,
-        secondaryFactions: secondary,
-      };
-    });
-    area.enemyWhitelist = new Set((cfg.enemies || []).map(nf));
-  });
-}
 
-function ensureAllItemIcons() {
-  if (!gameData || !gameData.items) return;
-  const defaultByType = {
-    currency: "⚙️",
-    material: "📦",
-    weapon: "⚔️",
-    helmet: "🪖",
-    armor: "🛡️",
-    gloves: "🧤",
-    boots: "🥾",
-    offhand: "🛡️",
-    accessory: "🎖️",
-    consumable: "🍞",
-    special: "✨",
-    junk: "📦",
-    trophies: "🏆",
-  };
-  let fixed = 0;
-  Object.entries(gameData.items).forEach(([id, item]) => {
-    const icon = item && item.icon;
-    const malformed = !icon || typeof icon !== "string" || icon.trim() === "";
-    const suspicious = /�|�|�|�|�|�/.test(icon || "");
-    if (malformed || suspicious) {
-      const t = (item && item.type) || "misc";
-      item.icon = defaultByType[t] || "??";
-      fixed++;
-    }
-  });
-  if (fixed > 0)
-    console.log(`ensureAllItemIcons: set defaults for ${fixed} item(s)`);
-}
 
-function showLoadingScreen() {
-  const loadingScreen = document.getElementById("loading-screen");
-  const areasPage = document.getElementById("areas-page");
-  if (loadingScreen) loadingScreen.classList.add("show");
-  if (areasPage) areasPage.classList.add("hidden");
-}
 
-function hideLoadingScreen() {
-  const loadingScreen = document.getElementById("loading-screen");
-  const areasPage = document.getElementById("areas-page");
-  if (loadingScreen) loadingScreen.classList.remove("show");
-  if (areasPage) areasPage.classList.remove("hidden");
-  showPage("areas");
-}
 
-function showCombatProgress() {
-  const combatProgress = document.getElementById("combat-progress");
-  if (combatProgress) combatProgress.classList.remove("hidden");
-}
 
-function hideCombatProgress() {
-  const combatProgress = document.getElementById("combat-progress");
-  if (combatProgress) combatProgress.classList.add("hidden");
-}
 
-function showEnemyDisplay() {
-  const enemyDisplay = document.getElementById("enemy-display");
-  if (enemyDisplay) enemyDisplay.classList.remove("hidden");
-}
 
-function hideEnemyDisplay() {
-  const enemyDisplay = document.getElementById("enemy-display");
-  if (enemyDisplay) enemyDisplay.classList.add("hidden");
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/equipment.js
+//======================================
 
 function canEquipItem(itemId) {
   const item = gameData.items[itemId];
@@ -2425,9 +2456,30 @@ function escapeBattle() {
 
 
 
-//====================================
-// COMBAT.JS - Combat system functions
-//====================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/combat.js
+//======================================
+
+function critPctToRating(pct) {
+  const p = Math.max(0, Math.min(0.95, pct || 0));
+  return Math.round((p / (1 - p)) * 200);
+}
 
 function performPlayerAttack() {
   const combat = gameState.combat;
@@ -2776,9 +2828,27 @@ function checkUnlockAnimalStructures(level) {
 
 
 
-//===============================================
-// PRODUCTION.JS - Farming and production systems
-//===============================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/production.js
+//======================================
+
+const STRUCTURE_CAPACITY = { pen: 10, coop: 12, hutch: 8, insect: 30 };
 
 function updatePassiveSystems() {
   updateFarmingProgress();
@@ -2973,9 +3043,25 @@ function getNextPenUnlockLevel(playerLevel) {
 
 
 
-//==============================================
-// INVENTORY.JS - Bank and inventory management
-//==============================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/inventory.js
+//======================================
 
 function addToBank(itemId, quantity) {
   const isNewItem = !gameState.bank[itemId];
@@ -3364,9 +3450,25 @@ function updateSkillInfo() {
 
 
 
-//=======================================
-// NOTIFICATIONS.JS - Notification system
-//=======================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/notifications.js
+//======================================
 
 function showNotification(message, type = "info", duration = 3000) {
   const notification = document.getElementById("notification");
@@ -3523,9 +3625,51 @@ function showAreaDetail(areaId) {
 
 
 
-//============================================
-// UI.JS - User interface rendering functions
-//============================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/areas.js
+//======================================
 
 function renderAreas() {
   const grid = document.getElementById("areas-grid");
@@ -3547,12 +3691,13 @@ function renderAreas() {
       (faction) => faction.toLowerCase() === "zombies"
     );
     const isOnlyZombies = area.factions.length === 1 && hasZombies;
-    const isStronghold =
-      area.description.startsWith("Stronghold") ||
-      area.description.startsWith("Infested Stronghold");
-
-    let zoneLabels = [];
-
+    const isStronghold = area.factions.some(
+      (faction) => faction.toLowerCase() === "stronghold"
+    );
+    const zoneLabels = [];
+    if (isOnlyZombies) {
+      zoneLabels.push({ type: "zombie", label: "ZOMBIE INFESTED" });
+    }
     if (hasZombies) {
       zoneLabels.push({ type: "infested", label: "INFESTED" });
     }
@@ -3590,6 +3735,63 @@ function renderAreas() {
 
     grid.appendChild(card);
   });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/ui.js
+//======================================
+
+function showLoadingScreen() {
+  const loadingScreen = document.getElementById("loading-screen");
+  const areasPage = document.getElementById("areas-page");
+  if (loadingScreen) loadingScreen.classList.add("show");
+  if (areasPage) areasPage.classList.add("hidden");
+}
+
+function hideLoadingScreen() {
+  const loadingScreen = document.getElementById("loading-screen");
+  const areasPage = document.getElementById("areas-page");
+  if (loadingScreen) loadingScreen.classList.remove("show");
+  if (areasPage) areasPage.classList.remove("hidden");
+  showPage("areas");
+}
+
+function showCombatProgress() {
+  const combatProgress = document.getElementById("combat-progress");
+  if (combatProgress) combatProgress.classList.remove("hidden");
+}
+
+function hideCombatProgress() {
+  const combatProgress = document.getElementById("combat-progress");
+  if (combatProgress) combatProgress.classList.add("hidden");
+}
+
+function showEnemyDisplay() {
+  const enemyDisplay = document.getElementById("enemy-display");
+  if (enemyDisplay) enemyDisplay.classList.remove("hidden");
+}
+
+function hideEnemyDisplay() {
+  const enemyDisplay = document.getElementById("enemy-display");
+  if (enemyDisplay) enemyDisplay.classList.add("hidden");
 }
 
 function renderAreaContent(area) {
@@ -3761,9 +3963,9 @@ function selectResource(card, resource, skillType) {
 
 
 
-//==========================================
-// GATHERING.JS - Resource gathering system
-//==========================================
+//======================================
+// SECTION: data/gathering.js
+//======================================
 
 function startGatheringAction(resourceId, skillType) {
   const area = gameState.currentArea;
@@ -5574,9 +5776,25 @@ function showCombatSkillPage(skill) {
 
 
 
-//========================================
-// CRAFTING.JS - Crafting and recipe system
-//========================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/crafting.js
+//======================================
 
 function showSkillCraftingPage(skill) {
   const skillPage = document.getElementById("skill-page");
@@ -6566,9 +6784,25 @@ window.removePlantedSeed = removePlantedSeed;
 
 
 
-//=======================================
-// SHOPS.JS - Shop and purchasing system
-//=======================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/shops.js
+//======================================
 
 function initializeShop() {
   setupShopTabs();
@@ -8448,9 +8682,65 @@ if (document.readyState === "loading") {
   initGame();
 }
 
-// ---- inline script #4 ----
 
-// Home Base merged module (scoped)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================
+// SECTION: data/homebase.js
+//======================================
 
 (function () {
   // ======= DATA =======
@@ -9718,26 +10008,6 @@ if (document.readyState === "loading") {
         break;
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//=======================================================
-// HOMEBBASE.JS - Homebase management and building system
-//=======================================================
 
   // Road network generation - now uses config-based approach
   function generateRoadNetwork() {
@@ -11791,8 +12061,7 @@ if (document.readyState === "loading") {
     // initial paint
     updateWallUpgradeHud();
   })();
+
+  function initializeHomeBase() {}
 })();
 
-// ---- inline script #5 ----
-
-function initializeHomeBase() {}
