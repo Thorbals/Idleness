@@ -1,7 +1,134 @@
 //======================================
+// SECTION: data/areas.js
+//======================================
+
+//======================================
+// SECTION: data/combat.js
+//======================================
+
+//======================================
+// SECTION: data/crafting.js
+//======================================
+
+//======================================
+// SECTION: data/equipment.js
+//======================================
+
+//======================================
+// SECTION: data/factions.js
+//======================================
+
+//======================================
 // SECTION: data/game.js
 //======================================
 
+//======================================
+// SECTION: data/gathering.js
+//======================================
+
+//======================================
+// SECTION: data/homebase.js
+//======================================
+
+//======================================
+// SECTION: data/inventory.js
+//======================================
+
+//======================================
+// SECTION: data/notifications.js
+//======================================
+
+//======================================
+// SECTION: data/production.js
+//======================================
+
+//======================================
+// SECTION: data/shops.js
+//======================================
+
+//======================================
+// SECTION: data/survivors.js
+//======================================
+
+//======================================
+// SECTION: data/ui.js
+//======================================
+
+//======================================
+// SECTION: lists/areas_list.js
+//======================================
+
+//======================================
+// SECTION: lists/combat_list.js
+//======================================
+
+//======================================
+// SECTION: lists/crafting_list.js
+//======================================
+
+//======================================
+// SECTION: lists/equipment_list.js
+//======================================
+
+//======================================
+// SECTION: lists/factions_list.js
+//======================================
+
+//======================================
+// SECTION: lists/gathering_list.js
+//======================================
+
+//======================================
+// SECTION: lists/homebase.list.js
+//======================================
+
+//======================================
+// SECTION: lists/items_list.js
+//======================================
+
+//======================================
+// SECTION: lists/production_list.js
+//======================================
+
+//======================================
+// SECTION: lists/shops_list.js
+//======================================
+
+//======================================
+// SECTION: styles/areas.css
+//======================================
+
+//======================================
+// SECTION: styles/combat.css
+//======================================
+
+//======================================
+// SECTION: styles/crafting.css
+//======================================
+
+//======================================
+// SECTION: styles/factions.css
+//======================================
+
+//======================================
+// SECTION: styles/homebase.css
+//======================================
+
+//======================================
+// SECTION: styles/inventory.css
+//======================================
+
+//======================================
+// SECTION: styles/layout.css
+//======================================
+
+//======================================
+// SECTION: styles/notifications.css
+//======================================
+
+//======================================
+// SECTION: styles/survivors.css
+//======================================
 (function () {
   function onReady(fn) {
     if (document.readyState === "loading")
@@ -116,42 +243,6 @@
     setupTabs();
   });
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: lists/items_list.js
-//======================================
 
 ITEMS_DATA.raw_materials.wood = {
   stick: { id: "stick", name: "Stick", type: "material", icon: "🪵" },
@@ -489,55 +580,6 @@ ITEMS_DATA.seeds = {
   },
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/factions.js
-//======================================
-
 function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
   const f =
     (gameData && gameData.enemies && gameData.enemies[factionId]) || null;
@@ -638,42 +680,6 @@ function injectFactionCSS() {
 Object.values(FACTION_CONFIG).forEach((faction) => {
   NAME_TO_FACTION_ID[faction.name] = faction.id;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/game.js
-//======================================
 
 let gameData = {
   areas: null,
@@ -910,46 +916,6 @@ async function loadGameData() {
     showNotification("Failed to load game data! Check console for details.");
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/equipment.js
-//======================================
 
 function canEquipItem(itemId) {
   const item = gameData.items[itemId];
@@ -2440,42 +2406,6 @@ function escapeBattle() {
     .forEach((i) => i.classList.remove("active"));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/combat.js
-//======================================
-
 function critPctToRating(pct) {
   const p = Math.max(0, Math.min(0.95, pct || 0));
   return Math.round((p / (1 - p)) * 200);
@@ -2812,42 +2742,6 @@ function checkUnlockAnimalStructures(level) {
   });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/production.js
-//======================================
-
 const STRUCTURE_CAPACITY = { pen: 10, coop: 12, hutch: 8, insect: 30 };
 
 function updatePassiveSystems() {
@@ -3026,42 +2920,6 @@ function getNextPenUnlockLevel(playerLevel) {
   );
   return nextStructure ? nextStructure.level : null;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/inventory.js
-//======================================
 
 function addToBank(itemId, quantity) {
   const isNewItem = !gameState.bank[itemId];
@@ -3434,42 +3292,6 @@ function updateSkillInfo() {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/notifications.js
-//======================================
-
 function showNotification(message, type = "info", duration = 3000) {
   const notification = document.getElementById("notification");
   notification.textContent = message;
@@ -3609,68 +3431,6 @@ function showAreaDetail(areaId) {
   document.getElementById("area-detail-page").classList.add("visible");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/areas.js
-//======================================
-
 function renderAreas() {
   const grid = document.getElementById("areas-grid");
   grid.innerHTML = "";
@@ -3736,28 +3496,6 @@ function renderAreas() {
     grid.appendChild(card);
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/ui.js
-//======================================
 
 function showLoadingScreen() {
   const loadingScreen = document.getElementById("loading-screen");
@@ -3946,26 +3684,6 @@ function selectResource(card, resource, skillType) {
   startGatheringAction(resource.id, skillType);
   addGatheringLog(`Started gathering ${resource.name}`);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/gathering.js
-//======================================
 
 function startGatheringAction(resourceId, skillType) {
   const area = gameState.currentArea;
@@ -5760,42 +5478,6 @@ function showCombatSkillPage(skill) {
   skillContent.appendChild(wrap);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/crafting.js
-//======================================
-
 function showSkillCraftingPage(skill) {
   const skillPage = document.getElementById("skill-page");
   const skillContent = document.getElementById("skill-content");
@@ -6767,42 +6449,6 @@ function removePlantedSeed(plotIndex) {
 
 window.selectSeedForPlot = selectSeedForPlot;
 window.removePlantedSeed = removePlantedSeed;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/shops.js
-//======================================
 
 function initializeShop() {
   setupShopTabs();
@@ -8681,66 +8327,6 @@ if (document.readyState === "loading") {
 } else {
   initGame();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//======================================
-// SECTION: data/homebase.js
-//======================================
 
 (function () {
   // ======= DATA =======
@@ -11651,6 +11237,420 @@ if (document.readyState === "loading") {
 
     return null; // No valid placement found
   }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Shift") state.chain = true;
+    if (e.key === "z" || e.key === "Z") {
+      undo();
+    }
+  });
+  document.addEventListener("keyup", (e) => {
+    if (e.key === "Shift") state.chain = false;
+  });
+
+  // ======= VALIDATION =======
+  function canAfford(b) {
+    return state.wood >= b.cost.wood && state.stone >= b.cost.stone;
+  }
+
+  /**
+   * Validates if a building can be placed at the specified location
+   * Checks for:
+   * - Out of bounds
+   * - Roads/rivers/bridges
+   * - Occupied spaces
+   * - Walls
+   * - Fog of war (locked regions)
+   * - Road adjacency requirements
+   */
+  function validatePlacement(x, y, w, h) {
+    const b = state.selection;
+    if (!b) return { ok: false, reason: "No selection" };
+    if (x < 0 || y < 0 || x + w > state.cols || y + h > state.rows)
+      return { ok: false, reason: "Out of bounds" };
+    for (let yy = y; yy < y + h; yy++) {
+      for (let xx = x; xx < x + w; xx++) {
+        const key = xx + "," + yy;
+        if (
+          state.roads.has(key) ||
+          state.rivers.has(key) ||
+          state.bridges.has(key)
+        )
+          return {
+            ok: false,
+            reason: "Cannot place on a road, river, or bridge",
+          };
+        if (state.occupied.has(key))
+          return { ok: false, reason: "Space occupied" };
+
+        // Check if tile has a wall - buildings cannot be placed on walls
+        const tile = tileAt(xx, yy);
+        if (tile && tile.classList.contains("wall"))
+          return { ok: false, reason: "Cannot place on walls" };
+
+        // Check if tile is in fog of war (locked region) - prevent building in areas you don't own
+        if (tile && tile.classList.contains("fog-of-war"))
+          return { ok: false, reason: "Cannot build in locked regions" };
+
+        // For road-adjacent buildings, also check if tile is directly touching rivers or bridges
+        if (b.tags.includes("Road-adjacent")) {
+          const n = [
+            [xx + 1, yy],
+            [xx - 1, yy],
+            [xx, yy + 1],
+            [xx, yy - 1],
+          ];
+          for (const [nx, ny] of n) {
+            if (
+              state.rivers.has(nx + "," + ny) ||
+              state.bridges.has(nx + "," + ny)
+            ) {
+              return {
+                ok: false,
+                reason:
+                  "Road-adjacent buildings cannot touch rivers or bridges",
+              };
+            }
+          }
+        }
+      }
+    }
+    let adjacent = false;
+    outer: for (let yy = y; yy < y + h; yy++) {
+      for (let xx = x; xx < x + w; xx++) {
+        const n = [
+          [xx + 1, yy],
+          [xx - 1, yy],
+          [xx, yy + 1],
+          [xx, yy - 1],
+        ];
+        for (const [nx, ny] of n) {
+          // Check building requirements based on tags
+          const hasRoadAdjacency = b.tags.includes("Road-adjacent");
+          if (hasRoadAdjacency) {
+            // Only roads count for adjacency, not rivers or bridges
+            if (state.roads.has(nx + "," + ny)) {
+              adjacent = true;
+              break outer;
+            }
+          } else {
+            // For buildings without road requirement, allow any infrastructure
+            if (
+              state.roads.has(nx + "," + ny) ||
+              state.rivers.has(nx + "," + ny) ||
+              state.bridges.has(nx + "," + ny)
+            ) {
+              adjacent = true;
+              break outer;
+            }
+          }
+        }
+      }
+    }
+    if (!adjacent) return { ok: false, reason: "Needs road adjacency" };
+    if (!canAfford(b)) return { ok: false, reason: "Insufficient resources" };
+    return { ok: true, reason: "OK" };
+  }
+
+  // ======= PLACE / UNDO =======
+  mapEl.addEventListener("click", (e) => {
+    if (!state.selection) return;
+    const t = e.target.closest(".tile");
+    if (!t) return;
+    const clickX = +t.dataset.x;
+    const clickY = +t.dataset.y;
+    const { w, h } = footprintSize();
+
+    // Use auto-fit system to find best placement position
+    const bestFit = findBestFit(clickX, clickY, w, h);
+    if (!bestFit) {
+      // Check if trying to place in fog of war
+      const hasFog = t.classList.contains("fog-of-war");
+      if (hasFog) {
+        toast(
+          "Cannot build in locked regions - unlock this area first",
+          "warn"
+        );
+      } else {
+        toast("Cannot place building in this area", "warn");
+      }
+      return;
+    }
+
+    doPlace(bestFit.x, bestFit.y, w, h);
+    if (!state.chain) {
+      state.selection = null;
+      clearSelectable();
+      document.body.classList.remove("show-adj");
+      hint.textContent = "Pick another building or select again to continue.";
+      updateDeltas(true);
+      renderCards();
+      updateAffordChip();
+    } else {
+      updateAffordChip();
+    }
+  });
+
+  function doPlace(x, y, w, h) {
+    const b = state.selection;
+
+    // Check if player can afford the building
+    if (!canAfford(b)) {
+      toast(
+        `Not enough resources! Need ${b.cost.wood} wood and ${b.cost.stone} stone`,
+        "warn"
+      );
+      return;
+    }
+
+    tickResources(-b.cost.wood, -b.cost.stone);
+
+    const cover = document.createElement("div");
+    cover.className = "placed";
+    cover.dataset.cat = b.cat;
+    cover.dataset.w = w;
+    cover.dataset.h = h;
+    cover.dataset.roof = b.roofType;
+    cover.style.position = "absolute";
+    cover.style.left = `calc(${x} * var(--cell))`;
+    cover.style.top = `calc(${y} * var(--cell))`;
+    cover.style.width = `calc(${w} * var(--cell))`;
+    cover.style.height = `calc(${h} * var(--cell))`;
+    const label = document.createElement("div");
+    label.className = "name";
+    label.textContent = b.name;
+    cover.appendChild(label);
+    mapEl.appendChild(cover);
+    cover.animate(
+      [
+        { transform: "scale(.96)", opacity: 0.0 },
+        { transform: "scale(1)", opacity: 1 },
+      ],
+      { duration: 220, easing: "ease-out" }
+    );
+
+    const cells = [];
+    for (let yy = y; yy < y + h; yy++) {
+      for (let xx = x; xx < x + w; xx++) {
+        const key = xx + "," + yy;
+        state.occupied.set(key, { id: b.id, name: b.name });
+        cells.push(key);
+      }
+    }
+    state.lastPlaced = { b, x, y, w, h, el: cover, cells };
+    undoBtn.disabled = false;
+    toast(`Placed ${b.name}`, "info", true);
+  }
+
+  function undo() {
+    const lp = state.lastPlaced;
+    if (!lp) return;
+    tickResources(lp.b.cost.wood, lp.b.cost.stone);
+    lp.cells.forEach((k) => state.occupied.delete(k));
+    lp.el.remove();
+    state.lastPlaced = null;
+    undoBtn.disabled = true;
+    toast("Undo placement");
+    updateAffordChip();
+    highlightValidTiles();
+  }
+  undoBtn.onclick = undo;
+
+  function tickResources(dw, ds) {
+    state.wood += dw;
+    state.stone += ds;
+    woodEl.textContent = state.wood;
+    stoneEl.textContent = state.stone;
+    woodEl.animate(
+      [
+        { transform: "scale(1.0)" },
+        { transform: "scale(1.15)" },
+        { transform: "scale(1.0)" },
+      ],
+      { duration: 240 }
+    );
+    stoneEl.animate(
+      [
+        { transform: "scale(1.0)" },
+        { transform: "scale(1.15)" },
+        { transform: "scale(1.0)" },
+      ],
+      { duration: 240 }
+    );
+  }
+
+  function updateDeltas(clear) {
+    if (clear || !state.selection) {
+      woodDeltaEl.textContent = "";
+      stoneDeltaEl.textContent = "";
+      return;
+    }
+    woodDeltaEl.textContent = "−" + state.selection.cost.wood;
+    woodDeltaEl.className = "delta minus";
+    stoneDeltaEl.textContent = "−" + state.selection.cost.stone;
+    stoneDeltaEl.className = "delta minus";
+  }
+
+  function updateAffordChip() {
+    if (!affordChip) return; // afford chip UI removed; no-op
+    const b = state.selection;
+    if (!b) {
+      affordChip.textContent = "";
+      affordChip.disabled = true;
+      return;
+    }
+    const w = Math.floor(state.wood / b.cost.wood);
+    const s = Math.floor(state.stone / b.cost.stone);
+    const count = Math.max(0, Math.min(w, s));
+    affordChip.textContent = `${count}× affordable`;
+    affordChip.disabled = false;
+  }
+
+  // ======= TOASTS =======
+  function toast(msg, type = "info", withUndo = false) {
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.style.borderLeftColor =
+      type === "warn"
+        ? "var(--warn)"
+        : type === "error"
+        ? "var(--danger)"
+        : "var(--accent)";
+    t.textContent = msg;
+    if (withUndo) {
+      const a = document.createElement("span");
+      a.className = "link";
+      a.textContent = "Undo";
+      a.onclick = undo;
+      t.appendChild(a);
+    }
+    toasts.appendChild(t);
+    setTimeout(() => {
+      t.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 });
+      setTimeout(() => t.remove(), 360);
+    }, 2200);
+  }
+
+  window.initializeHomeBase = window.initializeHomeBase || function () {};
+
+  // ======= REGIONS HUD =======
+  (function initRegionsHud() {
+    const statusEl = document.querySelector("#homebase-page #regionsStatus");
+    const btnEl = document.querySelector("#homebase-page #unlockRegionBtn");
+    if (!statusEl || !btnEl) return;
+    const total = Object.keys(getRegionConfig()).length;
+
+    function updateRegionsHud() {
+      const count =
+        state.unlockedRegions && typeof state.unlockedRegions.size === "number"
+          ? state.unlockedRegions.size
+          : 1;
+      statusEl.textContent = `${count}/${total}`;
+      btnEl.disabled = count >= total;
+      btnEl.title =
+        count >= total ? "All regions unlocked" : "Unlock next region";
+    }
+
+    function nextRegionId() {
+      // unlock in ascending order 1..N
+      for (let i = 1; i <= total; i++) {
+        if (!state.unlockedRegions.has(i)) return i;
+      }
+      return null;
+    }
+
+    btnEl.addEventListener("click", () => {
+      const id = nextRegionId();
+      if (!id) return;
+      state.unlockedRegions.add(id);
+      drawWalls();
+      showNotification(`Unlocked region ${id}`);
+      updateRegionsHud();
+    });
+
+    // initial paint
+    updateRegionsHud();
+  })();
+
+  // ======= WALL UPGRADE HUD =======
+  (function initWallUpgradeHud() {
+    const levelEl = document.querySelector("#homebase-page #wallLevel");
+    const btnEl = document.querySelector("#homebase-page #upgradeWallBtn");
+    if (!levelEl || !btnEl) return;
+
+    // Bunker now replaces the old Concrete/Metal mix as the final tier; bunker-tier removed.
+    const wallTypes = ["Wood", "Concrete", "Metal", "Bunker"];
+    const wallIcons = ["🪵", "🧱", "⚙️", "🛡️"];
+    // TEST MODE: All upgrade costs zero
+    const upgradeCosts = [
+      { wood: 0, stone: 0 }, // Wood -> Concrete
+      { wood: 0, stone: 0 }, // Concrete -> Metal
+      { wood: 0, stone: 0 }, // Metal -> Bunker
+    ];
+
+    function updateWallUpgradeHud() {
+      const level = state.wallLevel || 0;
+      levelEl.textContent = wallTypes[level];
+
+      // Update button icon
+      const iconSpan =
+        btnEl.querySelector(".wall-icon") || document.createElement("span");
+      iconSpan.className = "wall-icon";
+      iconSpan.textContent = wallIcons[level];
+      if (!btnEl.querySelector(".wall-icon")) {
+        btnEl.insertBefore(iconSpan, btnEl.firstChild);
+      }
+
+      if (level >= wallTypes.length - 1) {
+        btnEl.disabled = true;
+        btnEl.title = "Walls fully upgraded";
+        btnEl.textContent = "Max";
+        btnEl.insertBefore(iconSpan, btnEl.firstChild);
+      } else {
+        const cost = upgradeCosts[level];
+        const canAfford = true; // always true in test mode
+        btnEl.disabled = false;
+        btnEl.title = `Upgrade to ${wallTypes[level + 1]} (TEST: 0 cost)`;
+        btnEl.textContent = "Upgrade";
+        btnEl.insertBefore(iconSpan, btnEl.firstChild);
+      }
+
+      // Update button class for styling
+      btnEl.className = "btn mini wall-upgrade-button";
+      if (level === 1) btnEl.classList.add("concrete");
+      else if (level === 2) btnEl.classList.add("metal");
+      else if (level === 3) btnEl.classList.add("bunker");
+    }
+
+    function upgradeWall() {
+      const level = state.wallLevel || 0;
+      if (level >= wallTypes.length - 1) return;
+
+      const cost = upgradeCosts[level];
+      // In test mode, skip affordability check and resource deduction
+
+      // Upgrade wall level
+      state.wallLevel = level + 1;
+
+      // Redraw walls with new texture
+      drawWalls();
+
+      // Update UI
+      updateWallUpgradeHud();
+      updateAffordChip();
+
+      showNotification(`Walls upgraded to ${wallTypes[state.wallLevel]}`);
+    }
+
+    btnEl.addEventListener("click", upgradeWall);
+
+    // initial paint
+    updateWallUpgradeHud();
+  })();
+
+  function initializeHomeBase() {}
+})();
+
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Shift") state.chain = true;
