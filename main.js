@@ -11,7 +11,13 @@ import * as shops from './src/lists/shops_list.js';
 import * as combat_skills from './src/lists/combat_list.js';
 import * as production_skills from './src/lists/production_list.js';
 import './src/data/survivors.js'; // ensure survivors system loads
-
+import './src/data/areas.js';
+import './src/data/combat.js';
+import './src/data/crafting.js';
+import './src/data/equipment.js';
+import './src/data/factions.js';
+import './src/data/gathering.js';
+import './src/data/shops.js';
 // Expose legacy globals expected by monolith.js
 for (const mod of [items, equipment, factions, areas, gathering_skills, crafting_skills, shops, combat_skills, production_skills]) {
   for (const [k, v] of Object.entries(mod)) {

@@ -4025,4 +4025,11 @@ if (document.readyState === "loading") {
       console.warn("initWallUpgradeHud failed:", e);
     }
   });
+
+  // Initialize homebase when page is shown
+  window.initializeHomeBase = function() {
+    console.log("Homebase initialized");
+    // Add any homebase-specific initialization here if needed
+  };
+
 })(); // end Home Base merged module
