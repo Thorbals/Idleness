@@ -201,12 +201,12 @@ window.loadGameData = async () => {
 
     gameData.items = {
       ...ITEMS_DATA.currency,
-      ...ITEMS_DATA.raw_materials.wood,
-      ...ITEMS_DATA.raw_materials.stone,
-      ...ITEMS_DATA.raw_materials.metals,
-      ...ITEMS_DATA.raw_materials.gems,
-      ...ITEMS_DATA.raw_materials.salvage,
-      ...ITEMS_DATA.raw_materials.electronics,
+      ...ITEMS_DATA.materials.wood,
+      ...ITEMS_DATA.materials.stone,
+      ...ITEMS_DATA.materials.metals,
+      ...ITEMS_DATA.materials.gems,
+      ...ITEMS_DATA.materials.salvage,
+      ...ITEMS_DATA.materials.electronics,
       ...ITEMS_DATA.food,
       ...ITEMS_DATA.cooked_food,
       ...ITEMS_DATA.raw_food,

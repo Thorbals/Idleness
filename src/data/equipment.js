@@ -38,11 +38,17 @@ function ensureAllItemIcons() {
   };
   let fixed = 0;
   Object.entries(gameData.items).forEach(([id, item]) => {
-    const icon = item && item.icon;
+    // Skip if item is not an object (defensive programming)
+    if (!item || typeof item !== 'object') {
+      console.warn(`Skipping non-object item: ${id} = ${item}`);
+      return;
+    }
+    
+    const icon = item.icon;
     const malformed = !icon || typeof icon !== "string" || icon.trim() === "";
     const suspicious = /�|�|�|�|�|�/.test(icon || "");
     if (malformed || suspicious) {
-      const t = (item && item.type) || "misc";
+      const t = (item.type) || "misc";
       item.icon = defaultByType[t] || "??";
       fixed++;
     }
@@ -1254,78 +1260,34 @@ function updateAffordChip() {
   affordChip.disabled = false;
 }
 
-function canAfford(b) {
-  return state.wood >= b.cost.wood && state.stone >= b.cost.stone;
-}
-
-function undo() {
-  const lp = state.lastPlaced;
-  if (!lp) return;
-  tickResources(lp.b.cost.wood, lp.b.cost.stone);
-  lp.cells.forEach((k) => state.occupied.delete(k));
-  lp.el.remove();
-  state.lastPlaced = null;
-  undoBtn.disabled = true;
-  toast("Undo placement");
-  updateAffordChip();
-  highlightValidTiles();
-}
-
-function tickResources(dw, ds) {
-  state.wood += dw;
-  state.stone += ds;
-  woodEl.textContent = state.wood;
-  stoneEl.textContent = state.stone;
-  woodEl.animate(
-    [
-      { transform: "scale(1.0)" },
-      { transform: "scale(1.15)" },
-      { transform: "scale(1.0)" },
-    ],
-    { duration: 240 }
-  );
-  stoneEl.animate(
-    [
-      { transform: "scale(1.0)" },
-      { transform: "scale(1.15)" },
-      { transform: "scale(1.0)" },
-    ],
-    { duration: 240 }
-  );
-}
-
-function updateDeltas(clear) {
-  if (clear || !state.selection) {
-    woodDeltaEl.textContent = "";
-    stoneDeltaEl.textContent = "";
-    return;
-  }
-  woodDeltaEl.textContent = "−" + state.selection.cost.wood;
-  woodDeltaEl.className = "delta minus";
-  stoneDeltaEl.textContent = "−" + state.selection.cost.stone;
-  stoneDeltaEl.className = "delta minus";
-}
-
-function updateAffordChip() {
-  if (!affordChip) return; // afford chip UI removed; no-op
-  const b = state.selection;
-  if (!b) {
-    affordChip.textContent = "";
-    affordChip.disabled = true;
-    return;
-  }
-  const w = Math.floor(state.wood / b.cost.wood);
-  const s = Math.floor(state.stone / b.cost.stone);
-  const count = Math.max(0, Math.min(w, s));
-  affordChip.textContent = `${count}× affordable`;
-  affordChip.disabled = false;
-}
+// Second declaration of canAfford removed to fix redeclaration error
+// Function already defined at line ~1190
 
 let equipmentTooltip = null;
 
 let lastRenderedEquipment = {};
 
+// Basic game loop for updating game state
+function startGameLoop() {
+  console.log("Starting game loop...");
+  
+  // Update game state every second
+  setInterval(() => {
+    // Update player stats if needed
+    updatePlayerStats();
+    
+    // Update UI elements
+    updateUI();
+    
+    // Check for any automatic processes (farming, animal care, etc.)
+    // This can be expanded as needed
+  }, 1000);
+}
+
 // Expose functions globally
 if (typeof window !== "undefined") {
   window.getItemName = getItemName;
+  window.initGame = initGame;
+  window.startGameLoop = startGameLoop;
+  window.ensureAllItemIcons = ensureAllItemIcons;
 }

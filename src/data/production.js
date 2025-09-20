@@ -940,3 +940,6 @@ function placeAnimal(structureIndex, animal) {
   renderBank();
   showSkillPage("animalcare");
 }
+
+// Export functions to window for global access
+window.checkUnlockFarmingPlots = checkUnlockFarmingPlots;

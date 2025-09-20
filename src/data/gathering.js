@@ -616,3 +616,6 @@ function showSkillGatheringPage(skill) {
 }
 
 let showDropPercentages = false;
+
+// Export functions to window for global access
+window.stopGathering = stopGathering;

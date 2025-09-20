@@ -2,6 +2,28 @@
 export default {
   initAllModules: function() {
     console.log("[GAME] All modules initialized");
+    
+    // Setup event listeners for navigation and UI interactions
+    if (typeof window.setupButtons === 'function') {
+      window.setupButtons();
+      console.log("[GAME] Navigation buttons initialized");
+    }
+    
+    // Add click handler for navigation elements
+    document.addEventListener("click", function(event) {
+      if (typeof window.handleClick === 'function') {
+        window.handleClick(event);
+      }
+    });
+    console.log("[GAME] Navigation click handlers initialized");
+    
+    // Show the initial page once everything is loaded
+    setTimeout(() => {
+      if (typeof window.showPage === 'function') {
+        window.showPage('areas');
+        console.log("[GAME] Initial page displayed: areas");
+      }
+    }, 100);
   }
 };
 
@@ -358,4 +380,6 @@ if (typeof window !== "undefined") {
   window.showPage = showPage;
   window.calculateLevel = calculateLevel;
   window.checkUnlockAnimalStructures = checkUnlockAnimalStructures;
+  window.updateSkillInfo = updateSkillInfo;
+  window.calculateRarityChance = calculateRarityChance;
 }

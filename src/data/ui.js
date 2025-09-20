@@ -105,3 +105,28 @@ function doPlace(x, y, w, h) {
   undoBtn.disabled = false;
   toast(`Placed ${b.name}`, "info", true);
 }
+
+function getOrCreateHeldGhost() {
+  let ghost = document.getElementById("bank-held-ghost");
+  if (!ghost) {
+    ghost = document.createElement("div");
+    ghost.id = "bank-held-ghost";
+    document.body.appendChild(ghost);
+  }
+  return ghost;
+}
+
+function hideHeldGhost() {
+  const ghost = document.getElementById("bank-held-ghost");
+  if (ghost) ghost.classList.remove("visible");
+}
+
+// Expose UI functions globally
+if (typeof window !== "undefined") {
+  window.injectFactionCSS = injectFactionCSS;
+  window.showHeldGhost = showHeldGhost;
+  window.positionGhost = positionGhost;
+  window.getOrCreateHeldGhost = getOrCreateHeldGhost;
+  window.hideHeldGhost = hideHeldGhost;
+  // Don't export showPage from here as it's defined in game.js
+}

@@ -1835,6 +1835,18 @@ function stopGathering(reason = "") {
   }
 }
 
+function findRegularEnemyByName(name) {
+  const target = nf(name);
+  const all = gameData.enemies || {};
+  for (const [fid, faction] of Object.entries(all)) {
+    const pool = (faction && faction.regular) || [];
+    for (const e of pool) {
+      if (nf(e.name) === target) return { factionId: fid, enemy: e };
+    }
+  }
+  return null;
+}
+
 function renderEnemies(area) {
   const enemyContainer = document.getElementById("enemy-list");
   const dungeonContainer = document.getElementById("dungeon-list");
@@ -1858,17 +1870,6 @@ function renderEnemies(area) {
   function makeScaled(factionId, enemyData, level, kind) {
     if (!enemyData) return null;
     return scaleEnemyForLevel(factionId, enemyData, level, kind);
-  }
-  function findRegularEnemyByName(name) {
-    const target = nf(name);
-    const all = gameData.enemies || {};
-    for (const [fid, faction] of Object.entries(all)) {
-      const pool = (faction && faction.regular) || [];
-      for (const e of pool) {
-        if (nf(e.name) === target) return { factionId: fid, enemy: e };
-      }
-    }
-    return null;
   }
   function buildNormalEnemies() {
     const out = [];
@@ -2189,6 +2190,20 @@ function startCombat(enemy) {
   showNotification(`Started fighting ${enemy.name}`);
 }
 
+function pickFromFactionForRun(factionId, kind) {
+  const faction = gameData.enemies && gameData.enemies[factionId];
+  if (!faction) {
+    console.warn(`Faction ${factionId} not found for dungeon`);
+    return null;
+  }
+  const pool = kind === "boss" ? faction.bosses || [] : faction.regular || [];
+  if (!pool || pool.length === 0) {
+    console.warn(`No ${kind} enemies found in faction ${factionId}`);
+    return null;
+  }
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 function startDungeonRun(dungeonId) {
   stopGathering("Switched to dungeon");
   if (
@@ -2239,19 +2254,6 @@ function startDungeonRun(dungeonId) {
     showNotification("Dungeon configuration error", "error");
     console.error("Dungeon has no faction data:", dungeon);
     return;
-  }
-  function pickFromFactionForRun(factionId, kind) {
-    const faction = gameData.enemies && gameData.enemies[factionId];
-    if (!faction) {
-      console.warn(`Faction ${factionId} not found for dungeon`);
-      return null;
-    }
-    const pool = kind === "boss" ? faction.bosses || [] : faction.regular || [];
-    if (!pool || pool.length === 0) {
-      console.warn(`No ${kind} enemies found in faction ${factionId}`);
-      return null;
-    }
-    return pool[Math.floor(Math.random() * pool.length)];
   }
   const encounters = [];
   if (type === "raid") {
@@ -2507,8 +2509,44 @@ function renderBank() {
   }
 }
 
+// Bank drag and drop handlers
+function handleBankSlotDragOver(e) {
+  e.preventDefault(); // Allow drop
+  e.dataTransfer.dropEffect = "move";
+}
+
+function handleBankSlotDrop(e, slotIndex) {
+  e.preventDefault();
+  const draggedItemId = e.dataTransfer.getData("text/plain");
+  if (draggedItemId && gameData.items[draggedItemId]) {
+    // Move item to this slot
+    const currentPlaced = gameState.bankPlacement || {};
+    const oldSlot = Object.entries(currentPlaced).find(([id, placement]) => 
+      placement && placement.slot === slotIndex
+    );
+    
+    if (oldSlot) {
+      // Remove old item from this slot
+      delete currentPlaced[oldSlot[0]];
+    }
+    
+    // Place new item in this slot
+    currentPlaced[draggedItemId] = { slot: slotIndex };
+    gameState.bankPlacement = currentPlaced;
+    
+    // Re-render bank
+    renderBank();
+  }
+}
+
 // Expose functions globally
 if (typeof window !== "undefined") {
   window.updateUI = updateUI;
   window.renderBank = renderBank;
+  window.renderEnemies = renderEnemies;
+  window.startCombat = startCombat;
+  window.scaleEnemyForLevel = scaleEnemyForLevel;
+  window.pickFromFactionForRun = pickFromFactionForRun;
+  window.findRegularEnemyByName = findRegularEnemyByName;
+  window.setupEventListeners = setupEventListeners;
 }

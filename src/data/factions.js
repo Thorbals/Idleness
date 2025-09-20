@@ -144,3 +144,12 @@ function pickFromFactionForRun(factionId, kind) {
   }
   return pool[Math.floor(Math.random() * pool.length)];
 }
+
+// Expose functions globally
+if (typeof window !== "undefined") {
+  window.generateFactionCSS = generateFactionCSS;
+  window.pickFromFaction = pickFromFaction;
+  window.getFactionTextColor = getFactionTextColor;
+  window.getFactionBorderColor = getFactionBorderColor;
+  window.getFactionRGBString = getFactionRGBString;
+}

@@ -64,6 +64,11 @@ function goBackToAreas() {
 }
 
 function showAreaDetail(areaId) {
+  if (!gameData || !gameData.areas) {
+    console.warn('gameData.areas not available yet');
+    return;
+  }
+
   const area = gameData.areas.find((a) => a.id === areaId);
   if (!area) return;
 
@@ -404,4 +409,32 @@ function startDungeonRun(dungeonId) {
   renderEnemies(gameState.currentArea);
 
   startCombat(encounters[0]);
+}
+
+// Basic renderEnemies function - delegates to combat module if available
+function renderEnemies(area) {
+  // If combat module is loaded, use its renderEnemies function
+  if (typeof window.renderEnemies === 'function' && window.renderEnemies !== renderEnemies) {
+    return window.renderEnemies(area);
+  }
+  
+  // Fallback: basic enemy rendering
+  const enemyContainer = document.getElementById("enemy-list");
+  if (enemyContainer) {
+    enemyContainer.innerHTML = '<div style="color: #8b949e; text-align: center; padding: 20px;">Loading enemies...</div>';
+  }
+  
+  console.log("renderEnemies called for area:", area?.name || area?.id);
+}
+
+// Expose functions globally
+if (typeof window !== "undefined") {
+  window.setupButtons = setupButtons;
+  window.handleClick = handleClick;
+  window.goBackToAreas = goBackToAreas;
+  window.showAreaDetail = showAreaDetail;
+  window.showLoadingScreen = showLoadingScreen;
+  window.hideLoadingScreen = hideLoadingScreen;
+  window.renderAreaContent = renderAreaContent;
+  window.renderEnemies = renderEnemies;
 }
