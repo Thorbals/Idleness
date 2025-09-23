@@ -1841,3 +1841,432 @@ export const AREA_REVAMP_CONFIG = {
 };
 
 export default { AREAS_DATA, AREA_REVAMP_CONFIG };
+
+// Area functions
+function goBackToAreas() {
+  gameState.currentAction = null;
+  currentSkill = null;
+
+  gameState.combat.inCombat = false;
+  gameState.combat.currentEnemy = null;
+
+  showPage("areas");
+
+  document
+    .querySelectorAll(
+      ".resource-card.active, .enemy-item.active, .dungeon-card.active"
+    )
+    .forEach((item) => {
+      item.classList.remove("active");
+    });
+
+  document.querySelectorAll(".progress-bar").forEach((bar) => {
+    bar.style.display = "none";
+  });
+}
+
+function showAreaDetail(areaId) {
+  const area = AREAS_DATA.areas.find((a) => a.id === areaId);
+  if (!area) {
+    console.error("Area not found:", areaId);
+    return;
+  }
+
+  gameState.currentArea = area;
+
+  document.getElementById("area-detail-title").textContent = area.name;
+
+  const contentHeader = document.querySelector("#area-detail-page .content-header");
+  let existingButton = contentHeader.querySelector(".drops-toggle-button");
+
+  if (!existingButton) {
+    const toggleButton = document.createElement("button");
+    toggleButton.className = "drops-toggle-button";
+    toggleButton.textContent = "Drops %";
+    toggleButton.style.cssText = `
+        background: ${showDropPercentages ? '#2ecc71' : 'rgba(255,255,255,0.06)'};
+        color: #e6edf3;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 10px;
+        transition: background-color 0.3s;
+      `;
+
+    toggleButton.addEventListener("click", () => {
+      showDropPercentages = !showDropPercentages;
+      toggleButton.style.background = showDropPercentages ? '#2ecc71' : 'rgba(255,255,255,0.06)';
+      renderAreaContent(area);
+    });
+
+    contentHeader.appendChild(toggleButton);
+  } else {
+    existingButton.style.background = showDropPercentages ? '#2ecc71' : 'rgba(255,255,255,0.06)';
+  }
+
+  renderAreaContent(area);
+
+  document.getElementById("areas-page").style.display = "none";
+  document.getElementById("area-detail-page").style.display = "block";
+}
+
+function renderAreas() {
+  const grid = document.getElementById("areas-grid");
+  grid.innerHTML = "";
+
+  if (!gameData.areas) {
+    grid.innerHTML =
+      '<div style="color: #8b949e; text-align: center; padding: 20px;">No areas available.</div>';
+    return;
+  }
+
+  gameData.areas.forEach((area) => {
+    const isUnlocked = gameState.player.combatLevel >= area.level;
+
+    const card = document.createElement("div");
+    card.className = `area-card ${isUnlocked ? "" : "locked"}`;
+    card.dataset.areaId = area.id;
+    const hasZombies = area.factions.some(faction => faction.toLowerCase() === "zombies");
+    const isOnlyZombies = area.factions.length === 1 && hasZombies;
+    const isStronghold = area.description.startsWith("Stronghold") || area.description.startsWith("Infested Stronghold");
+
+    let zoneLabels = [];
+
+    if (hasZombies) {
+      zoneLabels.push({ type: "infested", label: "INFESTED" });
+    }
+
+    if (isOnlyZombies || isStronghold) {
+      zoneLabels.push({ type: "stronghold", label: "STRONGHOLD" });
+    } else if (hasZombies && area.factions.length > 1) {
+      zoneLabels.push({ type: "warzone", label: "WARZONE" });
+    } else if (!hasZombies && !isStronghold) {
+      zoneLabels.push({ type: "warzone", label: "WARZONE" });
+    }
+    const zoneLabelsHtml = zoneLabels.map((zone, index) =>
+      `<div class="zone-label ${zone.type}" style="top: ${10 + (index * 30)}px;">${zone.label}</div>`
+    ).join("");
+    const factionSpans = area.factions.map(faction => {
+      const factionClass = `faction-${faction.toLowerCase().replace(/\s+/g, '_')}`;
+      return `<span class="${factionClass}">${faction}</span>`;
+    }).join(", ");
+
+    card.innerHTML = `
+              ${zoneLabelsHtml}
+              <div class="area-name">${area.name}</div>
+              <div class="area-level">Level ${area.level} Required</div>
+              <div class="area-factions">Factions: ${factionSpans}</div>
+          `;
+
+    if (isUnlocked) {
+      card.addEventListener("click", () => showAreaDetail(area.id));
+    }
+
+    grid.appendChild(card);
+  });
+}
+
+function renderAreaContent(area) {
+  renderGatheringResources(area);
+  renderEnemies(area);
+}
+
+function renderGatheringResources(area) {
+  const container = document.getElementById("gathering-resources");
+  container.innerHTML = "";
+
+  if (!area.gathering) {
+    const noResourcesDiv = document.createElement("div");
+    noResourcesDiv.style.cssText = "color: #8b949e; text-align: center; padding: 20px;";
+    noResourcesDiv.textContent = "No gathering resources available in this area.";
+    container.appendChild(noResourcesDiv);
+    return;
+  }
+
+  Object.keys(area.gathering).forEach((skillType) => {
+    const resourceIds = area.gathering[skillType];
+    if (!resourceIds || !Array.isArray(resourceIds)) return;
+
+    resourceIds.forEach((resourceId) => {
+      const skill = gameData.skills.gathering_skills[skillType];
+      if (!skill || !skill.nodes) {
+        console.warn(`Skill not found or missing nodes: ${skillType}`);
+        return;
+      }
+
+      const resource = skill.nodes.find(node => node.id === resourceId);
+      if (!resource) {
+        console.warn(`Resource not found: ${resourceId} in skill ${skillType}`);
+        return;
+      }
+
+      const requiredLevel = resource.level;
+      const playerSkill = gameState.skills[skillType];
+      if (!playerSkill) {
+        console.warn(`Player skill not found: ${skillType}`);
+        return;
+      }
+      const playerLevel = playerSkill.level;
+      const canGather = playerLevel >= requiredLevel;
+
+      const card = document.createElement("div");
+      const diffClass = getNodeDifficultyClass(playerLevel, requiredLevel);
+      card.className = `resource-card ${diffClass} ${canGather ? "" : "locked"}`;
+      card.dataset.resourceId = resource.id;
+      card.dataset.skill = skillType;
+
+      let dropsHtml = '';
+      if (showDropPercentages && resource.drops) {
+        dropsHtml = '<div style="margin-top: 8px; border-top: 1px solid #555; padding-top: 5px;">';
+        resource.drops.forEach(drop => {
+          if (drop.rarity) {
+            const dropChance = calculateRarityChance(drop.rarity, playerLevel, resource.level);
+            const rarityColor = getRarityColor(drop.rarity);
+            const itemName = getItemName(drop.item);
+            dropsHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 2px 0; font-size: 11px;">
+                      <span style="color: #bbb; cursor: help;" data-item-tooltip="${drop.item}">${itemName}</span>
+                      <span style="color: ${rarityColor}; font-weight: bold; cursor: help;" title="${drop.rarity.charAt(0).toUpperCase() + drop.rarity.slice(1)}: ${(dropChance * 100).toFixed(1)}% chance (Level diff: ${playerLevel - resource.level})">${(dropChance * 100).toFixed(1)}%</span>
+                    </div>
+                  `;
+          } else if (drop.chance) {
+            const percentage = (drop.chance * 100).toFixed(1);
+            const itemName = getItemName(drop.item);
+            dropsHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 2px 0; font-size: 11px;">
+                      <span style="color: #bbb; cursor: help;" data-item-tooltip="${drop.item}">${itemName}</span>
+                      <span style="color: #238636; font-weight: bold;">${percentage}%</span>
+                    </div>
+                  `;
+          }
+        });
+        dropsHtml += '</div>';
+      }
+
+      card.innerHTML = `
+                      <h4>${resource.name}</h4>
+                      <div>Level ${requiredLevel} ${skillType}</div>
+                      <div>${resource.xp} XP</div>
+                      <div>${(resource.time / 1000).toFixed(
+            1
+          )}s per action</div>
+                      ${dropsHtml}
+            <div class="progress-bar" style="display: none;">
+              <div class="progress-fill"></div>
+            </div>
+                  `;
+
+      if (canGather) {
+        card.addEventListener("click", () => {
+          selectResource(card, resource, skillType);
+        });
+      }
+
+      container.appendChild(card);
+    });
+  });
+}
+
+function renderEnemies(area) {
+  const enemyContainer = document.getElementById("enemy-list");
+  const dungeonContainer = document.getElementById("dungeon-list");
+  if (enemyContainer) enemyContainer.innerHTML = "";
+  if (dungeonContainer) dungeonContainer.innerHTML = "";
+
+  const whitelist = area.enemyWhitelist instanceof Set ? area.enemyWhitelist : null;
+  const areaLevel = area.level || 1;
+  function pickFromFaction(factionId, kind, applyWhitelist = false) {
+    const f = gameData.enemies && gameData.enemies[factionId];
+    if (!f) return null;
+    const pool = kind === 'boss' ? (f.bosses || []) : (f.regular || []);
+    let candidates = pool;
+    if (applyWhitelist && whitelist) candidates = pool.filter(e => whitelist.has(nf(e.name)));
+    if (candidates.length === 0) return null;
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  }
+
+  function makeScaled(factionId, enemyData, level, kind) {
+    if (!enemyData) return null;
+    return scaleEnemyForLevel(factionId, enemyData, level, kind);
+  }
+  function findRegularEnemyByName(name) {
+    const target = nf(name);
+    const all = gameData.enemies || {};
+    for (const [fid, faction] of Object.entries(all)) {
+      const pool = (faction && faction.regular) || [];
+      for (const e of pool) {
+        if (nf(e.name) === target) return { factionId: fid, enemy: e };
+      }
+    }
+    return null;
+  }
+  function buildNormalEnemies() {
+    const out = [];
+    const cfg = (typeof AREA_REVAMP_CONFIG !== 'undefined' && area && area.id) ? AREA_REVAMP_CONFIG[area.id] : null;
+    const whitelistArray = cfg && Array.isArray(cfg.enemies) ? cfg.enemies : null;
+
+    if (whitelistArray && whitelistArray.length > 0) {
+      whitelistArray.forEach((name, i) => {
+        const found = findRegularEnemyByName(name);
+        if (!found) {
+          console.warn('Normal enemy not found for name:', name, 'in area', area.id);
+          return;
+        }
+        const level = areaLevel + 1 + (i % 3); // cycle +1..+3 for variety
+        const scaled = makeScaled(found.factionId, found.enemy, level, 'regular');
+        if (scaled) out.push(scaled);
+      });
+      return out;
+    }
+    const areaFactions = (area.factions || []).map(name => NAME_TO_FACTION_ID[name] || name);
+    areaFactions.forEach((fid) => {
+      const levels = [areaLevel + 1, areaLevel + 2, areaLevel + 3];
+      levels.forEach(L => {
+        const e = pickFromFaction(fid, 'regular', true /* apply whitelist if any */);
+        const scaled = makeScaled(fid, e, L, 'regular');
+        if (scaled) out.push(scaled);
+      });
+    });
+    return out;
+  }
+
+  function renderNormalEnemyList(list) {
+    if (!enemyContainer) return;
+    enemyContainer.innerHTML = "";
+    if (!list || list.length === 0) {
+      enemyContainer.innerHTML = '<div style="color: #8b949e; text-align: center; padding: 20px;">No enemies available in this area.</div>';
+      return;
+    }
+    list.forEach(enemy => {
+      const canFight = gameState.player.combatLevel >= enemy.level;
+      const item = document.createElement('div');
+      const factionClass = enemy.factionId ? `faction-${enemy.factionId}` : '';
+      item.className = `enemy-item ${factionClass} ${canFight ? '' : 'locked'}`;
+      item.dataset.enemyId = enemy.id;
+
+      let dropsHtml = '';
+      if (showDropPercentages && Array.isArray(enemy.drops) && enemy.drops.length) {
+        const playerLevel = gameState.player.combatLevel;
+        const enemyLevel = enemy.level || enemy.baseLevel || 1;
+        dropsHtml = '<div style="margin-top: 8px; border-top: 1px solid #555; padding-top: 5px;">';
+        enemy.drops.forEach(drop => {
+          const itemName = getItemName(drop.item || 'scrap');
+          if (drop.rarity) {
+            const dropChance = calculateRarityChance(drop.rarity, playerLevel, enemyLevel);
+            const rarityColor = getRarityColor(drop.rarity);
+            const quantityText = drop.min && drop.max ? ` (${drop.min}-${drop.max})` : (drop.min ? ` (${drop.min})` : '');
+            dropsHtml += `
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin:2px 0; font-size:11px;">
+                    <span style="color:#bbb;">${itemName}${quantityText}</span>
+                    <span style="color:${rarityColor}; font-weight:bold;">${(dropChance * 100).toFixed(1)}%</span>
+                  </div>`;
+          } else if (typeof drop.chance === 'number') {
+            const percentage = (drop.chance * 100).toFixed(1);
+            const quantityText = drop.min && drop.max ? ` (${drop.min}-${drop.max})` : (drop.min ? ` (${drop.min})` : '');
+            dropsHtml += `
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin:2px 0; font-size:11px;">
+                    <span style="color:#bbb;">${itemName}${quantityText}</span>
+                    <span style="color:#238636; font-weight:bold;">${percentage}%</span>
+                  </div>`;
+          }
+        });
+        dropsHtml += '</div>';
+      }
+
+      item.innerHTML = `
+            <div><strong style="color: white;">Lv ${enemy.level}</strong> <strong class="enemy-name">${enemy.name}</strong></div>
+            <div style="color: white;">HP ${enemy.hp} • Atk ${enemy.attack} • Def ${enemy.defense}</div>
+            ${dropsHtml}`;
+      item.addEventListener('click', () => selectEnemy(item, enemy));
+      enemyContainer.appendChild(item);
+    });
+  }
+
+  const normalEnemies = buildNormalEnemies();
+  renderNormalEnemyList(normalEnemies);
+  if (!gameState.combat.inDungeon) {
+    gameState.combat.dungeonEnemies = {}; // clear cached sequences when not in an active run
+  }
+
+  if (dungeonContainer) {
+    if (!area.dungeons || area.dungeons.length === 0) {
+      dungeonContainer.innerHTML = '<div style="color: #8b949e; text-align: center; padding: 20px;">No dungeons or raids here.</div>';
+    } else {
+      dungeonContainer.innerHTML = '';
+      area.dungeons.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'dungeon-card';
+        card.dataset.dungeonId = d.id;
+        const typeLabel = (d.type || 'dungeon').toUpperCase();
+        const completed = (gameState.combat.dungeonCompleted || []).includes(d.id);
+        const isActive = gameState.combat.inDungeon && gameState.combat.currentDungeon === d.id;
+        const btnLabel = isActive ? 'Continue' : (completed ? 'Replay' : 'Start');
+        if (isActive) {
+          card.classList.add('active');
+        }
+        let primaryFaction = null;
+        if (d.primaryFaction) {
+          primaryFaction = d.primaryFaction;
+        } else if (gameState.currentArea && gameState.currentArea.factions) {
+          const areaFactions = gameState.currentArea.factions.map(name => NAME_TO_FACTION_ID[name] || name.toLowerCase());
+          primaryFaction = areaFactions[0];
+        }
+
+        const primaryColor = getFactionRGBString(primaryFaction);
+        const cardGradient = `background: linear-gradient(135deg, rgba(${primaryColor},0.2), rgba(128,128,128,0.1));`;
+        card.style.cssText += cardGradient;
+
+        let progressText = '';
+        let enemyListHtml = '';
+        if (isActive && gameState.combat.dungeonEnemies && gameState.combat.dungeonEnemies[d.id]) {
+          const enemies = gameState.combat.dungeonEnemies[d.id];
+          const total = enemies.length;
+          const current = gameState.combat.dungeonProgress || 0;
+          progressText = `<div style="font-size:11px; color:#888; margin-top:4px;">Progress: ${current + 1}/${total}</div>`;
+          enemyListHtml = `
+                <div style="margin-top:8px; padding:8px; background:rgba(0,0,0,0.3); border-radius:4px;">
+                  <div style="font-size:11px; color:#bbb; margin-bottom:4px;">Enemy Order:</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    ${enemies.map((enemy, index) => {
+                const isCurrent = index === current;
+                const isPast = index < current;
+                const color = isCurrent ? '#ff4444' : (isPast ? '#666' : '#aaa');
+                const prefix = isCurrent ? '► ' : (isPast ? '✓ ' : '  ');
+                return `<div style="font-size:10px; color:${color};">${prefix}${enemy.name} (Lv${enemy.level})</div>`;
+              }).join('')}
+                  </div>
+                </div>`;
+        }
+
+        card.innerHTML = `
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h5 style="margin:0;">${d.name}</h5>
+                <span style="font-size:10px; padding:2px 6px; border:1px solid #555; border-radius:10px; color:#bbb;">${typeLabel}</span>
+              </div>
+              ${progressText}
+              ${enemyListHtml}
+              <div style="margin-top:8px; display:flex; gap:6px;">
+                <button class="action-button" data-action="start-run">${btnLabel}</button>
+                ${completed ? '<span class="chip" style="background:#1f6feb33; border:1px solid #1f6feb;">Completed</span>' : ''}
+              </div>`;
+        card.querySelector('[data-action="start-run"]').addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          startDungeonRun(d.id);
+        });
+        dungeonContainer.appendChild(card);
+      });
+    }
+  }
+
+  const factionDescEl = document.getElementById("faction-description");
+  if (factionDescEl) factionDescEl.textContent = area.description || '';
+}
+
+window.goBackToAreas = goBackToAreas;
+window.showAreaDetail = showAreaDetail;
+window.renderAreas = renderAreas;
+window.renderAreaContent = renderAreaContent;
+window.renderGatheringResources = renderGatheringResources;
+window.renderEnemies = renderEnemies;
