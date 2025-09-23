@@ -789,6 +789,175 @@ window.updateCombatLevel = function () {
   gameState.player.combatLevel = Math.floor(totalLevels / combatSkills.length);
 };
 
+window.updateCombat = function () {
+  const combat = gameState.combat;
+  if (!combat.inCombat || !combat.currentEnemy) return;
+  if (combat.playerTimer == null) combat.playerTimer = 0;
+  if (combat.enemyTimer == null) combat.enemyTimer = 0;
+  combat.playerTimer += 100;
+  combat.enemyTimer += 100;
+  if (combat.playerTimer >= combat.playerInterval) {
+    performPlayerAttack();
+    if (gameState.player.doubleAttackChancePct && Math.random() < (gameState.player.doubleAttackChancePct / 100)) {
+      performPlayerAttack();
+    }
+    combat.playerTimer -= combat.playerInterval;
+  }
+  if (combat.inCombat && combat.enemyTimer >= combat.enemyInterval) {
+    performEnemyAttack();
+    combat.enemyTimer -= combat.enemyInterval;
+  }
+  if (combat.autohealEnabled) {
+    combat._autohealTicker = (combat._autohealTicker || 0) + 100;
+    if (combat._autohealTicker >= (combat.autohealCooldownMs || 1500)) {
+      combat._autohealTicker = 0;
+      const threshold = Math.max(0.1, Math.min(0.95, combat.autohealThreshold || 0.7));
+      const hpRatio = gameState.player.hp / gameState.player.maxHp;
+      if (hpRatio < threshold) {
+        const usedBandage = useSelectedBandageOrBest(true);
+        if (!usedBandage) {
+          const healed = useSelectedFoodOrBest(true);
+          if (!healed) {
+          }
+        }
+      }
+    }
+  }
+
+  combat._regenTicker = (combat._regenTicker || 0) + 100;
+  if (combat._regenTicker >= 1000) {
+    combat._regenTicker = 0;
+    const regen = Math.max(0, gameState.player.hpRegenPerSec || 0);
+    if (regen > 0 && gameState.player.hp < gameState.player.maxHp) {
+      const healed = Math.min(gameState.player.maxHp - gameState.player.hp, Math.floor(regen));
+      if (healed > 0) {
+        gameState.player.hp += healed;
+        addCombatLog(`You regenerate ${healed} HP`, "log-heal");
+      }
+    }
+  }
+
+  updateCombatProgress();
+};
+
+function performPlayerAttack() {
+  const combat = gameState.combat;
+  const enemy = combat.currentEnemy;
+  if (!enemy) return;
+
+  const res = computeDamage(gameState.player, enemy);
+  if (!res.hit) {
+    addCombatLog(`You miss ${enemy.name}`, "log-damage");
+  } else if (res.blocked) {
+    addCombatLog(`${enemy.name} blocks your attack`, "log-damage");
+    if (res.reflectDamage && res.reflectDamage > 0) {
+      gameState.player.hp = Math.max(0, gameState.player.hp - res.reflectDamage);
+      addCombatLog(`${enemy.name} reflects ${res.reflectDamage} damage to you`, "log-damage");
+    }
+  } else {
+    combat.enemyHp = Math.max(0, combat.enemyHp - res.damage);
+    addCombatLog(
+      `You deal ${res.damage}${res.crit ? ' CRIT' : ''} to ${enemy.name}`,
+      "log-damage"
+    );
+  }
+
+  if (combat.enemyHp <= 0) {
+    addCombatLog(`${enemy.name} defeated!`, "log-heal");
+
+    addXP("fitness", enemy.xp);
+    if (enemy.drops && !enemy.dungeonId) {
+      const playerLevel = gameState.player.combatLevel;
+      const enemyLevel = enemy.level || enemy.baseLevel || 1;
+
+      const hasRaritySystem = enemy.drops.some(drop => drop.rarity);
+
+      if (hasRaritySystem) {
+        const results = rollForRarityDrops(enemy.drops, playerLevel, enemyLevel);
+        results.forEach(r => {
+          if (r.item === "scrap") {
+            gameState.player.scrap += r.quantity;
+            const rarityTag = r.rarity ? `[${r.rarity.toUpperCase()}] ` : '';
+            addCombatLog(`+${r.quantity} ${rarityTag}Scrap`, "log-loot");
+          } else {
+            addToBank(r.item, r.quantity);
+            const rarityTag = r.rarity ? `[${r.rarity.toUpperCase()}] ` : '';
+            addCombatLog(`+${r.quantity} ${rarityTag}${getItemName(r.item)}`, "log-loot");
+          }
+        });
+      } else {
+        enemy.drops.forEach((drop) => {
+          if (drop.item === "scrap") {
+            const amount =
+              Math.floor(Math.random() * (drop.max - drop.min + 1)) +
+              drop.min;
+            gameState.player.scrap += amount;
+            addCombatLog(`+${amount} Scrap`, "log-loot");
+          } else if (Math.random() < (drop.chance || 1)) {
+            const amount = drop.min || 1;
+            addToBank(drop.item, amount);
+            addCombatLog(
+              `+${amount} ${getItemName(drop.item)}`,
+              "log-loot"
+            );
+          }
+        });
+      }
+    }
+    if (combat.inDungeon && combat.currentDungeon) {
+      const seq = (combat.dungeonEnemies && combat.dungeonEnemies[combat.currentDungeon]) || [];
+      combat.dungeonProgress = (combat.dungeonProgress || 0) + 1;
+      if (combat.dungeonProgress < seq.length) {
+        const next = seq[combat.dungeonProgress];
+        addCombatLog(`Next encounter: ${next.name}`);
+        renderEnemies(gameState.currentArea);
+
+        setTimeout(() => {
+          startCombat(next);
+        }, 600);
+      } else {
+        addCombatLog(`Dungeon cleared!`, "log-heal");
+        if (!Array.isArray(combat.dungeonCompleted)) combat.dungeonCompleted = [];
+        if (!combat.dungeonCompleted.includes(combat.currentDungeon)) {
+          combat.dungeonCompleted.push(combat.currentDungeon);
+        }
+        combat.inDungeon = false;
+        combat.currentDungeon = null;
+        combat.inCombat = false;
+        combat.currentEnemy = null;
+        combat.dungeonProgress = 0;
+        const cpb1 = document.getElementById("combat-progress"); if (cpb1) cpb1.style.display = "none";
+        document.getElementById("enemy-display").style.display = "none";
+        const noEnemy = document.getElementById("no-enemy");
+        if (noEnemy) noEnemy.style.display = "block";
+        renderEnemies(gameState.currentArea);
+      }
+    } else {
+      const selectedEnemy = document.querySelector(".enemy-item.active");
+      if (selectedEnemy && selectedEnemy.dataset.enemyId === enemy.id) {
+        setTimeout(() => {
+          combat.enemyHp = enemy.hp;
+          combat.enemyMaxHp = enemy.hp;
+          combat.playerTimer = 0;
+          combat.enemyTimer = 0;
+          document.getElementById("combat-progress-fill").style.width = "0%";
+          document.getElementById("enemy-hp-bar").style.width = "100%";
+          document.getElementById("enemy-hp-text").textContent = `${enemy.hp}/${enemy.hp}`;
+          addCombatLog(`${enemy.name} respawned! Fighting again...`);
+        }, 800);
+      } else {
+        combat.inCombat = false;
+        combat.currentEnemy = null;
+        document.getElementById("combat-progress").style.display = "none";
+        document.getElementById("enemy-display").style.display = "none";
+        document.getElementById("combat-status").textContent = "Enemy defeated! Select another enemy.";
+      }
+    }
+
+    return;
+  }
+}
+
 // ======= Fixed version (balanced braces & logic) =======
 window.updateAnimalCareProgress = function () {
   const currentTime = Date.now();
@@ -2388,9 +2557,9 @@ window.selectSeedForPlot = function (plotName, plotType, plotIndex) {
     `;
     seedOption.innerHTML = `
       <div style="color: var(--brand); font-weight: bold;">${seed.name}</div>
-      <div style="color: #8b949e; font-size: 12px;">Level ${
-        seed.level
-      } • Owned: ${playerHas}</div>
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 5px;">
+        Level ${seed.level} • Owned: ${playerHas}
+      </div>
       <div style="color: #238636; font-size: 12px; margin-top: 5px;">
         Produces: ${seed.produces
           .map((p) => `${p.quantity}x ${getItemName(p.item)}`)
@@ -2810,9 +2979,9 @@ window.selectAnimalForStructure = function (
       <div style="color: #8e44ad; font-weight: bold;">${animal.icon} ${
       animal.name
     }</div>
-      <div style="color: #8b949e; font-size: 12px;">Level ${
-        animal.level
-      } • Owned: ${playerHas}</div>
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 5px;">
+        Level ${animal.level} • Owned: ${playerHas}
+      </div>
       <div style="color: #238636; font-size: 12px; margin-top: 5px;">
         Produces: ${animal.produces.map((item) => getItemName(item)).join(", ")}
       </div>
@@ -2921,9 +3090,7 @@ window.removeAnimal = function (structureIndex) {
   }
 };
 
-window.cancelCrafting = window.cancelCrafting;
-
-// ===== Init =====
+// ======= Init =====
 document.addEventListener("DOMContentLoaded", function () {
   initGame();
 });
@@ -3380,8 +3547,7 @@ if (document.readyState === "loading") {
       "12,20", "12,21", "12,22", "12,23", "12,24", "12,25", "12,26", "12,27", "12,28", "12,29",
       "12,30", "12,31", "12,32", "12,33", "12,34", "12,35", "12,36", "12,37", "12,38", "12,39",
       "12,40", "12,41", "12,42", "12,43", "12,44", "12,45", "12,46", "12,47", "12,48", "12,49",
-      "12,50", "12,51", "12,52", "12,53", "12,54", "12,55", "12,56", "12,57", "12,58", "12,59",
-      "12,60", "12,61", "12,62", "12,63", "12,64", "12,65", "13,4", "13,23", "13,28", "13,35",
+      "12,50", "12,51", "12,52", "12,53", "12,54", "12,55", "12,56", "12,57", "12,58", "12,59", "12,60", "12,61", "12,62", "12,63", "12,64", "12,65", "13,4", "13,23", "13,28", "13,35",
       "13,44", "13,53", "13,61", "14,4", "14,23", "14,28", "14,35", "14,44", "14,53", "14,61",
       "15,4", "15,23", "15,28", "15,35", "15,44", "15,53", "15,61", "16,0", "16,1", "16,2",
       "16,3", "16,4", "16,5", "16,6", "16,7", "16,8", "16,9", "16,10", "16,11", "16,12",
@@ -3453,6 +3619,11 @@ if (document.readyState === "loading") {
     4: { x: [0, 15], y: [22, 43] },
     5: { x: [0, 15], y: [44, 65] },
     6: { x: [16, 32], y: [44, 65] },
+    7: { x: [15, 56], y: [50, 65] },
+    8: [
+      { x: [0, 14], y: [50, 65] },
+      { x: [57, 57], y: [50, 65] },
+    ],
   };
 
   // Parse coordinates from config and apply tile types
@@ -3600,9 +3771,9 @@ if (document.readyState === "loading") {
       if (x < 0 || x >= state.cols || y < 0 || y >= state.rows) return false;
       const rectangles = regionConfig[regionId];
       for (const rect of rectangles) {
-        const [xs, xe] = rect.x;
-        const [ys, ye] = rect.y;
-        if (x >= xs && x <= xe && y >= ys && y <= ye) {
+        const [oxs, oxe] = rect.x;
+        const [oys, oye] = rect.y;
+        if (x >= oxs && x <= oxe && y >= oys && y <= oye) {
           return true;
         }
       }

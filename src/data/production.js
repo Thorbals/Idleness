@@ -579,3 +579,246 @@ export const ANIMAL_CARE_DATA = {
 };
 
 export default { PRODUCTION_SKILLS_DATA, FARMING_DATA, ANIMAL_CARE_DATA };
+
+// Production functions
+function selectSeedForPlot(plotName, plotType, plotIndex) {
+  const playerLevel = gameState.skills.farming.level;
+  const compatibleSeeds = getCompatibleSeeds(plotType, playerLevel);
+
+  if (compatibleSeeds.length === 0) {
+    showNotification("No compatible seeds available!", "error");
+    return;
+  }
+
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    `;
+
+  const modalContent = document.createElement("div");
+  modalContent.style.cssText = `
+      background: #111111;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    `;
+
+  modalContent.innerHTML = `
+      <h3 style="color: var(--brand); margin-bottom: 15px;">Select Seed for ${plotName}</h3>
+      <div style="color: #8b949e; margin-bottom: 15px;">Compatible ${plotType} seeds:</div>
+      <div id="seed-selection-grid" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px;"></div>
+      <button id="cancel-seed-selection" style="
+        background: var(--brand);
+        color: #e6edf3;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      ">Cancel</button>
+    `;
+
+  const seedGrid = modalContent.querySelector("#seed-selection-grid");
+
+  compatibleSeeds.forEach(seed => {
+    const playerHas = gameState.bank[seed.id] || 0;
+    const seedOption = document.createElement("div");
+    seedOption.style.cssText = `
+        background: rgba(40, 167, 69, 0.2);
+        border: 1px solid var(--brand);
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      `;
+
+    seedOption.innerHTML = `
+        <div style="color: var(--brand); font-weight: bold;">${seed.name}</div>
+        <div style="color: #8b949e; font-size: 12px;">Level ${seed.level} • Owned: ${playerHas}</div>
+        <div style="color: #238636; font-size: 12px; margin-top: 5px;">
+          Produces: ${seed.produces.map(p => `${p.quantity}x ${getItemName(p.item)}`).join(', ')}
+        </div>
+        <div style="color: #1a7f37; font-size: 12px;">
+          Time: ${(seed.time / 1000).toFixed(0)}s
+        </div>
+      `;
+
+    seedOption.addEventListener("click", () => {
+      plantSeed(plotIndex, seed);
+      document.body.removeChild(modal);
+    });
+
+    seedOption.addEventListener("mouseenter", () => {
+      seedOption.style.backgroundColor = "rgba(40, 167, 69, 0.4)";
+    });
+
+    seedOption.addEventListener("mouseleave", () => {
+      seedOption.style.backgroundColor = "rgba(40, 167, 69, 0.2)";
+    });
+
+    seedGrid.appendChild(seedOption);
+  });
+
+  modalContent.querySelector("#cancel-seed-selection").addEventListener("click", () => {
+    document.body.removeChild(modal);
+  });
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+function plantSeed(plotIndex, seed) {
+  if (gameState.bank[seed.id] > 0) {
+    gameState.bank[seed.id]--;
+    if (gameState.bank[seed.id] === 0) {
+      delete gameState.bank[seed.id];
+    }
+  }
+
+  const plotData = FARMING_DATA.plots[plotIndex];
+  let plotState = gameState.farming.unlockedPlots.find(p => p.name === plotData.name);
+
+  if (!plotState) {
+    plotState = {
+      id: `plot_${plotData.requiredLevel}`,
+      name: plotData.name,
+      icon: plotData.icon,
+      requiredLevel: plotData.requiredLevel,
+      type: plotData.type,
+      interval: plotData.interval,
+      output: plotData.output,
+      seed: null,
+      progress: 0,
+      lastHarvest: Date.now()
+    };
+    gameState.farming.unlockedPlots.push(plotState);
+  }
+
+  plotState.plantedSeed = seed;
+  plotState.lastPlanted = Date.now();
+
+  showNotification(`Planted ${seed.name} in ${plotData.name}!`, "success");
+  renderBank();
+
+  showSkillPage("farming");
+}
+
+function removePlantedSeed(plotIndex) {
+  const plotData = FARMING_DATA.plots[plotIndex];
+  const plotState = gameState.farming.unlockedPlots.find(p => p.name === plotData.name);
+
+  if (plotState && plotState.plantedSeed) {
+    showNotification(`Removed ${plotState.plantedSeed.name} from ${plotData.name}.`, "info");
+    plotState.plantedSeed = null;
+    plotState.lastPlanted = null;
+
+    showSkillPage("farming");
+  }
+}
+
+function purchaseAnimal(animalId, structureType, price, requiredLevel) {
+  const playerLevel = gameState.skills.animalcare.level;
+  const playerCoins = gameState.bank.coins || 0;
+
+  if (playerLevel < requiredLevel) {
+    showNotification(`Need level ${requiredLevel} Animal Care to purchase this animal.`, "error");
+    return;
+  }
+
+  if (!isFinite(price) || price <= 0) {
+    showNotification(`This animal is not for sale.`, "error");
+    return;
+  }
+
+  if (playerCoins < price) {
+    showNotification(`Need ${price} coins to purchase this animal. You have ${playerCoins}.`, "error");
+    return;
+  }
+
+  gameState.bank.coins = (gameState.bank.coins || 0) - price;
+  if (gameState.bank.coins <= 0) {
+    delete gameState.bank.coins;
+  }
+
+  gameState.bank[animalId] = (gameState.bank[animalId] || 0) + 1;
+  const animalData = ANIMAL_CARE_DATA.animals[structureType].find(a => a.id === animalId);
+  showNotification(`Purchased ${animalData.name} for ${price} coins! Added to bank.`, "success");
+  renderBank();
+  showShopTab('general');
+}
+
+function getCompatibleSeeds(plotType, playerLevel) {
+  const seeds = FARMING_DATA.seeds[plotType] || [];
+  return seeds.filter(seed => {
+    const playerHas = gameState.bank[seed.id] || 0;
+    return playerHas > 0 && playerLevel >= seed.level;
+  });
+}
+
+function checkUnlockFarmingPlots(level) {
+  FARMING_DATA.plots.forEach(plot => {
+    if (plot.requiredLevel === level) {
+      if (!gameState.farming.unlockedPlots.find(p => p.requiredLevel === level)) {
+        gameState.farming.unlockedPlots.push({
+          id: `plot_${plot.requiredLevel}`,
+          name: plot.name,
+          icon: plot.icon,
+          requiredLevel: plot.requiredLevel,
+          type: plot.type,
+          interval: plot.interval,
+          output: plot.output,
+          seed: null,
+          progress: 0,
+          lastHarvest: Date.now()
+        });
+        showNotification(`Unlocked ${plot.name}!`);
+      }
+    }
+  });
+}
+
+function checkUnlockAnimalStructures(level) {
+  ANIMAL_CARE_DATA.structures.forEach(structure => {
+    if (structure.level === level) {
+      if (!gameState.animalCare.unlockedStructures.find(s => s.level === level)) {
+        gameState.animalCare.unlockedStructures.push({
+          id: `structure_${structure.level}`,
+          name: structure.name,
+          icon: structure.icon,
+          level: structure.level,
+          type: structure.type,
+          animal: null,
+          progress: 0,
+          harvestTime: 0
+        });
+        showNotification(`Unlocked ${structure.name}!`);
+      }
+    }
+  });
+}
+
+// Export to window
+window.selectSeedForPlot = selectSeedForPlot;
+window.removePlantedSeed = removePlantedSeed;
+window.purchaseAnimal = purchaseAnimal;
+window.getCompatibleSeeds = getCompatibleSeeds;
+window.checkUnlockFarmingPlots = checkUnlockFarmingPlots;
+window.checkUnlockAnimalStructures = checkUnlockAnimalStructures;

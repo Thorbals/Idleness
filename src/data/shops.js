@@ -1,5 +1,5 @@
 // shops.js — Shop data and functionality
-import * as production_skills from './production_skills.js';
+import production_skills from './production.js';
 
 // Shop tabs configuration
 export const SHOP_TABS = {

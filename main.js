@@ -5,14 +5,17 @@ import * as items from './src/data/items.js';
 import * as equipment from './src/data/equipment.js';
 import * as factions from './src/data/factions.js';
 import * as areas from './src/data/areas.js';
-import * as gathering_skills from './src/data/gathering_skills.js';
-import * as crafting_skills from './src/data/crafting_skills.js';
+import * as gathering_skills from './src/data/gathering.js';
+import * as crafting_skills from './src/data/crafting.js';
 import * as shops from './src/data/shops.js';
-import * as combat_skills from './src/data/combat_skills.js';
-import * as production_skills from './src/data/production_skills.js';
+import * as combat_skills from './src/data/combat.js';
+import * as production_skills from './src/data/production.js';
+import * as inventory from './src/data/inventory.js';
+import * as ui from './src/data/ui.js';
+import * as utils from './src/data/utils.js';
 
 // Expose legacy globals expected by monolith.js
-for (const mod of [items, equipment, factions, areas, gathering_skills, crafting_skills, shops, combat_skills, production_skills]) {
+for (const mod of [items, equipment, factions, areas, gathering_skills, crafting_skills, shops, combat_skills, production_skills, inventory, ui, utils]) {
   for (const [k, v] of Object.entries(mod)) {
     if (k === "default") continue;
     if (!(k in window)) {

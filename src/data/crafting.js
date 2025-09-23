@@ -2005,6 +2005,8 @@ export const RECIPES_DATA = {
         {
           id: "gs_9mm_bullet",
           name: "9mm Bullet",
+                  
+                  
           level: 10,
           xp: 8,
           time: 2200,
@@ -2639,3 +2641,181 @@ export const RECIPES_DATA = {
 };
 
 export default { RECIPES_DATA };
+
+// Crafting functions
+function cancelQueuedCrafting(recipeId) {
+  const recipe = gameData.craftingQueue.find(r => r.id === recipeId);
+  if (!recipe) return;
+
+  // Return materials to inventory
+  recipe.materials.forEach(material => {
+    if (material.item) {
+      gameData.inventory[material.item] = (gameData.inventory[material.item] || 0) + material.quantity;
+    } else if (material.junktype) {
+      gameData.inventory[material.junktype] = (gameData.inventory[material.junktype] || 0) + material.quantity;
+    }
+  });
+
+  // Remove from queue
+  gameData.craftingQueue = gameData.craftingQueue.filter(r => r.id !== recipeId);
+
+  // Update UI
+  updateCraftingUI();
+  updateInventoryUI();
+}
+
+function cancelCrafting() {
+  if (gameState.currentAction && gameState.currentAction.type === "crafting") {
+    craftingContinuous = false;
+    gameState.currentAction = null;
+
+    const craftingProgress = document.getElementById("crafting-progress");
+    if (craftingProgress) {
+      craftingProgress.style.display = "none";
+    }
+
+    const craftProgressFill = document.getElementById("craft-progress-fill");
+    const craftTimer = document.getElementById("craft-timer");
+    if (craftProgressFill) {
+      craftProgressFill.style.width = "0%";
+    }
+    if (craftTimer) {
+      craftTimer.textContent = "";
+    }
+
+    const selectedRecipeDiv = document.getElementById("selected-recipe");
+    if (selectedRecipeDiv) {
+      selectedRecipeDiv.innerHTML = `
+              <div style="color: #8b949e; text-align: center; padding: 40px;">
+                Select a recipe to begin crafting
+              </div>
+            `;
+    }
+
+    addToMessageLog("Crafting cancelled.", "info");
+  }
+}
+
+function startCrafting(recipe, skill) {
+  if (gameState.currentAction) {
+    addToMessageLog("Already busy with another action.", "error");
+    return;
+  }
+
+  const playerLevel = gameState.skills[skill].level;
+
+  if (playerLevel < recipe.level) {
+    addToMessageLog(`Need level ${recipe.level} ${skill} to craft this recipe.`, "error");
+    return;
+  }
+
+  if ((skill === 'tailoring' || skill === 'firstaid' || skill === 'forging' || skill === 'gunsmithing' || skill === 'carpentry' || skill === 'tinkering') && recipe.station) {
+    const ws = (gameState.workshops && gameState.workshops[skill]) || {};
+    if (!ws[recipe.station]) {
+      addToMessageLog(`Requires ${getWorkshopName(recipe.station, skill)} to craft this.`, "error");
+      return;
+    }
+  }
+
+  let hasAllMaterials = true;
+  let missingMaterials = [];
+
+  if (recipe.materials) {
+    recipe.materials.forEach((material) => {
+      const playerAmount = gameState.bank[material.item] || 0;
+      if (playerAmount < material.quantity) {
+        hasAllMaterials = false;
+        const needed = material.quantity - playerAmount;
+        const itemName = getItemName(material.item);
+        missingMaterials.push(`${needed}x ${itemName}`);
+      }
+    });
+  }
+
+  if (!hasAllMaterials) {
+    addToMessageLog(`Missing materials: ${missingMaterials.join(', ')}`, "error");
+    return;
+  }
+
+  if (recipe.materials) {
+    recipe.materials.forEach((material) => {
+      gameState.bank[material.item] = (gameState.bank[material.item] || 0) - material.quantity;
+      if (gameState.bank[material.item] <= 0) {
+        delete gameState.bank[material.item];
+      }
+    });
+  }
+
+  gameState.currentAction = {
+    type: "crafting",
+    skill: skill,
+    recipe: recipe,
+    progress: 0,
+    duration: recipe.time,
+  };
+
+  craftingContinuous = true;
+
+  const craftProgressFill = document.getElementById("craft-progress-fill");
+  const craftTimer = document.getElementById("craft-timer");
+  if (craftProgressFill) {
+    craftProgressFill.style.width = "0%";
+  }
+  if (craftTimer) {
+    craftTimer.textContent = `${(recipe.time / 1000).toFixed(1)}s remaining`;
+  }
+
+  const selectedRecipeDiv = document.getElementById("selected-recipe");
+  const craftingProgress = document.getElementById("crafting-progress");
+  const itemName = recipe.randomResult && recipe.randomResult.type === 'bar'
+    ? 'Random Bar'
+    : getItemName(recipe.result.item);
+
+  selectedRecipeDiv.innerHTML = `
+      <div style="text-align: center;">
+        <h4 style="color: #238636;">Crafting ${recipe.name}</h4>
+        <div style="color: #2ecc71; margin: 10px 0;">
+          Creating ${recipe.result.quantity}x ${itemName}
+        </div>
+        <div style="color: #8b949e; font-size: 12px; margin: 5px 0;">
+          Duration: ${(recipe.time / 1000).toFixed(1)}s
+        </div>
+        <button id="cancel-crafting-btn" style="
+          background: var(--brand); 
+          color: #e6edf3; 
+          border: none; 
+          padding: 8px 16px; 
+          border-radius: 4px; 
+          cursor: pointer; 
+          font-size: 12px;
+        ">Cancel</button>
+      </div>
+    `;
+
+  setTimeout(() => {
+    const cancelBtn = document.getElementById("cancel-crafting-btn");
+    if (cancelBtn) {
+      cancelBtn.onclick = function () {
+        cancelCrafting();
+      };
+    }
+  }, 50);
+
+  craftingProgress.style.display = "block";
+
+  addToMessageLog(`Started crafting ${recipe.result.quantity}x ${itemName}.`, "info");
+  renderBank();
+  updateSkillInfo();
+}
+
+function getWorkshopName(id, forSkill = 'tailoring') {
+  const list = (gameData.upgrades && gameData.upgrades[forSkill] && gameData.upgrades[forSkill].workshops) || [];
+  const f = list.find(w => w.id === id);
+  return f ? f.name : id;
+}
+
+// Export to window
+window.cancelCrafting = cancelCrafting;
+window.cancelQueuedCrafting = cancelQueuedCrafting;
+window.startCrafting = startCrafting;
+window.getWorkshopName = getWorkshopName;
