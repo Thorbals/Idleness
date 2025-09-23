@@ -6,15 +6,9 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Post-Apocalyptic Idle</title>
-  <link rel="stylesheet" href="src/styles/layout.css">
-  <link rel="stylesheet" href="src/styles/homebase.css">
-  <link rel="stylesheet" href="src/styles/survivors.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="src/styles/areas.css">
-  <link rel="stylesheet" href="src/styles/combat.css">
-  <link rel="stylesheet" href="src/styles/crafting.css">
-  <link rel="stylesheet" href="src/styles/factions.css">
-  <link rel="stylesheet" href="src/styles/inventory.css">
-  <link rel="stylesheet" href="src/styles/notifications.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/homebase.css">
+  <link rel="stylesheet" href="styles/survivors.css">
   <style>
 
     .shop-animals-grid {
@@ -118,17 +112,16 @@
     }
 
     .game-container {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      height: 100dvh;
+      display: flex;
+      height: 100vh;
     }
 
     .sidebar {
-      background: var(--surface-1);
-      border-right: 1px solid var(--border);
-      backdrop-filter: blur(10px) saturate(1.2);
-      -webkit-backdrop-filter: blur(10px) saturate(1.2);
-      padding: 20px 16px;
+      width: 250px;
+      background: rgba(18, 18, 18, 0.95);
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 2px solid rgba(255, 255, 255, 0.08);
     }
 
     .logo {
@@ -197,7 +190,9 @@
     }
 
     .main-content {
-      background: transparent;
+      flex: 1;
+      background: rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
     }
 
     .top-bar {
@@ -1876,6 +1871,80 @@
   /* Remove grass overlay on tiles that have walls so nothing can show through */
   #homebase-page .tile.wall::after { content: none !important; }
 
+    /* Wall overlay: use per-edge bands sized to 1/3 of the tile. L-corners are formed by enabling multiple bands. */
+    #homebase-page .tile.wall { --w-top: 0; --w-bottom: 0; --w-left: 0; --w-right: 0; }
+    #homebase-page .tile.wall.w-top { --w-top: 1; }
+    #homebase-page .tile.wall.w-bottom { --w-bottom: 1; }
+    #homebase-page .tile.wall.w-left { --w-left: 1; }
+    #homebase-page .tile.wall.w-right { --w-right: 1; }
+
+    #homebase-page .tile.wall::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      /* ensure walls sit above all tile overlays (roads, sidewalks, bridges, buildings) */
+      z-index: 1000;
+  opacity: 1;
+  mix-blend-mode: normal;
+  background-blend-mode: normal, normal, normal, normal;
+      pointer-events: none;
+      /* Spiked log wall texture with varying circle sizes */
+      /* Order: top, bottom, left, right */
+      background-image:
+        /* Top log wall - horizontal logs with varying sizes */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Bottom log wall */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Left log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29),
+        /* Right log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29);
+      background-repeat: no-repeat;
+      background-size:
+        /* Top log wall */
+        calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5),
+        100% calc(var(--w-top) * var(--cell) / 5),
+        /* Bottom log wall */
+        calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5),
+        100% calc(var(--w-bottom) * var(--cell) / 5),
+        /* Left log wall */
+        calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5),
+        calc(var(--w-left) * var(--cell) / 5) 100%,
+        /* Right log wall */
+        calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5),
+        calc(var(--w-right) * var(--cell) / 5) 100%;
+      background-position:
+        /* Top log wall */
+        0 0, 20% 0, 40% 0, 60% 0, 80% 0, left top,
+        /* Bottom log wall */
+        0 100%, 20% 100%, 40% 100%, 60% 100%, 80% 100%, left bottom,
+        /* Left log wall */
+        0 0, 0 20%, 0 40%, 0 60%, 0 80%, left top,
+        /* Right log wall */
+        100% 0, 100% 20%, 100% 40%, 100% 60%, 100% 80%, right top;
+      /* avoid global inset shadows that make bands look thicker than 1/3 */
+    }
+
     #homebase-page .road {
       background: #3a3c40; /* dirtier, darker base color */
       /* make road tiles visually square and flush so textures connect */
@@ -1902,6 +1971,68 @@
       opacity: 0.5;
       pointer-events: none;
       z-index: 0; /* below the road surface overlay */
+    }
+
+   /* Force ONLY wood-tier walls (level 0) that sit on road/bridge tiles to use log texture.
+     Upgraded tiers (concrete/metal/mixed) must show their own border stripes, so we scope to .wood-wall */
+   #homebase-page .tile.wall.wood-wall.road::before,
+   #homebase-page .tile.wall.wood-wall.bridge::before {
+      z-index: 1000 !important;
+      opacity: 1 !important;
+      mix-blend-mode: normal !important;
+      background-blend-mode: normal, normal, normal, normal !important;
+      background-repeat: no-repeat !important;
+      background-image:
+        /* Top log wall - horizontal logs with varying sizes */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Bottom log wall */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(180deg, #3b2f21, #4a3c29),
+        /* Left log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29),
+        /* Right log wall - vertical logs */
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4a3c29 47%, transparent 48%),
+        radial-gradient(circle at 50% 50%, #6b5b45 49%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5d4e37 48%, transparent 49%),
+        linear-gradient(90deg, #3b2f21, #4a3c29) !important;
+      background-size:
+        /* Top log wall */
+        calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5), calc(var(--w-top) * var(--cell) / 5) calc(var(--w-top) * var(--cell) / 5),
+        100% calc(var(--w-top) * var(--cell) / 5),
+        /* Bottom log wall */
+        calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5), calc(var(--w-bottom) * var(--cell) / 5) calc(var(--w-bottom) * var(--cell) / 5),
+        100% calc(var(--w-bottom) * var(--cell) / 5),
+        /* Left log wall */
+        calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5), calc(var(--w-left) * var(--cell) / 5) calc(var(--w-left) * var(--cell) / 5),
+        calc(var(--w-left) * var(--cell) / 5) 100%,
+        /* Right log wall */
+        calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5), calc(var(--w-right) * var(--cell) / 5) calc(var(--w-right) * var(--cell) / 5),
+        calc(var(--w-right) * var(--cell) / 5) 100% !important;
+      background-position:
+        /* Top log wall */
+        0 0, 20% 0, 40% 0, 60% 0, 80% 0, left top,
+        /* Bottom log wall */
+        0 100%, 20% 100%, 40% 100%, 60% 100%, 80% 100%, left bottom,
+        /* Left log wall */
+        0 0, 0 20%, 0 40%, 0 60%, 0 80%, left top,
+        /* Right log wall */
+        100% 0, 100% 20%, 100% 40%, 100% 60%, 100% 80%, right top !important;
     }
 
     /* road caps: draw two halves per axis so we can hide the unconnected side */
@@ -2493,6 +2624,58 @@
     #homebase-page .tile .river-grass-s { bottom: 3px; }
 
     #homebase-page .tile .river-grass-w,
+    
+    /* Fog of War system - covers areas outside region walls */
+    #homebase-page .tile.fog-of-war::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1000; /* below walls (1002) */
+      background: 
+        /* Large-scale noise patterns that span multiple tiles */
+        radial-gradient(ellipse 200px 150px at 0% 0%, rgba(110, 110, 110, 0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 180px 200px at 100% 0%, rgba(90, 90, 90, 0.35) 0%, transparent 75%),
+        radial-gradient(ellipse 220px 180px at 0% 100%, rgba(100, 100, 100, 0.38) 0%, transparent 65%),
+        radial-gradient(ellipse 190px 220px at 100% 100%, rgba(105, 105, 105, 0.42) 0%, transparent 80%),
+        /* Medium-scale swirling patterns */
+        radial-gradient(ellipse 120px 90px at 25% 25%, rgba(95, 95, 95, 0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 100px 130px at 75% 75%, rgba(85, 85, 85, 0.28) 0%, transparent 65%),
+        radial-gradient(ellipse 110px 140px at 50% 80%, rgba(115, 115, 115, 0.32) 0%, transparent 70%),
+        /* Fine detail fog wisps */
+        radial-gradient(ellipse 60px 45px at 15% 35%, rgba(98, 98, 98, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse 45px 70px at 85% 15%, rgba(102, 102, 102, 0.22) 0%, transparent 55%),
+        radial-gradient(ellipse 55px 80px at 35% 85%, rgba(108, 108, 108, 0.24) 0%, transparent 45%),
+        /* Seamless base layer with very subtle variation */
+        linear-gradient(127deg, rgba(98, 98, 98, 0.85) 0%, rgba(102, 102, 102, 0.88) 20%, rgba(94, 94, 94, 0.86) 40%, rgba(106, 106, 106, 0.89) 60%, rgba(96, 96, 96, 0.87) 80%, rgba(100, 100, 100, 0.88) 100%);
+      background-size: 
+        400px 300px,
+        360px 400px,
+        440px 360px,
+        380px 440px,
+        240px 180px,
+        200px 260px,
+        220px 280px,
+        120px 90px,
+        90px 140px,
+        110px 160px,
+        100% 100%;
+      background-position:
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0,
+        0 0;
+      pointer-events: none;
+      opacity: 0.92;
+      /* Smooth edge blending */
+      filter: blur(0.5px);
+    }
     #homebase-page .tile .river-grass-e {
       position: absolute;
       top: 0;
@@ -3152,7 +3335,28 @@
       z-index: 10;
     }
     
+  /* Forced fog for specific diagonal coordinates - only bottom-left half */
+  #homebase-page .tile .forced-fog {
+      position: absolute;
+      inset: 0;
+      background: rgba(100, 100, 100, 0.85);
+      z-index: 1000; /* Reduced from 2000 to place below walls (1002) */
+      pointer-events: none;
+      opacity: 0.95;
+      /* Clip the fog diagonally - only show bottom-left half */
+      clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+  }
+
   /* legacy .wall tile-wide styling removed; walls are now drawn via per-edge 1/3 overlays only */
+
+  /* === Buoy styles for water region boundaries === */
+  /* Similar to walls, use CSS custom properties to control buoy visibility */
+  #homebase-page .tile.river { --b-top: 0; --b-bottom: 0; --b-left: 0; --b-right: 0; --b-diagonal: 0; }
+  #homebase-page .tile.river.b-top { --b-top: 1; }
+  #homebase-page .tile.river.b-bottom { --b-bottom: 1; }
+  #homebase-page .tile.river.b-left { --b-left: 1; }
+  #homebase-page .tile.river.b-right { --b-right: 1; }
+  #homebase-page .tile.river.b-diagonal { --b-diagonal: 1; }
   
   /* Buoys on river tiles - orange and white alternating circles */
   #homebase-page .tile.river::after {
@@ -3578,13 +3782,13 @@
       </header>
       <div class="content-area">
         <div class="loading" id="loading-screen">Loading game data...</div>
-        <div class="page-content" id="areas-page">
+        <div class="page-content" id="areas-page" style="display: none">
           <div class="content-header">
             <h1 class="content-title">Areas</h1>
           </div>
           <div class="areas-grid" id="areas-grid"></div>
         </div>
-        <section aria-labelledby="area-detail-title" class="page-content" id="area-detail-page">
+        <section aria-labelledby="area-detail-title" class="page-content" id="area-detail-page" style="display: none">
           <div class="content-header">
             <h1 class="content-title" id="area-detail-title">Area Name</h1>
             <button class="action-button" id="back-to-areas">
@@ -3607,13 +3811,13 @@
                       <div class="stat-item"><span>Defense:</span><span id="player-defense">10</span></div>
                     </div>
                     <div class="hp-bar">
-                      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="player-hp-bar" role="progressbar"></div>
+                      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="player-hp-bar" role="progressbar" style="width: 100%"></div>
                     </div>
                     <div id="player-hp" style="font-size:12px;">100/100</div>
                   </div>
                   <div class="combat-box">
                     <h4 style="margin:0 0 6px 0;">Enemy</h4>
-                    <div id="enemy-display">
+                    <div id="enemy-display" style="display:none;">
                       <div class="stats-grid">
                         <div class="stat-item"><span>Name:</span><span id="current-enemy-name">Enemy</span></div>
                         <div class="stat-item"><span>Level:</span><span id="enemy-level-display">-</span></div>
@@ -3621,7 +3825,7 @@
                         <div class="stat-item"><span>Defense:</span><span id="enemy-defense-display">-</span></div>
                       </div>
                       <div class="hp-bar">
-                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="enemy-hp-bar" role="progressbar"></div>
+                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="hp-fill" id="enemy-hp-bar" role="progressbar" style="width: 100%"></div>
                       </div>
                       <div id="enemy-hp-text">100/100</div>
                     </div>
@@ -3717,7 +3921,7 @@
           </div>
         </section>
       </div>
-      <div class="page-content" id="homebase-page">
+      <div class="page-content" id="homebase-page" style="display: none">
         <div class="hud">
           <div class="badge"><span class="k">🪵 Wood</span> <span class="v" id="wood">150</span> <span class="delta" id="woodDelta"></span></div>
           <div class="badge"><span class="k">🪨 Stone</span> <span class="v" id="stone">120</span> <span class="delta" id="stoneDelta"></span></div>
@@ -3767,7 +3971,7 @@
         <div class="toasts" id="toasts"></div>
         
       </div>
-      <div class="page-content" id="bank-page">
+      <div class="page-content" id="bank-page" style="display: none">
         <div class="content-header">
           <h1 class="content-title">Bank</h1>
           <p>
@@ -3777,7 +3981,7 @@
         </div>
         <div class="bank-grid" id="bank-grid"></div>
       </div>
-      <div class="page-content" id="shop-page">
+      <div class="page-content" id="shop-page" style="display: none">
         <div class="content-header">
           <h1 class="content-title">Shop</h1>
           <p>Purchase upgrades and equipment</p>
@@ -3789,7 +3993,7 @@
         </div>
         <div class="shop-grid" id="shop-items"></div>
       </div>
-      <div class="page-content" id="skill-page">
+      <div class="page-content" id="skill-page" style="display: none">
         <div class="content-header">
           <h1 class="content-title" id="skill-page-title">Skill</h1>
         </div>
@@ -3816,6 +4020,11 @@
 
   <div aria-live="polite" class="notification" id="notification" role="status"></div>
   
+  
+  
+  
+
+  <script src="./src/survivors.js"></script>
   <script type="module" src="./main.js"></script>
 </body>
 
