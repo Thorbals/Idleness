@@ -12,7 +12,21 @@ export const ITEMS_DATA = {
 
   materials: {
     wood: {
-      id: { name: "", type: "material", sellPrice: 0, icon: "🪵" },
+      poplar_plank: { id: "poplar_plank", name: "Poplar Plank", type: "material", icon: "🪚" },
+      willow_plank: { id: "willow_plank", name: "Willow Plank", type: "material", icon: "🪚" },
+      cedar_plank: { id: "cedar_plank", name: "Cedar Plank", type: "material", icon: "🪚" },
+      spruce_plank: { id: "spruce_plank", name: "Spruce Plank", type: "material", icon: "🪚" },
+      pine_plank: { id: "pine_plank", name: "Pine Plank", type: "material", icon: "🪚" },
+      cherry_plank: { id: "cherry_plank", name: "Cherry Plank", type: "material", icon: "🪚" },
+      ash_plank: { id: "ash_plank", name: "Ash Plank", type: "material", icon: "🪚" },
+      maple_plank: { id: "maple_plank", name: "Maple Plank", type: "material", icon: "🪚" },
+      oak_plank: { id: "oak_plank", name: "Oak Plank", type: "material", icon: "🪚" },
+      walnut_plank: { id: "walnut_plank", name: "Walnut Plank", type: "material", icon: "🪚" },
+      hickory_plank: { id: "hickory_plank", name: "Hickory Plank", type: "material", icon: "🪚" },
+      redwood_plank: { id: "redwood_plank", name: "Redwood Plank", type: "material", icon: "🪚" },
+      mahogany_plank: { id: "mahogany_plank", name: "Mahogany Plank", type: "material", icon: "🪚" },
+      yew_plank: { id: "yew_plank", name: "Yew Plank", type: "material", icon: "🪚" },
+      teak_plank: { id: "teak_plank", name: "Teak Plank", type: "material", icon: "�" },
     },
     stone: {
       id: { name: "", type: "material", sellPrice: 0, icon: "🪨" },
@@ -52,8 +66,105 @@ export const ITEMS_DATA = {
     },
   },
 
+  openables: {
+    birds_nest: {
+      id: "birds_nest",
+      name: "Bird's Nest",
+      type: "material",
+      icon: "🪺",
+      usable: true,
+      openable: {
+        drops: [
+          "oyster_spores", "portobello_spores", "apple_tree_seed", "peach_tree_seed", "pear_tree_seed", "fig_tree_seed",
+          "lemon_tree_seed", "cherry_tree_seed", "apricot_tree_seed", "mango_tree_seed", "loquat_tree_seed", "plum_tree_seed",
+          "avocado_tree_seed", "olive_tree_seed", "coffee_plant_seed"
+        ]
+      }
+    },
+    geode: {
+      id: "geode",
+      name: "Geode",
+      type: "material",
+      sellPrice: 5,
+      icon: "🪨",
+      usable: true,
+      openable: {
+        drops: [
+          "diamond", "ruby", "sapphire", "emerald", "amethyst", "opal", "pearl", "topaz"
+        ]
+      }
+    },
+    scrap_metal: {
+      id: "scrap_metal",
+      name: "Scrap Metal",
+      type: "material",
+      icon: "🧲",
+      usable: true,
+      openable: { drops: [] }
+    },
+    scrap_cloth: {
+      id: "scrap_cloth",
+      name: "Scrap Cloth",
+      type: "material",
+      icon: "🧵",
+      usable: true,
+      openable: { drops: [] }
+    },
+    scrap_plastic: {
+      id: "scrap_plastic",
+      name: "Scrap Plastic",
+      type: "material",
+      icon: "🧴",
+      usable: true,
+      openable: { drops: [] }
+    },
+    scrap_wood: {
+      id: "scrap_wood",
+      name: "Scrap Wood",
+      type: "material",
+      icon: "🪵",
+      usable: true,
+      openable: { drops: [] }
+    }
+  },
+
+  seeds: {
+    oyster_spores: { id: "oyster_spores", name: "Oyster Spores", type: "material", icon: "🍄" },
+    portobello_spores: { id: "portobello_spores", name: "Portobello Spores", type: "material", icon: "🍄" },
+    apple_tree_seed: { id: "apple_tree_seed", name: "Apple Tree Seed", type: "material", icon: "🌱" },
+    peach_tree_seed: { id: "peach_tree_seed", name: "Peach Tree Seed", type: "material", icon: "🌱" },
+    pear_tree_seed: { id: "pear_tree_seed", name: "Pear Tree Seed", type: "material", icon: "🌱" },
+    fig_tree_seed: { id: "fig_tree_seed", name: "Fig Tree Seed", type: "material", icon: "🌱" },
+    lemon_tree_seed: { id: "lemon_tree_seed", name: "Lemon Tree Seed", type: "material", icon: "🌱" },
+    cherry_tree_seed: { id: "cherry_tree_seed", name: "Cherry Tree Seed", type: "material", icon: "🌱" },
+    apricot_tree_seed: { id: "apricot_tree_seed", name: "Apricot Tree Seed", type: "material", icon: "🌱" },
+    mango_tree_seed: { id: "mango_tree_seed", name: "Mango Tree Seed", type: "material", icon: "🌱" },
+    loquat_tree_seed: { id: "loquat_tree_seed", name: "Loquat Tree Seed", type: "material", icon: "🌱" },
+    plum_tree_seed: { id: "plum_tree_seed", name: "Plum Tree Seed", type: "material", icon: "🌱" },
+    avocado_tree_seed: { id: "avocado_tree_seed", name: "Avocado Tree Seed", type: "material", icon: "🌱" },
+    olive_tree_seed: { id: "olive_tree_seed", name: "Olive Tree Seed", type: "material", icon: "🌱" },
+    coffee_plant_seed: { id: "coffee_plant_seed", name: "Coffee Plant Seed", type: "material", icon: "🌱" },
+  },
+
   raw_materials: {
-    wood: {},
+    wood: {
+      stick: { id: "stick", name: "Stick", type: "material", icon: "🪵" },
+      poplar_log: { id: "poplar_log", name: "Poplar Log", type: "material", icon: "🪵" },
+      willow_log: { id: "willow_log", name: "Willow Log", type: "material", icon: "🪵" },
+      cedar_log: { id: "cedar_log", name: "Cedar Log", type: "material", icon: "🪵" },
+      spruce_log: { id: "spruce_log", name: "Spruce Log", type: "material", icon: "🪵" },
+      pine_log: { id: "pine_log", name: "Pine Log", type: "material", icon: "🪵" },
+      cherry_log: { id: "cherry_log", name: "Cherry Log", type: "material", icon: "🪵" },
+      ash_log: { id: "ash_log", name: "Ash Log", type: "material", icon: "🪵" },
+      maple_log: { id: "maple_log", name: "Maple Log", type: "material", icon: "🪵" },
+      oak_log: { id: "oak_log", name: "Oak Log", type: "material", icon: "🪵" },
+      walnut_log: { id: "walnut_log", name: "Walnut Log", type: "material", icon: "🪵" },
+      hickory_log: { id: "hickory_log", name: "Hickory Log", type: "material", icon: "🪵" },
+      redwood_log: { id: "redwood_log", name: "Redwood Log", type: "material", icon: "🪵" },
+      mahogany_log: { id: "mahogany_log", name: "Mahogany Log", type: "material", icon: "🪵" },
+      yew_log: { id: "yew_log", name: "Yew Log", type: "material", icon: "🪵" },
+      teak_log: { id: "teak_log", name: "Teak Log", type: "material", icon: "🪵" },
+    },
     stone: {
       coal: {
         id: "coal",
@@ -2278,6 +2389,8 @@ export const ITEMS_DATA = {
     },
   },
 };
+
+export const STRUCTURE_CAPACITY = { pen: 10, coop: 12, hutch: 8, insect: 30 };
 
 export const UPGRADES_DATA = {
   mining: {
