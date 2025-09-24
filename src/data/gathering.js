@@ -1078,3 +1078,321 @@ export const SKILLS_DATA = {
 };
 
 export default { SKILLS_DATA };
+
+// Gathering functions from monolith script #3
+function renderGatheringResources(area) {
+  const container = document.getElementById("gathering-resources");
+  container.innerHTML = "";
+
+  if (!area.gathering) {
+    const noResourcesDiv = document.createElement("div");
+    noResourcesDiv.style.cssText = "color: #8b949e; text-align: center; padding: 20px;";
+    noResourcesDiv.textContent = "No gathering resources available in this area.";
+    container.appendChild(noResourcesDiv);
+    return;
+  }
+
+  Object.keys(area.gathering).forEach((skillType) => {
+    const resourceIds = area.gathering[skillType];
+    if (!resourceIds || !Array.isArray(resourceIds)) return;
+
+    resourceIds.forEach((resourceId) => {
+      const skill = gameData.skills.gathering_skills[skillType];
+      if (!skill || !skill.nodes) {
+        console.warn(`Skill not found or missing nodes: ${skillType}`);
+        return;
+      }
+
+      const resource = skill.nodes.find(node => node.id === resourceId);
+      if (!resource) {
+        console.warn(`Resource not found: ${resourceId} in skill ${skillType}`);
+        return;
+      }
+
+      const requiredLevel = resource.level;
+      const playerSkill = gameState.skills[skillType];
+      if (!playerSkill) {
+        console.warn(`Player skill not found: ${skillType}`);
+        return;
+      }
+      const playerLevel = playerSkill.level;
+      const canGather = playerLevel >= requiredLevel;
+
+      const card = document.createElement("div");
+      const diffClass = getNodeDifficultyClass(playerLevel, requiredLevel);
+      card.className = `resource-card ${diffClass} ${canGather ? "" : "locked"}`;
+      card.dataset.resourceId = resource.id;
+      card.dataset.skill = skillType;
+
+      let dropsHtml = '';
+      if (showDropPercentages && resource.drops) {
+        dropsHtml = '<div style="margin-top: 8px; border-top: 1px solid #555; padding-top: 5px;">';
+        resource.drops.forEach(drop => {
+          if (drop.rarity) {
+            const dropChance = calculateRarityChance(drop.rarity, playerLevel, resource.level);
+            const rarityColor = getRarityColor(drop.rarity);
+            const itemName = getItemName(drop.item);
+            dropsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 2px 0; font-size: 11px;">
+                  <span style="color: #bbb; cursor: help;" data-item-tooltip="${drop.item}">${itemName}</span>
+                  <span style="color: ${rarityColor}; font-weight: bold; cursor: help;" title="${drop.rarity.charAt(0).toUpperCase() + drop.rarity.slice(1)}: ${(dropChance * 100).toFixed(1)}% chance (Level diff: ${playerLevel - resource.level})">${(dropChance * 100).toFixed(1)}%</span>
+                </div>
+              `;
+          } else if (drop.chance) {
+            const percentage = (drop.chance * 100).toFixed(1);
+            const itemName = getItemName(drop.item);
+            dropsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 2px 0; font-size: 11px;">
+                  <span style="color: #bbb; cursor: help;" data-item-tooltip="${drop.item}">${itemName}</span>
+                  <span style="color: #238636; font-weight: bold;">${percentage}%</span>
+                </div>
+              `;
+          }
+        });
+        dropsHtml += '</div>';
+      }
+
+      card.innerHTML = `
+                  <h4>${resource.name}</h4>
+                  <div>Level ${requiredLevel} ${skillType}</div>
+                  <div>${resource.xp} XP</div>
+                  <div>${(resource.time / 1000).toFixed(
+        1
+      )}s per action</div>
+                  ${dropsHtml}
+        <div class="progress-bar" style="display: none;">
+          <div class="progress-fill"></div>
+        </div>
+              `;
+
+      if (canGather) {
+        card.addEventListener("click", () => {
+          selectResource(card, resource, skillType);
+        });
+      }
+
+      container.appendChild(card);
+    });
+  });
+}
+
+function selectResource(card, resource, skillType) {
+  if (gameState.combat && gameState.combat.inCombat) {
+    escapeBattle();
+  }
+  if (card.classList.contains("active")) {
+    document
+      .querySelectorAll(".resource-card")
+      .forEach((c) => c.classList.remove("active"));
+    hideGatheringProgress();
+
+    gameState.currentAction = null;
+    currentSkill = null;
+    addGatheringLog("Gathering stopped");
+    return;
+  }
+
+  document
+    .querySelectorAll(".resource-card")
+    .forEach((c) => c.classList.remove("active"));
+  card.classList.add("active");
+
+  currentSkill = skillType;
+  createGatheringProgressBox(resource.name);
+  startGatheringAction(resource.id, skillType);
+}
+
+function startGatheringAction(resourceId, skillType) {
+  const area = gameState.currentArea;
+  if (!area || !area.gathering[skillType]) return;
+
+  const skill = gameData.skills.gathering_skills[skillType];
+  if (!skill || !skill.nodes) return;
+
+  const resource = skill.nodes.find(node => node.id === resourceId);
+  if (!resource) return;
+
+  if (resource.consumes) {
+    for (const consume of resource.consumes) {
+      const available = gameState.bank[consume.item] || 0;
+      if (available < consume.quantity) {
+        const itemName = getItemName(consume.item);
+        addGatheringLog(`Need ${consume.quantity} ${itemName} to perform this action`, "log-error");
+        showNotification(`Need ${consume.quantity} ${itemName}`);
+        return;
+      }
+    }
+  }
+
+  gameState.currentAction = {
+    type: "gathering",
+    skill: skillType,
+    resource: resource,
+    xp: resource.xp,
+    drops: resource.drops,
+    consumes: resource.consumes,
+    duration: resource.time,
+    progress: 0,
+  };
+  resetGatheringProgress();
+}
+
+function resetGatheringProgress() {
+  const gatheringProgressFill = document.getElementById("gathering-progress-fill");
+  if (gatheringProgressFill) {
+    gatheringProgressFill.style.width = "0%";
+  }
+}
+
+function createGatheringProgressBox(resourceName) {
+  const progressContainer = document.getElementById("gathering-progress-container");
+  if (!progressContainer) return;
+
+  progressContainer.innerHTML = `
+    <div id="gathering-progress-box">
+      <div>Gathering ${resourceName}</div>
+      <div class="progress-bar">
+        <div id="gathering-progress-fill" class="progress-fill" style="width: 0%;"></div>
+      </div>
+      <button id="stop-gathering-btn">Stop</button>
+    </div>
+  `;
+
+  document.getElementById("stop-gathering-btn").addEventListener("click", () => {
+    stopGathering("Stopped by user");
+  });
+
+  showGatheringProgress();
+}
+
+function removeGatheringProgressBox() {
+  const progressContainer = document.getElementById("gathering-progress-container");
+  if (progressContainer) {
+    progressContainer.innerHTML = "";
+  }
+}
+
+function showGatheringProgress() {
+  const progressBox = document.getElementById("gathering-progress-box");
+  if (progressBox) {
+    progressBox.style.display = "block";
+  }
+}
+
+function hideGatheringProgress() {
+  const progressBox = document.getElementById("gathering-progress-box");
+  if (progressBox) {
+    progressBox.style.display = "none";
+  }
+}
+
+function stopGathering(reason = "") {
+  if (gameState.currentAction && gameState.currentAction.type === "gathering") {
+    gameState.currentAction = null;
+    currentSkill = null;
+    resetGatheringProgress();
+    hideGatheringProgress();
+    removeGatheringProgressBox();
+    document
+      .querySelectorAll(".resource-card")
+      .forEach((c) => c.classList.remove("active"));
+    addGatheringLog(`Gathering stopped${reason ? ": " + reason : ""}`);
+  }
+}
+
+function addGatheringLog(message, className = "") {
+  const logContainer = document.getElementById("gathering-log");
+  if (!logContainer) return;
+
+  const logEntry = document.createElement("div");
+  logEntry.className = `log-entry ${className}`;
+  logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+
+  logContainer.appendChild(logEntry);
+  logContainer.scrollTop = logContainer.scrollHeight;
+
+  // Limit log entries
+  while (logContainer.children.length > 100) {
+    logContainer.removeChild(logContainer.firstChild);
+  }
+}
+
+function showSkillGatheringPage(skill) {
+  const gatheringResources = document.getElementById("gathering-resources");
+  gatheringResources.innerHTML = "";
+
+  if (!skill.nodes) {
+    gatheringResources.innerHTML = "<div style='text-align: center; color: #8b949e; padding: 20px;'>No resources available for this skill.</div>";
+    return;
+  }
+
+  skill.nodes.forEach((resource) => {
+    const requiredLevel = resource.level;
+    const playerSkill = gameState.skills[skill.id];
+    const playerLevel = playerSkill ? playerSkill.level : 0;
+    const canGather = playerLevel >= requiredLevel;
+
+    const card = document.createElement("div");
+    const diffClass = getNodeDifficultyClass(playerLevel, requiredLevel);
+    card.className = `resource-card ${diffClass} ${canGather ? "" : "locked"}`;
+
+    let dropsHtml = '';
+    if (showDropPercentages && resource.drops) {
+      dropsHtml = '<div style="margin-top: 8px; border-top: 1px solid #555; padding-top: 5px;">';
+      resource.drops.forEach(drop => {
+        if (drop.rarity) {
+          const dropChance = calculateRarityChance(drop.rarity, playerLevel, resource.level);
+          const rarityColor = getRarityColor(drop.rarity);
+          const itemName = getItemName(drop.item);
+          dropsHtml += `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin: 2px 0; font-size: 11px;">
+                <span style="color: #bbb; cursor: help;" data-item-tooltip="${drop.item}">${itemName}</span>
+                <span style="color: ${rarityColor}; font-weight: bold; cursor: help;" title="${drop.rarity.charAt(0).toUpperCase() + drop.rarity.slice(1)}: ${(dropChance * 100).toFixed(1)}% chance (Level diff: ${playerLevel - resource.level})">${(dropChance * 100).toFixed(1)}%</span>
+              </div>
+            `;
+        } else if (drop.chance) {
+          const percentage = (drop.chance * 100).toFixed(1);
+          const itemName = getItemName(drop.item);
+          dropsHtml += `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin: 2px 0; font-size: 11px;">
+                <span style="color: #bbb; cursor: help;" data-item-tooltip="${drop.item}">${itemName}</span>
+                <span style="color: #238636; font-weight: bold;">${percentage}%</span>
+              </div>
+            `;
+        }
+      });
+      dropsHtml += '</div>';
+    }
+
+    card.innerHTML = `
+              <h4>${resource.name}</h4>
+              <div>Level ${requiredLevel} ${skill.name}</div>
+              <div>${resource.xp} XP</div>
+              <div>${(resource.time / 1000).toFixed(1)}s per action</div>
+              ${dropsHtml}
+    `;
+
+    gatheringResources.appendChild(card);
+  });
+}
+
+function getGatheringBonusChance(skill, playerLevel) {
+  const baseChance = 0.01; // 1% base chance
+  const levelBonus = Math.min(playerLevel * 0.005, 0.1); // Up to 10% from level
+  const skillBonus = skill.level * 0.002; // 0.2% per skill level
+  return baseChance + levelBonus + skillBonus;
+}
+
+// Expose to window for legacy compatibility
+window.renderGatheringResources = renderGatheringResources;
+window.selectResource = selectResource;
+window.startGatheringAction = startGatheringAction;
+window.resetGatheringProgress = resetGatheringProgress;
+window.createGatheringProgressBox = createGatheringProgressBox;
+window.removeGatheringProgressBox = removeGatheringProgressBox;
+window.showGatheringProgress = showGatheringProgress;
+window.hideGatheringProgress = hideGatheringProgress;
+window.stopGathering = stopGathering;
+window.addGatheringLog = addGatheringLog;
+window.showSkillGatheringPage = showSkillGatheringPage;
+window.getGatheringBonusChance = getGatheringBonusChance;

@@ -599,3 +599,59 @@ export const FACTION_CONFIG = {
 export const NAME_TO_FACTION_ID = {};
 
 export default { ENEMIES_DATA, FACTION_CONFIG, NAME_TO_FACTION_ID };
+
+// Faction utility functions from monolith script #3
+function getFactionTextColor(factionId) {
+  const faction = FACTION_CONFIG[factionId];
+  if (!faction) return 'rgba(255, 255, 255, 1)';
+  return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.textOpacity})`;
+}
+
+function getFactionBorderColor(factionId) {
+  const faction = FACTION_CONFIG[factionId];
+  if (!faction) return 'rgba(255, 255, 255, 0.3)';
+  return `rgba(${faction.color.r}, ${faction.color.g}, ${faction.color.b}, ${faction.borderOpacity})`;
+}
+
+function getFactionRGBString(factionId) {
+  const faction = FACTION_CONFIG[factionId];
+  if (!faction) return '128,128,128';
+  return `${faction.color.r},${faction.color.g},${faction.color.b}`;
+}
+
+function generateFactionCSS() {
+  let css = '';
+  Object.values(FACTION_CONFIG).forEach(faction => {
+    css += `.faction-${faction.id} { color: ${getFactionTextColor(faction.id)}; }\n`;
+  });
+  Object.values(FACTION_CONFIG).forEach(faction => {
+    css += `.enemy-item.faction-${faction.id} .enemy-name { color: ${getFactionTextColor(faction.id)}; }\n`;
+  });
+
+  return css;
+}
+
+function injectFactionCSS() {
+  const styleId = 'dynamic-faction-styles';
+  let existingStyle = document.getElementById(styleId);
+
+  if (existingStyle) {
+    existingStyle.remove();
+  }
+
+  const style = document.createElement('style');
+  style.id = styleId;
+  style.textContent = generateFactionCSS();
+  document.head.appendChild(style);
+}
+
+Object.values(FACTION_CONFIG).forEach(faction => {
+  NAME_TO_FACTION_ID[faction.name] = faction.id;
+});
+
+// Expose to window for legacy compatibility
+window.getFactionTextColor = getFactionTextColor;
+window.getFactionBorderColor = getFactionBorderColor;
+window.getFactionRGBString = getFactionRGBString;
+window.generateFactionCSS = generateFactionCSS;
+window.injectFactionCSS = injectFactionCSS;
