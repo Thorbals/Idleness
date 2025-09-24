@@ -11,8 +11,8 @@ import * as shops from './src/data/shops.js';
 import * as combat_skills from './src/data/combat.js';
 import * as production_skills from './src/data/production.js';
 import * as inventory from './src/data/inventory.js';
-import * as ui from './src/data/ui.js';
-import * as utils from './src/data/utils.js';
+import * as ui from './src/data/interface.js';
+import * as utils from './src/data/gamedata.js';
 
 // Expose legacy globals expected by monolith.js
 for (const mod of [items, equipment, factions, areas, gathering_skills, crafting_skills, shops, combat_skills, production_skills, inventory, ui, utils]) {
