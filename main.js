@@ -20,7 +20,7 @@ for (const mod of [items, equipment, factions, areas, gathering_skills, crafting
     if (k === "default") continue;
     if (!(k in window)) {
       // Define as var-like global to match legacy usage
-      Object.defineProperty(window, k, { value: v, writable: false, configurable: true });
+      Object.defineProperty(window, k, { value: v, writable: true, configurable: true });
     }
   }
 }

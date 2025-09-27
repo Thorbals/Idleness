@@ -1,5 +1,160 @@
 // UI rendering functions
 
+let domFixObserver = null;
+
+function onDocumentReady(fn) {
+  if (typeof document === "undefined") return;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fn, { once: true });
+  } else {
+    fn();
+  }
+}
+
+function maybeFixMojibake(text) {
+  if (!text || typeof text !== "string") return text;
+  if (text.indexOf("�") === -1 && text.indexOf("�") === -1) return text;
+  try {
+    return decodeURIComponent(escape(text));
+  } catch (_err) {
+    return text;
+  }
+}
+
+function walkAndFix(node) {
+  if (!node || !node.ownerDocument || !node.ownerDocument.createTreeWalker) {
+    return;
+  }
+  const showText = typeof NodeFilter !== "undefined" ? NodeFilter.SHOW_TEXT : 4;
+  const walker = node.ownerDocument.createTreeWalker(node, showText, null);
+  const updates = [];
+  while (walker.nextNode()) {
+    const current = walker.currentNode;
+    const fixed = maybeFixMojibake(current.nodeValue);
+    if (fixed && fixed !== current.nodeValue) {
+      updates.push([current, fixed]);
+    }
+  }
+  updates.forEach(([textNode, value]) => {
+    textNode.nodeValue = value;
+  });
+}
+
+function observeAndFix(root) {
+  if (!root || typeof MutationObserver !== "function") return;
+  if (domFixObserver) domFixObserver.disconnect();
+  domFixObserver = new MutationObserver((list) => {
+    for (const mutation of list) {
+      if (mutation.type === "childList") {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 3) {
+            const fixed = maybeFixMojibake(node.nodeValue);
+            if (fixed !== node.nodeValue) node.nodeValue = fixed;
+          } else if (node.nodeType === 1) {
+            walkAndFix(node);
+          }
+        });
+      } else if (mutation.type === "characterData") {
+        const txt = mutation.target.nodeValue;
+        const fixed = maybeFixMojibake(txt);
+        if (fixed !== txt) mutation.target.nodeValue = fixed;
+      }
+    }
+  });
+  domFixObserver.observe(root, {
+    childList: true,
+    characterData: true,
+    subtree: true,
+  });
+}
+
+function setupInterfaceButtons() {
+  const buttonMap = [
+    ["btn-save", "saveGame"],
+    ["btn-load", "loadGame"],
+    ["btn-reset", "resetGame"],
+    ["back-to-areas", "goBackToAreas"],
+  ];
+  buttonMap.forEach(([btnId, fnName]) => {
+    const button = document.getElementById(btnId);
+    if (!button || button.dataset.interfaceBound === "1") return;
+    button.dataset.interfaceBound = "1";
+    button.addEventListener("click", () => {
+      const handler =
+        typeof window !== "undefined" && window ? window[fnName] : undefined;
+      if (typeof handler === "function") {
+        handler();
+      } else {
+        console?.warn?.(
+          `Button action '${fnName}' is not available when '${btnId}' was clicked.`
+        );
+      }
+    });
+  });
+}
+
+function setupTabs() {
+  document.querySelectorAll('[role="tablist"]').forEach((tablist) => {
+    if (tablist.dataset.interfaceTabsBound === "1") return;
+    tablist.dataset.interfaceTabsBound = "1";
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    function activate(tab) {
+      tabs.forEach((t) => {
+        const isActive = t === tab;
+        t.classList.toggle("active", isActive);
+        t.setAttribute("aria-selected", isActive ? "true" : "false");
+        const panelId = t.getAttribute("aria-controls");
+        const panel = panelId ? document.getElementById(panelId) : null;
+        if (panel) {
+          panel.classList.toggle("active", isActive);
+          panel.hidden = !isActive;
+        }
+      });
+    }
+    tablist.addEventListener("click", (event) => {
+      const tab = event.target.closest('[role="tab"]');
+      if (tab && tabs.includes(tab)) activate(tab);
+    });
+    tablist.addEventListener("keydown", (event) => {
+      const currentIndex = tabs.indexOf(document.activeElement);
+      if (currentIndex < 0) return;
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        const next = tabs[(currentIndex + 1) % tabs.length];
+        next.focus();
+        activate(next);
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        const prev = tabs[(currentIndex - 1 + tabs.length) % tabs.length];
+        prev.focus();
+        activate(prev);
+      }
+    });
+    tabs.forEach((tab) => {
+      const panelId = tab.getAttribute("aria-controls");
+      const panel = panelId ? document.getElementById(panelId) : null;
+      const initiallyActive = tab.classList.contains("active");
+      tab.setAttribute("aria-selected", initiallyActive ? "true" : "false");
+      if (panel) {
+        panel.classList.toggle("active", initiallyActive);
+        panel.hidden = !initiallyActive;
+      }
+    });
+  });
+}
+
+function initializeInterfaceDom() {
+  if (typeof document === "undefined") return;
+  onDocumentReady(() => {
+    if (!document.body) return;
+    walkAndFix(document.body);
+    observeAndFix(document.body);
+    setupInterfaceButtons();
+    setupTabs();
+  });
+}
+
 let itemTooltip = null;
 let equipmentTooltip = null;
 
@@ -539,3 +694,7 @@ window.goBackToAreas = goBackToAreas;
 window.showLoadingScreen = showLoadingScreen;
 window.hideLoadingScreen = hideLoadingScreen;
 window.initializeHomeBase = initializeHomeBase;
+window.setupTabs = setupTabs;
+window.setupInterfaceDom = initializeInterfaceDom;
+
+initializeInterfaceDom();

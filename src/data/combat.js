@@ -6,15 +6,45 @@ export default CombatModule;
 // Auto-split from monolith.js
 // Source section: data/combat.js
 
+function resolveEnemiesData() {
+  if (typeof gameData !== "undefined" && gameData && gameData.enemies) {
+    return gameData.enemies;
+  }
+  const globalRef =
+    typeof globalThis !== "undefined"
+      ? globalThis
+      : typeof window !== "undefined"
+      ? window
+      : undefined;
+  if (globalRef) {
+    if (globalRef.monolithGameData && globalRef.monolithGameData.enemies) {
+      return globalRef.monolithGameData.enemies;
+    }
+    if (globalRef.gameData && globalRef.gameData.enemies) {
+      return globalRef.gameData.enemies;
+    }
+    if (globalRef.ENEMIES_DATA) {
+      return globalRef.ENEMIES_DATA;
+    }
+  }
+  return null;
+}
 
 function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
-  const f =
-    (gameData && gameData.enemies && gameData.enemies[factionId]) || null;
-  if (!f) return null;
+  const enemiesData = resolveEnemiesData();
+  const f = (enemiesData && enemiesData[factionId]) || null;
+  if (!f) {
+    console?.warn?.(`scaleEnemyForLevel: missing faction ${factionId}`);
+    return null;
+  }
   const L = Math.max(1, level | 0);
   const effLevel = L - 1;
   const e = f.scaling;
-  const b = f.base[kind];
+  const b = f.base && f.base[kind];
+  if (!b) {
+    console?.warn?.(`scaleEnemyForLevel: missing base stats for ${kind} in faction ${factionId}`);
+    return null;
+  }
   const hp = Math.max(1, Math.floor(b.hp * Math.pow(1 + effLevel, e.hp)));
   const atk = Math.max(1, Math.floor(b.atk * Math.pow(1 + effLevel, e.atk)));
   const def = Math.max(0, Math.floor(b.def * Math.pow(1 + effLevel, e.def)));
@@ -141,6 +171,18 @@ function getAttackIntervalMs(attacker) {
   const interval = base / (1 + spd / 100);
   return Math.max(500, Math.min(5000, Math.floor(interval)));
 }
+
+export {
+  critPctToRating,
+  scaleEnemyForLevel,
+  getHitChance,
+  getCritChance,
+  getEffectiveCritChance,
+  getEffectiveDefense,
+  getDamageReduction,
+  computeDamage,
+  getAttackIntervalMs,
+};
 
 function setupEventListeners() {
   document.addEventListener("click", handleClick);

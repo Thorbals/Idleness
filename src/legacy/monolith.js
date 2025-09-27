@@ -2,127 +2,22 @@
 // External script references that were present (not bundled due to unavailable files):
 // --- begin extracted inline scripts ---
 
+import {
+  critPctToRating,
+  scaleEnemyForLevel,
+  getHitChance,
+  getCritChance,
+  getEffectiveCritChance,
+  getEffectiveDefense,
+  getDamageReduction,
+  computeDamage,
+  getAttackIntervalMs,
+} from "../data/combat.js";
+
 
 // ---- inline script #1 ----
 
-
-          /* Old homebase system removed to avoid conflicts */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-// ---- inline script #2 ----
-
-
-    (function () {
-      function onReady(fn) {
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn();
-      }
-      function maybeFixMojibake(text) {
-        if (!text) return text;
-        if (text.indexOf('�') === -1 && text.indexOf('�') === -1) return text;
-        try { return decodeURIComponent(escape(text)); } catch (_) { return text; }
-      }
-      function walkAndFix(node) {
-        const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
-        const updates = [];
-        while (walker.nextNode()) {
-          const cur = walker.currentNode;
-          const fixed = maybeFixMojibake(cur.nodeValue);
-          if (fixed && fixed !== cur.nodeValue) updates.push([cur, fixed]);
-        }
-        updates.forEach(([n, v]) => { n.nodeValue = v; });
-      }
-      function observeAndFix(root) {
-        const mo = new MutationObserver((list) => {
-          for (const m of list) {
-            if (m.type === 'childList') {
-              m.addedNodes.forEach(n => {
-                if (n.nodeType === 3) { const f = maybeFixMojibake(n.nodeValue); if (f !== n.nodeValue) n.nodeValue = f; }
-                else if (n.nodeType === 1) { walkAndFix(n); }
-              });
-            } else if (m.type === 'characterData') {
-              const f = maybeFixMojibake(m.target.nodeValue); if (f !== m.target.nodeValue) m.target.nodeValue = f;
-            }
-          }
-        });
-        mo.observe(root, { childList: true, characterData: true, subtree: true });
-      }
-      function setupButtons() {
-        const id = (s) => document.getElementById(s);
-        const map = [
-          ['btn-save', 'saveGame'],
-          ['btn-load', 'loadGame'],
-          ['btn-reset', 'resetGame'],
-          ['back-to-areas', 'goBackToAreas']
-        ];
-        map.forEach(([btnId, fnName]) => {
-          const btn = id(btnId);
-          if (btn && typeof window[fnName] === 'function') btn.addEventListener('click', () => window[fnName]());
-        });
-      }
-      function setupTabs() {
-        document.querySelectorAll('[role="tablist"]').forEach(tablist => {
-          const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
-          function activate(tab) {
-            tabs.forEach(t => {
-              const on = t === tab;
-              t.classList.toggle('active', on);
-              t.setAttribute('aria-selected', on ? 'true' : 'false');
-              const panel = document.getElementById(t.getAttribute('aria-controls'));
-              if (panel) { panel.classList.toggle('active', on); panel.hidden = !on; }
-            });
-          }
-          tablist.addEventListener('click', (e) => {
-            const t = e.target.closest('[role="tab"]');
-            if (t) activate(t);
-          });
-          tablist.addEventListener('keydown', (e) => {
-            const i = tabs.indexOf(document.activeElement);
-            if (i >= 0) {
-              if (e.key === 'ArrowRight') { e.preventDefault(); const n = tabs[(i + 1) % tabs.length]; n.focus(); activate(n); }
-              if (e.key === 'ArrowLeft') { e.preventDefault(); const p = tabs[(i - 1 + tabs.length) % tabs.length]; p.focus(); activate(p); }
-            }
-          });
-          tabs.forEach(t => {
-            const panel = document.getElementById(t.getAttribute('aria-controls'));
-            const on = t.classList.contains('active');
-            if (panel) panel.hidden = !on;
-            t.setAttribute('aria-selected', on ? 'true' : 'false');
-          });
-        });
-      }
-      onReady(function () {
-        walkAndFix(document.body);
-        observeAndFix(document.body);
-        setupButtons();
-        setupTabs();
-      });
-    })();
-  
-
 // ---- inline script #3 ----
-
 
 
 
@@ -138,14 +33,7 @@
 
 
 
-
     
-
-
-
-
-    
-
 
 
 
@@ -153,11 +41,19 @@
 
 
 
+    
+
+
 
     
 
 
 
+    
+
+
+
+    
 
     
 
@@ -219,50 +115,6 @@
 
 
     const STRUCTURE_CAPACITY = { pen: 10, coop: 12, hutch: 8, insect: 30 };
-
-    function critPctToRating(pct) {
-      const p = Math.max(0, Math.min(0.95, pct || 0));
-      return Math.round((p / (1 - p)) * 200);
-    }
-
-    function scaleEnemyForLevel(factionId, baseEnemy, level, kind) {
-      const f = (gameData && gameData.enemies && gameData.enemies[factionId]) || null;
-      if (!f) return null;
-      const L = Math.max(1, level | 0);
-      const effLevel = L - 1; const e = f.scaling;
-      const b = f.base[kind];
-      const hp = Math.max(1, Math.floor(b.hp * Math.pow(1 + effLevel, e.hp)));
-      const atk = Math.max(1, Math.floor(b.atk * Math.pow(1 + effLevel, e.atk)));
-      const def = Math.max(0, Math.floor(b.def * Math.pow(1 + effLevel, e.def)));
-      const acc = Math.max(1, Math.floor(b.acc * Math.pow(1 + effLevel, e.acc)));
-      const critRating = critPctToRating((b.critPct || 0) * Math.pow(1 + effLevel, e.crit));
-      const armPen = Math.round((b.armPenPct || 0) * Math.pow(1 + effLevel, e.armPen) * 100) / 1; const aspdScalar = (b.aspd || 1) * Math.pow(1 + effLevel, e.aspd);
-      const attackSpeedPct = Math.round((aspdScalar - 1) * 100);
-      const isBoss = kind === 'boss';
-      const drops = [
-        { item: "scrap", min: isBoss ? 6 : 2, max: isBoss ? 12 : 5, rarity: "common" }
-      ];
-
-      return {
-        factionId,
-        id: baseEnemy.id,
-        name: baseEnemy.name,
-        level: L,
-        hp,
-        attack: atk,
-        defense: def,
-        accuracy: acc,
-        evasion: 25,
-        critical: critRating,
-        critMultiplier: 1.5,
-        armorPen: Math.min(90, Math.max(0, Math.round(armPen))),
-        attackSpeed: attackSpeedPct,
-        baseSpeedMs: 3000,
-        xp: (isBoss ? 25 : 10) * L,
-        drops
-      };
-    }
-
     
 
 
@@ -424,6 +276,15 @@
         }
 
         gameData.enemies = ENEMIES_DATA;
+        const globalRef = typeof globalThis !== 'undefined' ? globalThis : window;
+        if (globalRef) {
+          globalRef.monolithGameData = gameData;
+          globalRef.gameDataLegacy = gameData;
+          const legacyData = globalRef.gameData;
+          if (legacyData && typeof legacyData === 'object') {
+            legacyData.enemies = ENEMIES_DATA;
+          }
+        }
 
         gameState.dataLoaded = true;
         hideLoadingScreen();
@@ -665,76 +526,6 @@
       if (gameState.player.hp > gameState.player.maxHp) {
         gameState.player.hp = gameState.player.maxHp;
       }
-    }
-
-    function getHitChance(attacker, defender) {
-      const acc = Math.max(0, attacker.accuracy ?? 50);
-      const eva = Math.max(0, defender.evasion ?? 25);
-      if (acc === 0 && eva === 0) return 0.5;
-      return acc / (acc + eva);
-    }
-
-    function getCritChance(attacker) {
-      const rating = Math.max(0, attacker.critical ?? 0);
-      return Math.min(0.75, rating / (rating + 200));
-    }
-
-    function getEffectiveCritChance(attacker, defender) {
-      const base = getCritChance(attacker);
-      const resist = Math.max(0, Math.min(1, (defender.critResistance ?? 0) / 100));
-      return Math.max(0, base - resist);
-    }
-
-    function getEffectiveDefense(defender, attacker) {
-      const base = Math.max(0, defender.defense ?? 0);
-      const penPctRaw = Math.max(0, Math.min(90, attacker.armorPen ?? 0));
-      const penResist = Math.max(0, Math.min(90, defender.armorPenResistance ?? 0));
-      const penPct = Math.max(0, penPctRaw - penResist);
-      return base * (1 - penPct / 100);
-    }
-
-    function getDamageReduction(defenseValue) {
-      const dr = defenseValue / (defenseValue + 100);
-      return Math.min(0.95, Math.max(0, dr));
-    }
-
-    function computeDamage(attacker, defender) {
-      let hitRollGuaranteed = false;
-      if (attacker.alwaysHitIfAccHigher && (attacker.accuracy ?? 0) > (defender.evasion ?? 0)) {
-        hitRollGuaranteed = true;
-      }
-      if (!hitRollGuaranteed && Math.random() >= getHitChance(attacker, defender)) return { damage: 0, crit: false, hit: false, blocked: false };
-      const atk = Math.max(1, attacker.attack ?? 1);
-      const effDef = getEffectiveDefense(defender, attacker);
-      let dr = getDamageReduction(effDef);
-      const drBonus = Math.max(0, (defender.damageReductionBonusPct || 0) / 100);
-      dr = Math.min(0.95, dr + drBonus);
-      let dmg = Math.max(1, Math.floor(atk * (1 - dr)));
-      const isCrit = Math.random() < getEffectiveCritChance(attacker, defender);
-      if (isCrit) {
-        const mult = attacker.critMultiplier ?? 1.5;
-        dmg = Math.max(1, Math.floor(dmg * mult));
-      }
-      let blocked = false;
-      let reflectDamage = 0;
-      const blockChance = Math.max(0, Math.min(1, (defender.blockChancePct || 0) / 100));
-      if (Math.random() < blockChance) {
-        blocked = true;
-        const reflectChance = Math.max(0, Math.min(1, (defender.reflectOnBlockChancePct || 0) / 100));
-        if (reflectChance > 0 && Math.random() < reflectChance) {
-          const reflectPct = Math.max(0, Math.min(1, (defender.reflectOnBlockPct || 0) / 100));
-          reflectDamage = Math.max(0, Math.floor(dmg * reflectPct));
-        }
-        dmg = 0;
-      }
-      return { damage: dmg, crit: isCrit, hit: true, blocked, reflectDamage };
-    }
-
-    function getAttackIntervalMs(attacker) {
-      const base = Math.max(500, Math.min(5000, attacker.baseSpeedMs ?? 3000));
-      const spd = Math.max(0, attacker.attackSpeed ?? 0);
-      const interval = base / (1 + spd / 100);
-      return Math.max(500, Math.min(5000, Math.floor(interval)));
     }
 
     let lastRenderedEquipment = {};
